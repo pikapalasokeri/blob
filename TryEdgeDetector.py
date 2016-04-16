@@ -4,9 +4,7 @@ from scipy import misc
 from scipy import ndimage
 import numpy as np
 import matplotlib.pyplot as plt
-
-def rgb2gray(img):
-  return np.dot(img[...,:3], [1.0/3.0, 1.0/3.0, 1.0/3.0])
+from EdgeDetector import *
 
 def findCenterOfMass(mask):
     indices = np.nonzero(mask)
@@ -57,29 +55,40 @@ def getBlobs(filePath, backgroundPath):
           if (col < compensatedGaussImg.shape[1] and col >= 0 and row < compensatedGaussImg.shape[0] and row >= 0):
             compensatedGaussImg[row,col] = 100
 
-    #plt.subplot(3, 3, ix+1)
   print "plotting..."
   plt.figure(5)
   plt.imshow(compensatedGaussImg)
 
-  '''
-  log = ndimage.gaussian_laplace(compensatedGaussImg, 16)
-  plt.figure(6)
-  plt.imshow(log)
-
-  log = ndimage.gaussian_laplace(compensatedGaussImg, 32)
-  plt.figure(7)
-  plt.imshow(log)
-
-  log = ndimage.gaussian_laplace(compensatedGaussImg, 64)
-  plt.figure(8)
-  plt.imshow(log)
-  '''
-
-
-
   plt.show()
 
+def addEdgesToImage(image, edges, colorIx):
+  for row, col in zip(edges[0], edges[1]):
+    image[row, col, colorIx] = 255
+
 if __name__ == "__main__":
-  getBlobs("images/1.jpg", "images/1bg.jpg")
-  
+  filePath = "images/TryEdgeDetector.jpg"
+  img = misc.imread(filePath)
+  edgeDetector = EdgeDetector(img)
+
+  sigma = 4
+  thresholdFactor = 0.4
+  edges = edgeDetector.getEdges(sigma, thresholdFactor)
+  print "Got", len(edges[0]), "edge points at sigma", sigma, "and thresholdFactor", thresholdFactor
+  addEdgesToImage(img, edges, 0)
+  addEdgesToImage(img, edges, 2)
+
+  sigma = 8
+  thresholdFactor = 0.1
+  edges = edgeDetector.getEdges(sigma, thresholdFactor)
+  print "Got", len(edges[0]), "edge points at sigma", sigma, "and thresholdFactor", thresholdFactor
+  addEdgesToImage(img, edges, 1)
+
+  sigma = 16
+  thresholdFactor = 0.01
+  edges = edgeDetector.getEdges(sigma, thresholdFactor)
+  print "Got", len(edges[0]), "edge points at sigma", sigma, "and thresholdFactor", thresholdFactor  
+  addEdgesToImage(img, edges, 2)
+
+  plt.figure()
+  plt.imshow(img)
+  plt.show()
