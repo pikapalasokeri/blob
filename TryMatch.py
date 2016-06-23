@@ -3,8 +3,10 @@
 from scipy import misc
 from scipy import ndimage
 import numpy as np
+from numpy.core.umath_tests import inner1d
 import matplotlib.pyplot as plt
 from EdgeDetector import *
+from timeit import default_timer as timer
 
 '''
 https://en.wikipedia.org/wiki/Point_set_registration#Coherent_point_drift
@@ -39,24 +41,37 @@ class CoherentPointDriftMatcher2D:
       #print self._pointSet1
       #print transformedPointSet1
 
+
+      start = timer()
+      tmp = timer()
+      total = tmp - start
       for i, iPoint in enumerate(self._pointSet1):
         for j, jPoint in enumerate(self._pointSet2):
           sjTmiDiff = jPoint - transformedPointSet1[i]
-      #    print sjTmiDiff
-      #    if ix == 2:
-      #      exit()
           numerator = np.exp(-1.0/(2.0*sigmaSquare) * np.dot(sjTmiDiff, sjTmiDiff))
 
+          s = timer()
           denominatorSum = 0.0
-          for k, kPoint in enumerate(self._pointSet1):
-            sjTmkDiff = jPoint - transformedPointSet1[k]
-            diffSquare = np.dot(sjTmkDiff, sjTmkDiff)
-            denominatorSum += np.exp(-1.0/(2.0*sigmaSquare) * diffSquare)
+
+          numIPoints = self._pointSet1.shape[0]
+
+          jPoints = np.tile(jPoint, (numIPoints, 1))
+          sjTmkDiffs = jPoints - transformedPointSet1
+          diffSquares = inner1d(sjTmkDiffs, sjTmkDiffs)
+          exponents = -1.0/(2.0*sigmaSquare) * diffSquares
+          termInDenominatorSum = np.exp(exponents)
+          denominatorSum = np.sum(termInDenominatorSum)
           denominator = denominatorSum + (2.0*np.pi*sigmaSquare) * w / (1 - w) * self._pointSet1.shape[0]/self._pointSet2.shape[0]
-          
+
+          e = timer()
+          total += e - s
+
           #print "P[i,j]", numerator, denominator, denominatorSum, numerator/denominator
           P[i,j] = numerator / denominator
           #print i, j, P[i,j]
+      end = timer()
+      print "loop:", end-start
+      print "inner loop:", total 
       theta, sigmaSquare = self._solveRigid(P)
       #registered = True
       print theta, sigmaSquare
@@ -71,6 +86,7 @@ class CoherentPointDriftMatcher2D:
     return sum/(2.0*self._pointSet1.shape[0]*self._pointSet2.shape[0])
 
   def _solveRigid(self, P):
+    start = timer()
     M = self._pointSet1
     S = self._pointSet2
 
@@ -116,6 +132,8 @@ class CoherentPointDriftMatcher2D:
     print a * np.trace(np.dot(A.transpose(), R))
     sigmaSquare = 1.0/(2.0*NP) * (np.trace(np.dot(Shat.transpose(), np.dot(diag, Shat))) - a * np.trace(np.dot(A.transpose(), R)))
     
+    end = timer()
+    print "one iteration _solveRigid:", end-start
     return (a, R, t), sigmaSquare
 
 def transform(scale, rotation, translation, points):
@@ -208,7 +226,10 @@ if __name__ == "__main__":
   points2[0,:] = [1.0, 1.0]
   '''
   matcher = CoherentPointDriftMatcher2D(points1, points2)
+  start = timer()
   scale, rotation, translation = matcher.match(0.001)
+  end = timer()
+  print "matcher.match:", end-start
   
   print "target", points2
   print "before transform", points1
