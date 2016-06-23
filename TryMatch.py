@@ -25,6 +25,7 @@ class CoherentPointDriftMatcher2D:
     ix = 0
     oldSigmaSquare = 1.0e+10; # should be large enough
     while not registered:
+      start = timer()
       print ix
       ix += 1
 
@@ -41,37 +42,49 @@ class CoherentPointDriftMatcher2D:
       #print self._pointSet1
       #print transformedPointSet1
 
+      constant1 = -1.0/(2.0*sigmaSquare)
+      constant2 = (2.0*np.pi*sigmaSquare) * w / (1 - w) * self._pointSet1.shape[0]/self._pointSet2.shape[0]
 
-      start = timer()
+      
       tmp = timer()
       total = tmp - start
+      outsideloop = tmp - start
+      s2 = timer()
+
+      tiledJPoints = []
+      numIPoints = self._pointSet1.shape[0]
+      for jPoint in self._pointSet2:
+        tiledJPoints.append(np.tile(jPoint, (numIPoints, 1)))
+
+      
+      numJPoints = self._pointSet2.shape[0]
+      numerators = np.zeros((numIPoints, numJPoints))
+      denominators = np.zeros((numIPoints, numJPoints))
+      
+      e2 = timer()
       for i, iPoint in enumerate(self._pointSet1):
         for j, jPoint in enumerate(self._pointSet2):
-          sjTmiDiff = jPoint - transformedPointSet1[i]
-          numerator = np.exp(-1.0/(2.0*sigmaSquare) * np.dot(sjTmiDiff, sjTmiDiff))
-
           s = timer()
-          denominatorSum = 0.0
+          sjTmiDiff = jPoint - transformedPointSet1[i]
+          numerators[i,j] = np.exp(constant1 * np.dot(sjTmiDiff, sjTmiDiff))
 
-          numIPoints = self._pointSet1.shape[0]
-
-          jPoints = np.tile(jPoint, (numIPoints, 1))
+          jPoints = tiledJPoints[j]
           sjTmkDiffs = jPoints - transformedPointSet1
           diffSquares = inner1d(sjTmkDiffs, sjTmkDiffs)
-          exponents = -1.0/(2.0*sigmaSquare) * diffSquares
-          termInDenominatorSum = np.exp(exponents)
-          denominatorSum = np.sum(termInDenominatorSum)
-          denominator = denominatorSum + (2.0*np.pi*sigmaSquare) * w / (1 - w) * self._pointSet1.shape[0]/self._pointSet2.shape[0]
+          exponents = constant1 * diffSquares
+          termsInDenominatorSum = np.exp(exponents)
+          denominatorSum = np.sum(termsInDenominatorSum)
+          denominators[i,j] = denominatorSum + constant2          
 
           e = timer()
           total += e - s
+      P = numerators / denominators
 
-          #print "P[i,j]", numerator, denominator, denominatorSum, numerator/denominator
-          P[i,j] = numerator / denominator
           #print i, j, P[i,j]
       end = timer()
       print "loop:", end-start
       print "inner loop:", total 
+      print "outsideloop:", e2-s2
       theta, sigmaSquare = self._solveRigid(P)
       #registered = True
       print theta, sigmaSquare
@@ -196,7 +209,7 @@ if __name__ == "__main__":
     points1[ix, 0] = edges1[0][ix]
     points1[ix, 1] = edges1[1][ix]
   print points1.shape
-  points1 = points1[::5,:]
+  points1 = points1[::2,:]
   print points1.shape
 
   points2 = np.zeros((len(edges2[0]), 2))
@@ -204,7 +217,7 @@ if __name__ == "__main__":
     points2[ix, 0] = edges2[0][ix]
     points2[ix, 1] = edges2[1][ix]
   print points2.shape
-  points2 = points2[::5,:]
+  points2 = points2[::2,:]
   print points2.shape
   
 
