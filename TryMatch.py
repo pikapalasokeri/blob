@@ -62,9 +62,9 @@ class CoherentPointDriftMatcher2D:
       denominators = np.zeros((numIPoints, numJPoints))
       
       e2 = timer()
-      for i, iPoint in enumerate(self._pointSet1):
+      s = timer()
+      for i in range(numIPoints):
         for j, jPoint in enumerate(self._pointSet2):
-          s = timer()
           sjTmiDiff = jPoint - transformedPointSet1[i]
           numerators[i,j] = np.exp(constant1 * np.dot(sjTmiDiff, sjTmiDiff))
 
@@ -74,10 +74,12 @@ class CoherentPointDriftMatcher2D:
           exponents = constant1 * diffSquares
           termsInDenominatorSum = np.exp(exponents)
           denominatorSum = np.sum(termsInDenominatorSum)
-          denominators[i,j] = denominatorSum + constant2          
+          denominators[i,j] = denominatorSum
 
-          e = timer()
-          total += e - s
+      
+      e = timer()
+      total += e - s
+      denominators += constant2
       P = numerators / denominators
 
           #print i, j, P[i,j]
