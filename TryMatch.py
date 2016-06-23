@@ -192,6 +192,7 @@ def computeMatchMeasure(edges1, edges2):
 if __name__ == "__main__":
   filePath1 = "images/early_tests/4_03.jpg"
   filePath2 = "images/early_tests/4_04.jpg"
+  #filePath2 = "images/early_tests/1_01.jpg"
 
   img1 = misc.imread(filePath1)
   edgeDetector1 = EdgeDetector(img1)
