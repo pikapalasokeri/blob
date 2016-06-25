@@ -29,19 +29,17 @@ class CoherentPointDriftMatcher2D:
       print ix
       ix += 1
 
-      sigmaSquareChange = oldSigmaSquare - sigmaSquare
+      sigmaSquareChange = abs(oldSigmaSquare - sigmaSquare)
       oldSigmaSquare = sigmaSquare
       print "Change in sigmaSquare:", sigmaSquareChange
-      if ix == 250 or sigmaSquare < 0.0 or sigmaSquareChange < 0.001:
-        return theta[0], theta[1], theta[2]
-      transformedPointSet1 = transform(theta[0], theta[1], theta[2], self._pointSet1)
       print "scale:", theta[0]
       print "rotation:", theta[1]
       print "translation:", theta[2]
       print "sigmaSquare:", sigmaSquare
-      #print self._pointSet1
-      #print transformedPointSet1
-
+      if ix == 250 or sigmaSquare < 0.0 or (ix > 50 and sigmaSquareChange < 0.001):
+        return theta[0], theta[1], theta[2]
+      transformedPointSet1 = transform(theta[0], theta[1], theta[2], self._pointSet1)
+      
       constant1 = -1.0/(2.0*sigmaSquare)
       constant2 = (2.0*np.pi*sigmaSquare) * w / (1 - w) * self._pointSet1.shape[0]/self._pointSet2.shape[0]
 
@@ -82,7 +80,14 @@ class CoherentPointDriftMatcher2D:
       denominators += constant2
       P = numerators / denominators
 
-          #print i, j, P[i,j]
+
+      print "Normalized sum(P):", np.sum(np.sum(P))/(numIPoints*numJPoints)
+      print "MeanMax(P,0)", np.mean(np.max(P,axis=0))
+      print "MeanMax(P,1)", np.mean(np.max(P,axis=1))
+      print "MedianMax(P,0)", np.median(np.max(P,axis=0))
+      print "MedianMax(P,1)", np.median(np.max(P,axis=1))
+      
+
       end = timer()
       print "loop:", end-start
       print "inner loop:", total 
@@ -105,46 +110,28 @@ class CoherentPointDriftMatcher2D:
     M = self._pointSet1
     S = self._pointSet2
 
-    #print "M", M
-    #print "S", S
-
     NP = np.dot(np.dot(np.ones((1, P.shape[0])), P), np.ones((P.shape[1], 1))) # Sum of all elements in P matrix
     muS = 1.0/(NP) * np.dot(S.transpose(), np.dot(P.transpose(), np.ones((P.shape[0], 1)))) # (2,1) "mean" vector
     muM = 1.0/(NP) * np.dot(M.transpose(), np.dot(P, np.ones((P.shape[1], 1))))             # (2,1) "mean" vector
 
-    #print "NP:", NP
-    #print "muS:", muS
-    #print "muM:", muM
-
     Shat = S - muS.transpose()
     Mhat = M - muM.transpose()
 
-    #print "Shat", Shat
-    #print "Mhat", Mhat
-
     A = np.dot(np.dot(Shat.transpose(), P.transpose()), Mhat)
 
-    #print "A", A
-
     U, shapeSigma, Vt = np.linalg.svd(A)
-    #you are here. something is fishy. scale shrinks but doesnt expand again. sigmaSquare goes to 0 (or -0)
+
     C = np.eye(2)
     C[-1:-1] = np.linalg.det(np.dot(U, Vt))
-    #print "C", C
+
     R = np.dot(U, np.dot(C, Vt))
 
     diag = np.diag(np.squeeze(np.dot(P, np.ones((P.shape[1], 1)))))
-    #print diag
-    #print "num:", np.trace(np.dot(A.transpose(), R))
-    #print "den:", np.trace(np.dot(Mhat.transpose(), np.dot(diag, Mhat)))
+
     a = np.trace(np.dot(A.transpose(), R)) / np.trace(np.dot(Mhat.transpose(), np.dot(diag, Mhat)))
-    #a = 1.0
     t = (muS - a*np.dot(R, muM)).transpose()
-    #print "t", t
 
     diag = np.diag(np.squeeze(np.dot(P.transpose(), np.ones((P.shape[0], 1)))))
-    print np.trace(np.dot(Shat.transpose(), np.dot(diag, Shat)))
-    print a * np.trace(np.dot(A.transpose(), R))
     sigmaSquare = 1.0/(2.0*NP) * (np.trace(np.dot(Shat.transpose(), np.dot(diag, Shat))) - a * np.trace(np.dot(A.transpose(), R)))
     
     end = timer()
@@ -153,26 +140,6 @@ class CoherentPointDriftMatcher2D:
 
 def transform(scale, rotation, translation, points):
   return scale*np.dot(points, rotation.transpose()) + translation
-
-
-
-
-def computeDistances(points):
-  result = []
-
-  dimX = points[0]
-  dimY = points[1]
-  numPoints = len(dimX)
-  for ix1 in range(0, numPoints):
-    x1 = dimX[ix1]
-    y1 = dimY[ix1]
-    for ix2 in range(ix1+1, numPoints):
-      x2 = dimX[ix2]
-      y2 = dimY[ix2]
-      distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
-      result.append(distance)
-
-  return result
 
 def addEdgesToImage(image, edges, colorIx):
   for row, col in zip(edges[0], edges[1]):
@@ -184,15 +151,29 @@ def addNdArrayPointsToImage(image, points, colorIx):
     col = int(point[1])
     image[row, col, colorIx] = 255
 
-def computeMatchMeasure(edges1, edges2):
-  distances1 = computeDistances(edges1)
-  distances2 = computeDistances(edges2)
-  return 0.0
+def computeSquareDistance(point1, point2):
+  diff = point1 - point2
+  return float(diff[0]**2 + diff[1]**2)
+
+def computeSquareDistances(points1, points2):
+  numPoints1 = points1.shape[0]
+  numPoints2 = points2.shape[0]
+
+  squareDistances = np.zeros((numPoints1, numPoints2))
+  for i, point1 in enumerate(points1):
+    for j, point2 in enumerate(points2):
+      squareDistances[i,j] = computeSquareDistance(point1, point2)
+  return squareDistances
+
+def comuteClosestNeighborLikeness(points1, points2):
+  squareDistances = computeSquareDistances(points1, points2)
+  from1ClosestNeighbor = np.min(squareDistances, axis=1)
+  from2ClosestNeighbor = np.min(squareDistances, axis=0)
+  return np.mean(from1ClosestNeighbor) + np.mean(from2ClosestNeighbor)
 
 if __name__ == "__main__":
-  filePath1 = "images/early_tests/4_03.jpg"
-  filePath2 = "images/early_tests/4_04.jpg"
-  #filePath2 = "images/early_tests/1_01.jpg"
+  filePath1 = "images/early_tests_white/4_01.jpg"
+  filePath2 = "images/early_tests_white/6_01.jpg"
 
   img1 = misc.imread(filePath1)
   edgeDetector1 = EdgeDetector(img1)
@@ -200,11 +181,12 @@ if __name__ == "__main__":
   img2 = misc.imread(filePath2)
   edgeDetector2 = EdgeDetector(img2)
 
-  sigma = 4
+  sigma = 2
   thresholdFactor = 8.0
-  
-  edges1 = edgeDetector1.getEdges(sigma, thresholdFactor)
-  edges2 = edgeDetector2.getEdges(sigma, thresholdFactor)
+  radius = 30
+
+  edges1 = edgeDetector1.getEdges(sigma, thresholdFactor, radius)
+  edges2 = edgeDetector2.getEdges(sigma, thresholdFactor, radius)
 
   
   points1 = np.zeros((len(edges1[0]), 2))
@@ -241,21 +223,25 @@ if __name__ == "__main__":
   points2[0,:] = [0, 1.0]
   points2[0,:] = [1.0, 1.0]
   '''
+
   matcher = CoherentPointDriftMatcher2D(points1, points2)
   start = timer()
-  scale, rotation, translation = matcher.match(0.001)
+  scale, rotation, translation = matcher.match(0.0)
   end = timer()
   print "matcher.match:", end-start
   
-  print "target", points2
-  print "before transform", points1
+  #print "target", points2
+  #print "before transform", points1
   transformed = transform(scale, rotation, translation, points1)
-  print "after transform", transformed
+  #print "after transform", transformed
+
+  print "Closest neighbor likeness:", comuteClosestNeighborLikeness(points2, transformed)
+
 
   #addEdgesToImage(img1, edges1, 0)
   #addEdgesToImage(img2, edges2, 0)
   
-  print points1
+  #print points1
   addNdArrayPointsToImage(img1, points1, 0)
   addNdArrayPointsToImage(img2, points1, 0)
   addNdArrayPointsToImage(img1, points2, 0)
@@ -272,17 +258,4 @@ if __name__ == "__main__":
 
   plt.figure()
   plt.imshow(img2)
-
-
-  print len(edges1[0])
-
-  dist1 = computeDistances(edges1)
-  dist2 = computeDistances(edges2)
-
-  plt.figure()
-  plt.plot(sorted(dist1), 'b')
-  plt.plot(sorted(dist2), '--r')
-  plt.show()
-  
-
-  
+ 
