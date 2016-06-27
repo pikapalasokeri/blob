@@ -21,6 +21,16 @@ class CoherentPointDriftMatcher2D:
     sigmaSquare = self._computeSigmaSquare()
 
     P = np.zeros((self._pointSet1.shape[0], self._pointSet2.shape[0]))
+
+    tiledJPoints = []
+    numIPoints = self._pointSet1.shape[0]
+    for jPoint in self._pointSet2:
+      tiledJPoints.append(np.tile(jPoint, (numIPoints, 1)))
+    
+    numJPoints = self._pointSet2.shape[0]
+    numerators = np.zeros((numIPoints, numJPoints))
+    denominators = np.zeros((numIPoints, numJPoints))
+
     registered = False
     ix = 0
     oldSigmaSquare = 1.0e+10; # should be large enough
@@ -39,47 +49,25 @@ class CoherentPointDriftMatcher2D:
       if ix == 250 or sigmaSquare < 0.0 or (ix > 50 and sigmaSquareChange < 0.001):
         return theta[0], theta[1], theta[2]
       transformedPointSet1 = transform(theta[0], theta[1], theta[2], self._pointSet1)
-      
       constant1 = -1.0/(2.0*sigmaSquare)
       constant2 = (2.0*np.pi*sigmaSquare) * w / (1 - w) * self._pointSet1.shape[0]/self._pointSet2.shape[0]
 
-      
-      tmp = timer()
-      total = tmp - start
-      outsideloop = tmp - start
-      s2 = timer()
+      for j in range(numJPoints):
+        jPoints = tiledJPoints[j]
+        sjTmkDiffs = jPoints - transformedPointSet1
+        diffSquares = inner1d(sjTmkDiffs, sjTmkDiffs)
+        exponents = constant1 * diffSquares
+        termsInDenominatorSum = np.exp(exponents)
+        denominatorSum = np.sum(termsInDenominatorSum)
+        denominators[:,j] = denominatorSum
 
-      tiledJPoints = []
-      numIPoints = self._pointSet1.shape[0]
-      for jPoint in self._pointSet2:
-        tiledJPoints.append(np.tile(jPoint, (numIPoints, 1)))
-
-      
-      numJPoints = self._pointSet2.shape[0]
-      numerators = np.zeros((numIPoints, numJPoints))
-      denominators = np.zeros((numIPoints, numJPoints))
-      
-      e2 = timer()
-      s = timer()
       for i in range(numIPoints):
         for j, jPoint in enumerate(self._pointSet2):
           sjTmiDiff = jPoint - transformedPointSet1[i]
           numerators[i,j] = np.exp(constant1 * np.dot(sjTmiDiff, sjTmiDiff))
 
-          jPoints = tiledJPoints[j]
-          sjTmkDiffs = jPoints - transformedPointSet1
-          diffSquares = inner1d(sjTmkDiffs, sjTmkDiffs)
-          exponents = constant1 * diffSquares
-          termsInDenominatorSum = np.exp(exponents)
-          denominatorSum = np.sum(termsInDenominatorSum)
-          denominators[i,j] = denominatorSum
-
-      
-      e = timer()
-      total += e - s
       denominators += constant2
       P = numerators / denominators
-
 
       print "Normalized sum(P):", np.sum(np.sum(P))/(numIPoints*numJPoints)
       print "MeanMax(P,0)", np.mean(np.max(P,axis=0))
@@ -90,10 +78,8 @@ class CoherentPointDriftMatcher2D:
 
       end = timer()
       print "loop:", end-start
-      print "inner loop:", total 
-      print "outsideloop:", e2-s2
       theta, sigmaSquare = self._solveRigid(P)
-      #registered = True
+
       print theta, sigmaSquare
 
   def _computeSigmaSquare(self):
@@ -173,7 +159,7 @@ def comuteClosestNeighborLikeness(points1, points2):
 
 if __name__ == "__main__":
   filePath1 = "images/early_tests_white/4_01.jpg"
-  filePath2 = "images/early_tests_white/6_01.jpg"
+  filePath2 = "images/early_tests_white/4_02.jpg"
 
   img1 = misc.imread(filePath1)
   edgeDetector1 = EdgeDetector(img1)
@@ -259,3 +245,4 @@ if __name__ == "__main__":
   plt.figure()
   plt.imshow(img2)
  
+  plt.show()
