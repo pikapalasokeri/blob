@@ -46,7 +46,7 @@ class CoherentPointDriftMatcher2D:
       print "rotation:", theta[1]
       print "translation:", theta[2]
       print "sigmaSquare:", sigmaSquare
-      if ix == 250 or sigmaSquare < 0.0 or (ix > 50 and sigmaSquareChange < 0.001):
+      if ix == 100 or sigmaSquare < 0.0 or (ix > 50 and sigmaSquareChange < 0.001):
         return theta[0], theta[1], theta[2]
       transformedPointSet1 = transform(theta[0], theta[1], theta[2], self._pointSet1)
       constant1 = -1.0/(2.0*sigmaSquare)
