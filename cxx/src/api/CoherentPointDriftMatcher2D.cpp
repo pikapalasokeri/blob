@@ -11,4 +11,19 @@ extern "C" {
   {
     delete matcher;
   }
+
+  void CoherentPointDriftMatcher2D_addPoint1(CoherentPointDriftMatcher2D* matcher, double x, double y)
+  {
+    matcher->addPoint1(x,y);
+  }
+
+  void CoherentPointDriftMatcher2D_addPoint2(CoherentPointDriftMatcher2D* matcher, double x, double y)
+  {
+    matcher->addPoint2(x,y);
+  }
+
+  void CoherentPointDriftMatcher2D_match(CoherentPointDriftMatcher2D* matcher)
+  {
+    matcher->match();
+  }
 }
