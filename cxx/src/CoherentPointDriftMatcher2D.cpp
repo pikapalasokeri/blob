@@ -16,13 +16,13 @@ CoherentPointDriftMatcher2D::~CoherentPointDriftMatcher2D()
 void
 CoherentPointDriftMatcher2D::addPoint1(double x, double y)
 {
-  pointSet1_.push_back(DoublePair(x, y));
+  pointSet1_.emplace_back(x, y);
 }
 
 void
 CoherentPointDriftMatcher2D::addPoint2(double x, double y)
 {
-  pointSet2_.push_back(DoublePair(x, y));
+  pointSet2_.emplace_back(x, y);
 }
 
 void
