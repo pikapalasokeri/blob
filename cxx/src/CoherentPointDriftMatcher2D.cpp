@@ -1,5 +1,6 @@
 #include "CoherentPointDriftMatcher2D.hpp"
 
+#include <Eigen/Eigen>
 #include <iostream>
 
 CoherentPointDriftMatcher2D::CoherentPointDriftMatcher2D()

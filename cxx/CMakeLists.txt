@@ -9,7 +9,8 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -std=c++11")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
-include_directories(${Boost_INCLUDE_DIR})
+include_directories(${Boost_INCLUDE_DIR}
+                    "${PROJECT_SOURCE_DIR}/Eigen")
 
 add_library(pointmatcher SHARED
  "${PROJECT_SOURCE_DIR}/CoherentPointDriftMatcher2D.cpp"
