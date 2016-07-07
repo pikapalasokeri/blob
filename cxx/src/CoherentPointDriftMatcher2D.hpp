@@ -15,7 +15,7 @@ public:
 
   void addPoint2(double x, double y);
 
-  void match();
+  void match(double* scale, double* rotation, double* translation);
 
   void output();
 
@@ -31,7 +31,7 @@ extern "C" {
   void CoherentPointDriftMatcher2D_delete(CoherentPointDriftMatcher2D*);
   void CoherentPointDriftMatcher2D_addPoint1(CoherentPointDriftMatcher2D*, double x, double y);
   void CoherentPointDriftMatcher2D_addPoint2(CoherentPointDriftMatcher2D*, double x, double y);
-  void CoherentPointDriftMatcher2D_match(CoherentPointDriftMatcher2D*);
+  void CoherentPointDriftMatcher2D_match(CoherentPointDriftMatcher2D*, double* scale, double* rotation, double* translation);
   void CoherentPointDriftMatcher2D_output(CoherentPointDriftMatcher2D*);
 }
 

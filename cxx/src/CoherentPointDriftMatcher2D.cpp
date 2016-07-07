@@ -26,9 +26,13 @@ CoherentPointDriftMatcher2D::addPoint2(double x, double y)
 }
 
 void
-CoherentPointDriftMatcher2D::match()
+CoherentPointDriftMatcher2D::match(double* scale, double* rotation, double* translation)
 {
-
+  std::cout << "match():" << std::endl;
+  std::cout << "  scale: " << scale[0] << std::endl
+            << "  rotation: " << rotation[0] << " " << rotation[1] << std::endl
+            << "            " << rotation[2] << " " << rotation[3] << std::endl
+            << "  translation: " << translation[0] << " " << translation[1] << std::endl;
 }
 
 void
@@ -69,9 +73,9 @@ extern "C" {
     matcher->addPoint2(x,y);
   }
 
-  void CoherentPointDriftMatcher2D_match(CoherentPointDriftMatcher2D* matcher)
+  void CoherentPointDriftMatcher2D_match(CoherentPointDriftMatcher2D* matcher, double* scale, double* rotation, double* translation)
   {
-    matcher->match();
+    matcher->match(scale, rotation, translation);
   }
 
   void CoherentPointDriftMatcher2D_output(CoherentPointDriftMatcher2D* matcher)
