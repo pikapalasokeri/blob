@@ -12,8 +12,7 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 include_directories(${Boost_INCLUDE_DIR})
 
 add_library(pointmatcher SHARED
- "${PROJECT_SOURCE_DIR}/CoherentPointDriftMatcher2DImpl.cpp"
- "${PROJECT_SOURCE_DIR}/api/CoherentPointDriftMatcher2D.cpp"
+ "${PROJECT_SOURCE_DIR}/CoherentPointDriftMatcher2D.cpp"
 )
 
 set(CMAKE_BUILD_TYPE Release)
