@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from EdgeDetector import *
 from timeit import default_timer as timer
 from CoherentPointDriftMatcher import CoherentPointDriftMatcher2D
+from CoherentPointDriftMatcher import transform
 
 def addEdgesToImage(image, edges, colorIx):
   for row, col in zip(edges[0], edges[1]):
