@@ -17,6 +17,8 @@ public:
 
   void match();
 
+  void output();
+
 private:
   using DoublePair = std::pair<double, double>;
   using PointVector = std::vector<DoublePair>;
@@ -30,6 +32,7 @@ extern "C" {
   void CoherentPointDriftMatcher2D_addPoint1(CoherentPointDriftMatcher2D*, double x, double y);
   void CoherentPointDriftMatcher2D_addPoint2(CoherentPointDriftMatcher2D*, double x, double y);
   void CoherentPointDriftMatcher2D_match(CoherentPointDriftMatcher2D*);
+  void CoherentPointDriftMatcher2D_output(CoherentPointDriftMatcher2D*);
 }
 
 #endif

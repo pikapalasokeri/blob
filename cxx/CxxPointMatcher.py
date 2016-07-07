@@ -16,3 +16,6 @@ class CxxCoherentPointDriftMatcher2D(object):
 
   def match(self):
     lib.CoherentPointDriftMatcher2D_match(self.obj)
+
+  def output(self):
+    lib.CoherentPointDriftMatcher2D_output(self.obj)
