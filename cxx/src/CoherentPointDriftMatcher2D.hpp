@@ -18,8 +18,8 @@ public:
   void match();
 
 private:
-  typedef std::pair<double, double> DoublePair;
-  typedef std::vector<DoublePair> PointVector;
+  using DoublePair = std::pair<double, double>;
+  using PointVector = std::vector<DoublePair>;
   PointVector pointSet1_;
   PointVector pointSet2_;
 };
