@@ -38,12 +38,14 @@ CoherentPointDriftMatcher2D::match(double* scale, double* rotation, double* tran
 void
 CoherentPointDriftMatcher2D::output()
 {
-  std::cout << "CoherentPointDriftMatcher2D:"
-            << "  pointSet1_:" << std::endl;
+  std::cout << "CoherentPointDriftMatcher2D:" << std::endl;
+
+  std::cout << "  pointSet1_:" << std::endl;
   for (auto point : pointSet1_)
   {
     std::cout << "    " << point.first << " " << point.second << std::endl;
   }
+
   std::cout << "  pointSet2_:" << std::endl;
   for (auto point : pointSet2_)
   {
