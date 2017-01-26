@@ -3,6 +3,7 @@
 from scipy import misc
 from scipy import ndimage
 import numpy as np
+from cxx.CxxPointMatcher import CxxCoherentPointDriftMatcher2D
 
 import matplotlib.pyplot as plt
 from EdgeDetector import *
@@ -90,15 +91,33 @@ if __name__ == "__main__":
 
   points2 = np.zeros((2,2))
   points2[0,:] = [0, 1.0]
-  points2[0,:] = [1.0, 1.0]
+  points2[1,:] = [1.0, 1.0]
   '''
 
-  matcher = CoherentPointDriftMatcher2D(points1, points2)
-  start = timer()
-  scale, rotation, translation = matcher.match(0.0)
-  end = timer()
-  print "matcher.match:", end-start
+#  start = timer()
+#  matcher = CoherentPointDriftMatcher2D(points1, points2)
+#  matcher.match(0.0)
+#  end = timer()
+#  print "matcher.match:", end-start
   
+  print "----------------------------------------------"
+  matcher = CxxCoherentPointDriftMatcher2D()
+  matcher.setW(0.0)
+  matcher.setMaxIterations(50)
+  matcher.setMinIterations(20)
+  matcher.setSigmaSquareChangeTolerance(0.00)
+  
+  for p in points1:
+    matcher.addPoint1(p[0], p[1])
+  for p in points2:
+    matcher.addPoint2(p[0], p[1])
+    
+  start = timer()
+  scale, rotation, translation = matcher.match()
+
+  end = timer()
+  print "cxxmatcher.match:", end-start
+
   #print "target", points2
   #print "before transform", points1
   transformed = transform(scale, rotation, translation, points1)

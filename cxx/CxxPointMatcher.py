@@ -23,6 +23,30 @@ class CxxCoherentPointDriftMatcher2D(object):
     cxxFunction.argtypes = [c_void_p, c_double, c_double]
     cxxFunction(self.obj, x, y)
 
+  def setW(self, w):
+    cxxFunction = lib.CoherentPointDriftMatcher2D_setW
+    cxxFunction.restype = None
+    cxxFunction.argtypes = [c_void_p, c_double]
+    cxxFunction(self.obj, w)
+
+  def setMaxIterations(self, maxIterations):
+    cxxFunction = lib.CoherentPointDriftMatcher2D_setMaxIterations
+    cxxFunction.restype = None
+    cxxFunction.argtypes = [c_void_p, c_int]
+    cxxFunction(self.obj, maxIterations)
+
+  def setMinIterations(self, minIterations):
+    cxxFunction = lib.CoherentPointDriftMatcher2D_setMinIterations
+    cxxFunction.restype = None
+    cxxFunction.argtypes = [c_void_p, c_int]
+    cxxFunction(self.obj, minIterations)
+
+  def setSigmaSquareChangeTolerance(self, sigmaSquareChangeTolerance):
+    cxxFunction = lib.CoherentPointDriftMatcher2D_setSigmaSquareChangeTolerance
+    cxxFunction.restype = None
+    cxxFunction.argtypes = [c_void_p, c_double]
+    cxxFunction(self.obj, sigmaSquareChangeTolerance)
+    
   def match(self):
     cxxFunction = lib.CoherentPointDriftMatcher2D_match
     cxxFunction.restype = None
