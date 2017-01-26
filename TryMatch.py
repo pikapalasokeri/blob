@@ -45,19 +45,26 @@ if __name__ == "__main__":
   filePath1 = "images/early_tests_white/4_01.jpg"
   filePath2 = "images/early_tests_white/4_02.jpg"
 
+  start = timer()
   img1 = misc.imread(filePath1)
-  edgeDetector1 = EdgeDetector(img1)
-
   img2 = misc.imread(filePath2)
-  edgeDetector2 = EdgeDetector(img2)
+  end = timer()
+  print "imread:", end-start
 
   sigma = 2
   thresholdFactor = 8.0
   radius = 30
 
+  
+  start = timer()
+
+  edgeDetector1 = EdgeDetector(img1)
+  edgeDetector2 = EdgeDetector(img2)
   edges1 = edgeDetector1.getEdges(sigma, thresholdFactor, radius)
   edges2 = edgeDetector2.getEdges(sigma, thresholdFactor, radius)
 
+  end = timer()
+  print "edgedetector:", end-start
   
   points1 = np.zeros((len(edges1[0]), 2))
   for ix in range(len(edges1[0])):
