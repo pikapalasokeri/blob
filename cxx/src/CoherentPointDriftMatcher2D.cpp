@@ -93,9 +93,11 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
   const int num1Points = pointSet1_.size();
   const int num2Points = pointSet2_.size();
 
-
-  std::cout << num1Points << std::endl
-	    << num2Points << std::endl;
+  if (verbose_)
+  {
+    std::cout << "Num points in set 1: " << num1Points << std::endl
+	      << "Num points in set 2: " << num2Points << std::endl;
+  }
   
   pointMatrix1_ = Eigen::MatrixXd(num1Points, 2);
   for (int i = 0; i < num1Points; ++i)
