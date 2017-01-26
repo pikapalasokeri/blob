@@ -23,6 +23,8 @@ public:
   void setMinIterations(int);
 
   void setSigmaSquareChangeTolerance(double);
+
+  void setVerbose(bool);
   
   void match(double* scale, double* rotation, double* translation);
 
@@ -59,6 +61,7 @@ private:
   int maxIterations_;
   int minIterations_;
   double sigmaSquareChangeTolerance_;
+  bool verbose_;
 };
 
 extern "C" {
@@ -70,6 +73,7 @@ extern "C" {
   void CoherentPointDriftMatcher2D_setMaxIterations(CoherentPointDriftMatcher2D*, int);
   void CoherentPointDriftMatcher2D_setMinIterations(CoherentPointDriftMatcher2D*, int);
   void CoherentPointDriftMatcher2D_setSigmaSquareChangeTolerance(CoherentPointDriftMatcher2D*, double);
+  void CoherentPointDriftMatcher2D_setVerbose(CoherentPointDriftMatcher2D*, bool);
   void CoherentPointDriftMatcher2D_match(CoherentPointDriftMatcher2D*, double* scale, double* rotation, double* translation);
   void CoherentPointDriftMatcher2D_output(CoherentPointDriftMatcher2D*);
 }

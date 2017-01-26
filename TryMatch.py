@@ -104,14 +104,14 @@ if __name__ == "__main__":
   matcher = CxxCoherentPointDriftMatcher2D()
   matcher.setW(0.0)
   matcher.setMaxIterations(50)
-  matcher.setMinIterations(20)
-  matcher.setSigmaSquareChangeTolerance(0.00)
+  matcher.setMinIterations(10)
+  matcher.setSigmaSquareChangeTolerance(0.01)
   
   for p in points1:
     matcher.addPoint1(p[0], p[1])
   for p in points2:
     matcher.addPoint2(p[0], p[1])
-    
+#  matcher.setVerbose(True)
   start = timer()
   scale, rotation, translation = matcher.match()
 

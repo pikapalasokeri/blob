@@ -4,20 +4,19 @@
 #include <Eigen/SVD>
 #include <iostream>
 #include <cmath>
+#include <time.h>
 
 CoherentPointDriftMatcher2D::CoherentPointDriftMatcher2D()
   : w_(0.0),
     maxIterations_(100),
     minIterations_(50),
-    sigmaSquareChangeTolerance_(0.001)
+    sigmaSquareChangeTolerance_(0.001),
+    verbose_(false)
 {
-  std::cout << __TIME__  << std::endl;
-  std::cout << "Constructing." << std::endl;
 }
 
 CoherentPointDriftMatcher2D::~CoherentPointDriftMatcher2D()
 {
-  std::cout << "Destroying." << std::endl;
 }
 
 void
@@ -56,17 +55,15 @@ CoherentPointDriftMatcher2D::setSigmaSquareChangeTolerance(double sigmaSquareCha
   sigmaSquareChangeTolerance_ = sigmaSquareChangeTolerance;
 }
 
+void
+CoherentPointDriftMatcher2D::setVerbose(bool verbose)
+{
+  verbose_ = verbose;
+}
 
 void
 CoherentPointDriftMatcher2D::match(double* scaleOut, double* rotationOut, double* translationOut)
 {
-  
-  std::cout << "match():" << std::endl;
-  std::cout << "  scaleOut: " << scaleOut[0] << std::endl
-            << "  rotationOut: " << rotationOut[0] << " " << rotationOut[1] << std::endl
-            << "               " << rotationOut[2] << " " << rotationOut[3] << std::endl
-            << "  translationOut: " << translationOut[0] << " " << translationOut[1] << std::endl;
-  
   double scale;
   Eigen::Matrix2d rotation;
   TranslationVector translation;
@@ -130,30 +127,32 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
 
   Eigen::MatrixXd numerators(num1Points, num2Points);
   Eigen::MatrixXd denominators(num1Points, num2Points);
-
+  
   double oldSigmaSquare = 1.0e+10;
   int ix = 0;
-  
   while (true)
   {
     const double sigmaSquareChange = fabs(oldSigmaSquare - sigmaSquare);
     oldSigmaSquare = sigmaSquare;
 
-    std::cout << "Iteration: " << ix << std::endl
-              << "  sigmaSquare: " << sigmaSquare << std::endl
-	      << "  Change in sigmaSquare: " << sigmaSquareChange << std::endl
-	      << "  scale: " << scale << std::endl
-              << "  rotation: " << std::endl << rotation << std::endl
-              << "  translation: " << translation << std::endl;
+    if (verbose_)
+    {
+      std::cout << "Iteration: " << ix << std::endl
+		<< "  sigmaSquare: " << sigmaSquare << std::endl
+		<< "  Change in sigmaSquare: " << sigmaSquareChange << std::endl
+		<< "  scale: " << scale << std::endl
+		<< "  rotation: " << std::endl << rotation << std::endl
+		<< "  translation: " << translation << std::endl;
+    }
     
     if (ix >= maxIterations_ || 
-        sigmaSquare <= 0.0 || 
+	sigmaSquare <= 0.0 || 
         (ix > minIterations_ && sigmaSquareChange < sigmaSquareChangeTolerance_))
-    {
+      {
       break;
     }
     ++ix;
-
+   
     Eigen::MatrixXd transformedPointMatrix1(num1Points, 2);
     transform(pointMatrix1_, scale, rotation, translation, transformedPointMatrix1);
     
@@ -162,18 +161,13 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
 
     for (int j = 0; j < num2Points; ++j)
     {
-      const Eigen::MatrixXd& jPoints = tiledJPoints[j];
-      const Eigen::MatrixXd sjTmkDiffs = jPoints - transformedPointMatrix1;
-      const Eigen::MatrixXd diffSquares = sjTmkDiffs.rowwise().squaredNorm();
-      const Eigen::MatrixXd exponents = constant1 * diffSquares;
-      
-      Eigen::MatrixXd termsInDenominatorSum(num1Points, 1); // move this out of loop since it is reused
+      const Eigen::MatrixXd exponents = constant1 * (tiledJPoints[j] - transformedPointMatrix1).rowwise().squaredNorm();
+
+      double denominatorSum = 0.0;
       for (int i = 0; i < num1Points; ++i)
       {
-        termsInDenominatorSum(i,0) = exp(exponents(i, 0));
+	denominatorSum += std::exp(exponents(i, 0));
       }
-
-      const double denominatorSum = termsInDenominatorSum.sum();
       denominators.block(0, j, num1Points, 1) = (denominatorSum + constant2) * Eigen::MatrixXd::Ones(num1Points, 1);
     }
 
@@ -232,9 +226,9 @@ CoherentPointDriftMatcher2D::solveRigid(const Eigen::MatrixXd& P,
   const Eigen::MatrixXd A = Shat.transpose() * P.transpose() * Mhat;
 
   Eigen::JacobiSVD<Eigen::MatrixXd> svd(A, Eigen::ComputeFullV | Eigen::ComputeFullU);
-  Eigen::MatrixXd U = svd.matrixU();
-  Eigen::MatrixXd Vt = svd.matrixV().transpose(); 
-  Eigen::MatrixXd shapeSigma = svd.singularValues();
+  const Eigen::MatrixXd U = svd.matrixU();
+  const Eigen::MatrixXd Vt = svd.matrixV().transpose(); 
+  const Eigen::MatrixXd shapeSigma = svd.singularValues();
   
   Eigen::Matrix2d C = Eigen::Matrix2d::Identity();
   C(1, 1) = (U * Vt).determinant();
@@ -335,6 +329,11 @@ extern "C" {
   void CoherentPointDriftMatcher2D_setSigmaSquareChangeTolerance(CoherentPointDriftMatcher2D* matcher, double sigmaSquareChangeTolerance)
   {
     matcher->setSigmaSquareChangeTolerance(sigmaSquareChangeTolerance);
+  }
+
+  void CoherentPointDriftMatcher2D_setVerbose(CoherentPointDriftMatcher2D* matcher, bool verbose)
+  {
+    matcher->setVerbose(verbose);
   }
 
   void CoherentPointDriftMatcher2D_match(CoherentPointDriftMatcher2D* matcher, double* scale, double* rotation, double* translation)

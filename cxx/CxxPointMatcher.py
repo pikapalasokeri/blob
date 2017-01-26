@@ -46,6 +46,12 @@ class CxxCoherentPointDriftMatcher2D(object):
     cxxFunction.restype = None
     cxxFunction.argtypes = [c_void_p, c_double]
     cxxFunction(self.obj, sigmaSquareChangeTolerance)
+
+  def setVerbose(self, verbose):
+    cxxFunction = lib.CoherentPointDriftMatcher2D_setVerbose
+    cxxFunction.restype = None
+    cxxFunction.argtypes = [c_void_p, c_bool]
+    cxxFunction(self.obj, verbose)
     
   def match(self):
     cxxFunction = lib.CoherentPointDriftMatcher2D_match
