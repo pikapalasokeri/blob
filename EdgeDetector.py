@@ -20,6 +20,14 @@ class EdgeDetector:
     zeroCrossings = _findZeroCrossings(laplacianOfGaussian, thresholdFactor) # ish 0.25 sec
     return _keepInsideRadius(zeroCrossings, radius) # ish 0.05 secs
 
+  def getEdgesAsPoints(self, scale, thresholdFactor, radius):
+    edges = self.getEdges(scale, thresholdFactor, radius)
+    points = np.zeros((len(edges[0]), 2))
+    for ix in range(len(edges[0])):
+      points[ix, 0] = edges[0][ix]
+      points[ix, 1] = edges[1][ix]
+    return points
+
 def _findZeroCrossings(oneDImage, thresholdFactor):
   threshold = np.mean(np.absolute(oneDImage))*thresholdFactor
   zeroCrossings = []
