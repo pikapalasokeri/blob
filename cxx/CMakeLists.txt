@@ -6,7 +6,7 @@ set(PROJECT_SOURCE_DIR src)
 find_package(Boost 1.55)
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -std=c++11")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -std=c++11 -fopenmp")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 include_directories(${Boost_INCLUDE_DIR}

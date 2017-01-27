@@ -62,6 +62,7 @@ private:
   int minIterations_;
   double sigmaSquareChangeTolerance_;
   bool verbose_;
+  int numThreads_;
 };
 
 extern "C" {

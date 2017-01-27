@@ -5,13 +5,15 @@
 #include <iostream>
 #include <cmath>
 #include <time.h>
+#include <omp.h>
 
 CoherentPointDriftMatcher2D::CoherentPointDriftMatcher2D()
   : w_(0.0),
     maxIterations_(100),
     minIterations_(50),
     sigmaSquareChangeTolerance_(0.001),
-    verbose_(false)
+    verbose_(false),
+    numThreads_(4)
 {
 }
 
@@ -96,7 +98,8 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
   if (verbose_)
   {
     std::cout << "Num points in set 1: " << num1Points << std::endl
-	      << "Num points in set 2: " << num2Points << std::endl;
+	      << "Num points in set 2: " << num2Points << std::endl
+	      << "Num threads: " << numThreads_ << std::endl;
   }
   
   pointMatrix1_ = Eigen::MatrixXd(num1Points, 2);
@@ -150,7 +153,7 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
     if (ix >= maxIterations_ || 
 	sigmaSquare <= 0.0 || 
         (ix > minIterations_ && sigmaSquareChange < sigmaSquareChangeTolerance_))
-      {
+    {
       break;
     }
     ++ix;
@@ -161,6 +164,7 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
     const double constant1 = -1.0/(2.0*sigmaSquare);
     const double constant2 = 2.0 * pi * sigmaSquare * w_ / (1.0 - w_) * double(num1Points)/double(num2Points);
 
+#pragma omp parallel for num_threads(numThreads_)
     for (int j = 0; j < num2Points; ++j)
     {
       const Eigen::MatrixXd exponents = constant1 * (tiledJPoints[j] - transformedPointMatrix1).rowwise().squaredNorm();
@@ -173,6 +177,7 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
       denominators.block(0, j, num1Points, 1) = (denominatorSum + constant2) * Eigen::MatrixXd::Ones(num1Points, 1);
     }
 
+#pragma omp parallel for
     for (int i = 0; i < num1Points; ++i)
     {
       for (int j = 0; j < num2Points; ++j)
