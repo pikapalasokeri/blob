@@ -16,9 +16,9 @@ class EdgeDetector:
     self._oneDImage = ImageUtilities.rgb2grayNaive(self._image)
     
   def getEdges(self, scale, thresholdFactor, radius):
-    laplacianOfGaussian = ndimage.gaussian_laplace(self._oneDImage, scale)
-    zeroCrossings = _findZeroCrossings(laplacianOfGaussian, thresholdFactor)
-    return _keepInsideRadius(zeroCrossings, radius)
+    laplacianOfGaussian = ndimage.gaussian_laplace(self._oneDImage, scale) # ish 0.57 seconds
+    zeroCrossings = _findZeroCrossings(laplacianOfGaussian, thresholdFactor) # ish 0.25 sec
+    return _keepInsideRadius(zeroCrossings, radius) # ish 0.05 secs
 
 def _findZeroCrossings(oneDImage, thresholdFactor):
   threshold = np.mean(np.absolute(oneDImage))*thresholdFactor
