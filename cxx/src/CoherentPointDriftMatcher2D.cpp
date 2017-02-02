@@ -1,5 +1,7 @@
 #include "CoherentPointDriftMatcher2D.hpp"
 
+#include "RigidSolver.hpp"
+
 #include <Eigen/Dense>
 #include <Eigen/SVD>
 #include <iostream>
@@ -190,9 +192,9 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
 
     P = numerators.array() / denominators.array();
 
-    sigmaSquare = solveRigid(P,
-			     scale, rotation, translation,
-			     scaleOut, rotationOut, translationOut);
+    RigidSolver rigidSolver(pointMatrix1_, pointMatrix2_, P, scale, rotation, translation);
+    sigmaSquare = rigidSolver.solve(scaleOut, rotationOut, translationOut);
+
     scale = scaleOut;
     rotation = rotationOut;
     translation = translationOut;
@@ -209,59 +211,6 @@ CoherentPointDriftMatcher2D::transform(const Eigen::MatrixXd& pointMatrix,
   transformedPointMatrix = scale * pointMatrix * rotation.transpose() + translation.replicate(pointMatrix.rows(), 1);
 }
 
-double
-CoherentPointDriftMatcher2D::solveRigid(const Eigen::MatrixXd& P,
-                                        double scale,
-                                        const Eigen::Matrix2d& rotation,
-                                        const TranslationVector& translation,
-                                        double& scaleOut,
-                                        Eigen::Matrix2d& rotationOut,
-                                        TranslationVector& translationOut) const
-{
-  const int num1Points = pointSet1_.size();
-  const int num2Points = pointSet2_.size();
-  
-  const Eigen::MatrixXd& M = pointMatrix1_;
-  const Eigen::MatrixXd& S = pointMatrix2_;
-
-  const double NP = P.sum();
-  const Eigen::Vector2d muS = S.transpose() * P.transpose() * Eigen::MatrixXd::Constant(num1Points, 1, 1.0) / NP; // (2, 1) "mean" vector
-  const Eigen::Vector2d muM = M.transpose() * P * Eigen::MatrixXd::Constant(num2Points, 1, 1.0) / NP; // (2, 1) "mean" vector
-
-  const Eigen::MatrixXd Shat = S - muS.transpose().replicate(num2Points, 1);
-  const Eigen::MatrixXd Mhat = M - muM.transpose().replicate(num1Points, 1);
-  const Eigen::MatrixXd A = Shat.transpose() * P.transpose() * Mhat;
-
-  Eigen::JacobiSVD<Eigen::MatrixXd> svd(A, Eigen::ComputeFullV | Eigen::ComputeFullU);
-  const Eigen::MatrixXd U = svd.matrixU();
-  const Eigen::MatrixXd Vt = svd.matrixV().transpose(); 
-  const Eigen::MatrixXd shapeSigma = svd.singularValues();
-  
-  Eigen::Matrix2d C = Eigen::Matrix2d::Identity();
-  C(1, 1) = (U * Vt).determinant();
-
-  const Eigen::Matrix2d R = U * C * Vt;
-
-  Eigen::MatrixXd x = P * Eigen::MatrixXd::Constant(num2Points, 1, 1.0);
-  Eigen::MatrixXd diag = Eigen::MatrixXd::Zero(x.rows(), x.rows());
-  diag.diagonal() = x;
-  
-  const double a = (A.transpose() * R).trace() / (Mhat.transpose() * diag * Mhat).trace();
-  
-  const Eigen::MatrixXd t = (muS - a * R * muM).transpose();
-
-  x = P.transpose() * Eigen::MatrixXd::Constant(num1Points, 1, 1.0);
-  diag.diagonal() = x;
-
-  const double sigmaSquare = 1.0 / (2.0*NP) * ((Shat.transpose() * diag * Shat).trace() - a * (A.transpose() * R).trace());
-
-  
-  rotationOut = R;
-  scaleOut = a;
-  translationOut = t;
-  
-  return sigmaSquare;
-}
 
 double
 CoherentPointDriftMatcher2D::computeInitialSigmaSquare() const

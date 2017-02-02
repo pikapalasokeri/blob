@@ -1,6 +1,8 @@
 #ifndef CoherentPointDriftMatcher2D_hpp
 #define CoherentPointDriftMatcher2D_hpp
 
+#include "EigenDefs.hpp"
+
 #include <vector>
 #include <utility>
 #include <Eigen/Dense>
@@ -31,7 +33,6 @@ public:
   void output() const;
 
 private:
-  using TranslationVector = Eigen::Matrix<double, 1, 2>;
   void doMatch(double& scaleOut, Eigen::Matrix2d& rotationOut, TranslationVector& translationOut);
 
   double computeInitialSigmaSquare() const;
@@ -41,15 +42,6 @@ private:
                  const Eigen::Matrix2d& rotation,
                  const TranslationVector& translation,
                  Eigen::MatrixXd& transformedPointMatrix) const;
-
-  double
-  solveRigid(const Eigen::MatrixXd& P,
-	     double scale,
-	     const Eigen::Matrix2d& rotation,
-	     const TranslationVector& translation,
-	     double& scaleOut,
-	     Eigen::Matrix2d& rotationOut,
-	     TranslationVector& translationOut) const;
   
   using DoublePair = std::pair<double, double>;
   using PointVector = std::vector<DoublePair>;
