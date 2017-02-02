@@ -174,25 +174,18 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
       double denominatorSum = 0.0;
       for (int i = 0; i < num1Points; ++i)
       {
+        const Eigen::Matrix<double, 1, 2> sjTmiDiff = pointMatrix2_.block(j, 0, 1, 2) - transformedPointMatrix1.block(i, 0, 1, 2);
+        const double dotProduct = sjTmiDiff.dot(sjTmiDiff);
+        numerators(i, j) = std::exp(constant1 * dotProduct);
+	
 	denominatorSum += std::exp(exponents(i, 0));
       }
       denominators.block(0, j, num1Points, 1) = (denominatorSum + constant2) * Eigen::MatrixXd::Ones(num1Points, 1);
     }
 
-#pragma omp parallel for
-    for (int i = 0; i < num1Points; ++i)
-    {
-      for (int j = 0; j < num2Points; ++j)
-      {
-        const Eigen::Matrix<double, 1, 2> sjTmiDiff = pointMatrix2_.block(j, 0, 1, 2) - transformedPointMatrix1.block(i, 0, 1, 2);
-        const double dotProduct = sjTmiDiff.dot(sjTmiDiff);
-        numerators(i, j) = std::exp(constant1 * dotProduct);
-      }
-    }
-
     P = numerators.array() / denominators.array();
 
-    RigidSolver rigidSolver(pointMatrix1_, pointMatrix2_, P, scale, rotation, translation);
+    RigidSolver rigidSolver(pointMatrix1_, pointMatrix2_, P);
     sigmaSquare = rigidSolver.solve(scaleOut, rotationOut, translationOut);
 
     scale = scaleOut;
