@@ -1,16 +1,13 @@
-from scipy import misc
 import matplotlib.pyplot as plt
 import math
 from ImageUtilities import addPointsToImage
 from EdgeDetector import EdgeDetector
-
-class ReferenceImage:
-    def __init__(self, path, comment):
-        self.comment = comment
-        self.image = misc.imread(path)
+from ReferenceImage import ReferenceImage
 
 class ConfigCreator:
-    def __init__(self):
+    def __init__(self, imageSupplier):
+        self._imageSupplier = imageSupplier
+        
         self._referenceImages = []
         self._referenceImagesFigure = plt.figure()
 
@@ -20,12 +17,10 @@ class ConfigCreator:
         self._keepFactor = 1.0
         
     def readImages(self):
-        inputStr = raw_input("Path to image (leave empty when done): ")
-        while inputStr:
-            filePath = inputStr
-            comment = raw_input("Comment: ")
-            self._referenceImages.append(ReferenceImage(filePath, comment))
-            inputStr = raw_input("Path to image (leave empty when done): ")
+        referenceImage = self._imageSupplier.getNext()
+        while referenceImage is not None:
+            self._referenceImages.append(referenceImage)
+            referenceImage = self._imageSupplier.getNext()
 
         print "Read " + str(len(self._referenceImages)) + " images."
 
