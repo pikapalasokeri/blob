@@ -17,11 +17,7 @@ class ConfigCreator:
         self._keepFactor = 1.0
         
     def readImages(self):
-        referenceImage = self._imageSupplier.getNext()
-        while referenceImage is not None:
-            self._referenceImages.append(referenceImage)
-            referenceImage = self._imageSupplier.getNext()
-
+        self._referenceImages.extend(self._imageSupplier.generate())
         print "Read " + str(len(self._referenceImages)) + " images."
 
     def calibrateEdgeDetection(self):

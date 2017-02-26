@@ -1,17 +1,6 @@
 from ReferenceImage import ReferenceImage
 from scipy import misc
 
-
-def _getKeyboardInputNext():
-    inputStr = raw_input("Path to image (leave empty when done): ")
-    if not inputStr:
-        return None
-    
-    filePath = inputStr
-    comment = raw_input("Comment: ")
-    return ReferenceImage(misc.imread(filePath), comment)
-
-
 class FileImageReader:
     def __init__(self, configFile = None):
         self._imagesFromConfigFile = []
@@ -21,19 +10,15 @@ class FileImageReader:
                 for line in config:
                     filePath = line.strip()
                     self._imagesFromConfigFile.append(ReferenceImage(misc.imread(filePath), filePath))
-    
-    def getNext(self):
+
+    def generate(self):
         if len(self._imagesFromConfigFile) == 0:
-            return _getKeyboardInputNext()
+            inputStr = raw_input("Path to image (leave empty when done): ")
+            while inputStr:
+                filePath = inputStr
+                comment = raw_input("Comment: ")
+                inputStr = raw_input("Path to image (leave empty when done): ")
+                yield ReferenceImage(misc.imread(filePath), comment)
         else:
-            return self._getNextInConfigFile()
-
-
-    def _getNextInConfigFile(self):
-        if self._indexInConfigFileImages == len(self._imagesFromConfigFile):
-            return None
-
-        self._indexInConfigFileImages += 1
-        return self._imagesFromConfigFile[self._indexInConfigFileImages-1]
-
-
+            for referenceImage in self._imagesFromConfigFile:
+                yield referenceImage
