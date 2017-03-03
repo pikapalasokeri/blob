@@ -69,7 +69,7 @@ def _getLikenessScore(reference, edgesToClassify):
     matcher.setMaxIterations(500)
     matcher.setMinIterations(10)
     matcher.setSigmaSquareChangeTolerance(0.01)
-#    matcher.setVerbose(True)
+    matcher.setVerbose(False)
 
     for p in edgesToClassify:
         matcher.addPoint1(p[0], p[1])    
