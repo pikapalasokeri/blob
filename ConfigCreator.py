@@ -56,7 +56,7 @@ class ConfigCreator:
         valueStr = raw_input("New value: ")
         try:
             valueAsFloat = float(valueStr)
-        except e:
+        except:
             print "Exception raised while parsing string."
             return False
 
