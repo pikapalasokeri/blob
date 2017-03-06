@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import ImageUtilities
 
 class EdgeDetector:
-  def __init__(self, image, logLevel = None):
+  def __init__(self, image):
     imageShape = image.shape
     if len(imageShape) != 3:
       raise Exception("Image must be RGB.")
@@ -12,7 +12,6 @@ class EdgeDetector:
       raise Exception("Image must be RGB.")
 
     self._image = image
-    self._logLevel = logLevel
     self._oneDImage = ImageUtilities.rgb2grayNaive(self._image)
     
   def getEdges(self, scale, thresholdFactor, radius):
