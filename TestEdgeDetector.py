@@ -52,3 +52,15 @@ class TestEdgeDetector(unittest.TestCase):
         e = EdgeDetector(image)
         edges = e.getEdgesAsPoints(2.2, 6.5, 30)
         self.assertEquals(edges.shape, (140, 2))
+
+        fewEdges = e.getEdgesAsPoints(2.2, 26.0, 30)
+        self.assertEquals(fewEdges.shape, (2, 2))
+
+        noEdges = e.getEdgesAsPoints(2.2, 27.0, 30)
+        self.assertEquals(noEdges.shape, (0, 2))
+
+    def test_EmptyImage(self):
+        emptyImage = np.zeros((0, 0, 3))
+        e = EdgeDetector(emptyImage)
+        noEdges = e.getEdgesAsPoints(2.0, 6.0, 30.0)
+        self.assertEquals(noEdges.shape, (0, 2))

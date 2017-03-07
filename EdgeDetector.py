@@ -28,7 +28,10 @@ class EdgeDetector:
     return points
 
 def _findZeroCrossings(oneDImage, thresholdFactor):
-  threshold = np.mean(np.absolute(oneDImage))*thresholdFactor
+  if oneDImage.shape == (0, 0):
+    threshold = 0.0
+  else:
+    threshold = np.mean(np.absolute(oneDImage))*thresholdFactor
   zeroCrossings = []
 
   sign = np.sign(oneDImage)
@@ -45,6 +48,10 @@ def _findZeroCrossings(oneDImage, thresholdFactor):
   return (np.concatenate((rightCrossings[0], downCrossings[0])), np.concatenate((rightCrossings[1], downCrossings[1])))
 
 def _keepInsideRadius(points, radius):
+  if len(points[0]) == 0:
+    emptyPoints = np.zeros((0, 1))
+    return emptyPoints, emptyPoints
+  
   xMean = np.mean(points[0])
   yMean = np.mean(points[1])
 
