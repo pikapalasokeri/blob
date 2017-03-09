@@ -7,7 +7,7 @@ class TestEdgeDetector(unittest.TestCase):
     def test_SimpleCreate(self):
         randomImage = np.random.rand(2, 2, 3)
         tmp = EdgeDetector(randomImage)
-    
+
     def test_WrongImageDimensions(self):
         wrongDimensions1 = np.random.rand(1, 1)
         wrongDimensions2 = np.random.rand(1, 1, 1, 1)
@@ -26,16 +26,16 @@ class TestEdgeDetector(unittest.TestCase):
     def test_SimpleImage(self):
         simpleImage = np.zeros((12, 12, 3))
         simpleImage[1, 1, 0] = 255
-        
+
         e = EdgeDetector(simpleImage)
         edges = e.getEdges(1.0, 17.0, 10.0)
-        
+
         self.assertEqual(edges[0][0], [0.0])
         self.assertEqual(edges[1][0], [0.0])
-        
+
         self.assertEqual(edges[0][1], [1.0])
         self.assertEqual(edges[1][1], [2.0])
-        
+
         self.assertEqual(edges[0][2], [0.0])
         self.assertEqual(edges[1][2], [0.0])
 
