@@ -4,10 +4,15 @@ from ImageUtilities import addPointsToImage
 from EdgeDetector import EdgeDetector
 from ReferenceImage import ReferenceImage
 
+sigmaNumber = 0
+thresholdFactorNumber = 1
+radiusNumber = 2
+keepFactorNumber = 3
+
 class ConfigCreator:
     def __init__(self, imageSupplier):
         self._imageSupplier = imageSupplier
-        
+
         self._referenceImages = []
         self._referenceImagesFigure = plt.figure()
 
@@ -15,14 +20,14 @@ class ConfigCreator:
         self._thresholdFactor = 8.0
         self._radius = 30.0
         self._keepFactor = 1.0
-        
+
     def readImages(self):
         self._referenceImages.extend(self._imageSupplier.generate())
         print "Read " + str(len(self._referenceImages)) + " images."
 
     def calibrateEdgeDetection(self):
         self._drawReferenceImages()
-        
+
         while True:
             print "Current parameters:"
             self._printIndentedParameters()
@@ -30,15 +35,15 @@ class ConfigCreator:
             if not self._tryUpdateParameter(inputStr):
                 break
             self._drawReferenceImages()
-            
+
         print "Final parameters:"
         self._printIndentedParameters()
 
     def _printIndentedParameters(self):
-        print "  0 sigma:", self._sigma
-        print "  1 thresholdFactor:", self._thresholdFactor
-        print "  2 radius:", self._radius
-        print "  3 keepFactor:", self._keepFactor
+        print "  " + str(sigmaNumber)           + " sigma:", self._sigma
+        print "  " + str(thresholdFactorNumber) + " thresholdFactor:", self._thresholdFactor
+        print "  " + str(radiusNumber)          + " radius:", self._radius
+        print "  " + str(keepFactorNumber)      + " keepFactor:", self._keepFactor
 
     def _tryUpdateParameter(self, inputStr):
         if not inputStr:
@@ -60,18 +65,18 @@ class ConfigCreator:
             print "Exception raised while parsing string."
             return False
 
-        if parameterAsInt == 0:
+        if parameterAsInt == sigmaNumber:
             self._sigma = valueAsFloat
-        if parameterAsInt == 1:
+        if parameterAsInt == thresholdFactorNumber:
             self._thresholdFactor = valueAsFloat
-        if parameterAsInt == 2:
+        if parameterAsInt == radiusNumber:
             self._radius = valueAsFloat
-        if parameterAsInt == 3:
+        if parameterAsInt == keepFactorNumber:
             self._keepFactor = valueAsFloat
 
         return True
 
-    
+
     def _drawReferenceImages(self):
         numPlotsPerSide = int(math.ceil(math.sqrt(len(self._referenceImages))))
         print "numPlotsPerSide:", numPlotsPerSide
@@ -82,8 +87,7 @@ class ConfigCreator:
             points = edgeDetector.getEdgesAsPoints(self._sigma, self._thresholdFactor, self._radius)
             imageToShow = reference.image.copy()
             addPointsToImage(imageToShow, points, 1)
-            
+
             ax.imshow(imageToShow)
-            
+
         plt.show(block=False)
-        
