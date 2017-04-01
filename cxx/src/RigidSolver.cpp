@@ -11,8 +11,8 @@ RigidSolver::RigidSolver(const Eigen::MatrixXd& pointMatrix1,
 
 double
 RigidSolver::solve(double& scaleOut,
-		   Eigen::Matrix2d& rotationOut,
-		   TranslationVector& translationOut)
+                   Eigen::Matrix2d& rotationOut,
+                   TranslationVector& translationOut)
 {
   NP_ = P_.sum();
 
