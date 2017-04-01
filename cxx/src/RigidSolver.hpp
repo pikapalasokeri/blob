@@ -5,17 +5,17 @@ class RigidSolver
 {
 public:
   RigidSolver(const Eigen::MatrixXd& pointMatrix1,
-	      const Eigen::MatrixXd& pointMatrix2,
-	      const Eigen::MatrixXd& P);
-  
+              const Eigen::MatrixXd& pointMatrix2,
+              const Eigen::MatrixXd& P);
+
   double solve(double& scaleOut,
-	       Eigen::Matrix2d& rotationOut,
-	       TranslationVector& translationOut);
+               Eigen::Matrix2d& rotationOut,
+               TranslationVector& translationOut);
 private:
   void computeSMatrices();
   void computeMMatrices();
   void computeDiag();
-  
+
   const Eigen::MatrixXd& pointMatrix1_;
   const Eigen::MatrixXd& pointMatrix2_;
   const Eigen::MatrixXd& P_;

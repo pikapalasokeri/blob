@@ -27,7 +27,7 @@ public:
   void setSigmaSquareChangeTolerance(double);
 
   void setVerbose(bool);
-  
+
   void match(double* scale, double* rotation, double* translation);
 
   void output() const;
@@ -42,7 +42,7 @@ private:
                  const Eigen::Matrix2d& rotation,
                  const TranslationVector& translation,
                  Eigen::MatrixXd& transformedPointMatrix) const;
-  
+
   using DoublePair = std::pair<double, double>;
   using PointVector = std::vector<DoublePair>;
   PointVector pointSet1_;

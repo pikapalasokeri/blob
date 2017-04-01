@@ -1,8 +1,8 @@
 #include "RigidSolver.hpp"
 
 RigidSolver::RigidSolver(const Eigen::MatrixXd& pointMatrix1,
-			 const Eigen::MatrixXd& pointMatrix2,
-			 const Eigen::MatrixXd& P)
+                         const Eigen::MatrixXd& pointMatrix2,
+                         const Eigen::MatrixXd& P)
   : pointMatrix1_(pointMatrix1),
     pointMatrix2_(pointMatrix2),
     P_(P),
@@ -19,12 +19,12 @@ RigidSolver::solve(double& scaleOut,
   computeSMatrices();
   computeMMatrices();
   computeDiag();
- 
+
   const Eigen::MatrixXd A = Shat_.transpose() * P_.transpose() * Mhat_;
 
   Eigen::JacobiSVD<Eigen::MatrixXd> svd(A, Eigen::ComputeFullV | Eigen::ComputeFullU);
   const Eigen::MatrixXd U = svd.matrixU();
-  const Eigen::MatrixXd Vt = svd.matrixV().transpose(); 
+  const Eigen::MatrixXd Vt = svd.matrixV().transpose();
   Eigen::Matrix2d C = Eigen::Matrix2d::Identity();
   C(1, 1) = (U * Vt).determinant();
   const Eigen::Matrix2d R = U * C * Vt;
@@ -36,7 +36,7 @@ RigidSolver::solve(double& scaleOut,
   rotationOut = R;
   scaleOut = a;
   translationOut = t;
-  
+
   return sigmaSquare;
 }
 
@@ -63,10 +63,10 @@ RigidSolver::computeDiag()
 {
   const int num1Points = pointMatrix1_.rows();
   const int num2Points = pointMatrix2_.rows();
-  
+
   diag_ = Eigen::MatrixXd::Zero(num1Points, num1Points);
   diag_.diagonal() = P_ * Eigen::MatrixXd::Constant(num2Points, 1, 1.0);
-  
+
   diag2_ = Eigen::MatrixXd::Zero(num2Points, num2Points);
   diag2_.diagonal() = P_.transpose() * Eigen::MatrixXd::Constant(num1Points, 1, 1.0);
 }

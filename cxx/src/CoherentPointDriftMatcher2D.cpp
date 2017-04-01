@@ -72,7 +72,7 @@ CoherentPointDriftMatcher2D::match(double* scaleOut, double* rotationOut, double
   Eigen::Matrix2d rotation;
   TranslationVector translation;
   doMatch(scale, rotation, translation);
-  
+
   scaleOut[0] = scale;
   rotationOut[0] = rotation(0, 0);
   rotationOut[1] = rotation(0, 1);
@@ -100,17 +100,17 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
   if (verbose_)
   {
     std::cout << "Num points in set 1: " << num1Points << std::endl
-	      << "Num points in set 2: " << num2Points << std::endl
-	      << "Num threads: " << numThreads_ << std::endl;
+              << "Num points in set 2: " << num2Points << std::endl
+              << "Num threads: " << numThreads_ << std::endl;
   }
-  
+
   pointMatrix1_ = Eigen::MatrixXd(num1Points, 2);
   for (int i = 0; i < num1Points; ++i)
   {
     pointMatrix1_(i, 0) = pointSet1_[i].first;
     pointMatrix1_(i, 1) = pointSet1_[i].second;
   }
-  
+
   pointMatrix2_ = Eigen::MatrixXd(num2Points, 2);
   for (int i = 0; i < num2Points; ++i)
   {
@@ -119,7 +119,7 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
   }
 
   double sigmaSquare = computeInitialSigmaSquare();
- 
+
   Eigen::MatrixXd P = Eigen::MatrixXd::Constant(num1Points, num2Points, 0.0);
 
   std::vector<Eigen::MatrixXd> tiledJPoints;
@@ -134,7 +134,7 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
 
   Eigen::MatrixXd numerators(num1Points, num2Points);
   Eigen::MatrixXd denominators(num1Points, num2Points);
-  
+
   double oldSigmaSquare = 1.0e+10;
   int ix = 0;
   while (true)
@@ -145,24 +145,24 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
     if (verbose_)
     {
       std::cout << "Iteration: " << ix << std::endl
-		<< "  sigmaSquare: " << sigmaSquare << std::endl
-		<< "  Change in sigmaSquare: " << sigmaSquareChange << std::endl
-		<< "  scale: " << scale << std::endl
-		<< "  rotation: " << std::endl << rotation << std::endl
-		<< "  translation: " << translation << std::endl;
+                << "  sigmaSquare: " << sigmaSquare << std::endl
+                << "  Change in sigmaSquare: " << sigmaSquareChange << std::endl
+                << "  scale: " << scale << std::endl
+                << "  rotation: " << std::endl << rotation << std::endl
+                << "  translation: " << translation << std::endl;
     }
-    
-    if (ix >= maxIterations_ || 
-	sigmaSquare <= 0.0 || 
+
+    if (ix >= maxIterations_ ||
+        sigmaSquare <= 0.0 ||
         (ix > minIterations_ && sigmaSquareChange < sigmaSquareChangeTolerance_))
     {
       break;
     }
     ++ix;
-   
+
     Eigen::MatrixXd transformedPointMatrix1(num1Points, 2);
     transform(pointMatrix1_, scale, rotation, translation, transformedPointMatrix1);
-    
+
     const double constant1 = -1.0/(2.0*sigmaSquare);
     const double constant2 = 2.0 * pi * sigmaSquare * w_ / (1.0 - w_) * double(num1Points)/double(num2Points);
 
@@ -177,8 +177,8 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
         const Eigen::Matrix<double, 1, 2> sjTmiDiff = pointMatrix2_.block(j, 0, 1, 2) - transformedPointMatrix1.block(i, 0, 1, 2);
         const double dotProduct = sjTmiDiff.dot(sjTmiDiff);
         numerators(i, j) = std::exp(constant1 * dotProduct);
-	
-	denominatorSum += std::exp(exponents(i, 0));
+
+        denominatorSum += std::exp(exponents(i, 0));
       }
       denominators.block(0, j, num1Points, 1) = (denominatorSum + constant2) * Eigen::MatrixXd::Ones(num1Points, 1);
     }
@@ -196,10 +196,10 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
 
 void
 CoherentPointDriftMatcher2D::transform(const Eigen::MatrixXd& pointMatrix,
-				       double scale,
-				       const Eigen::Matrix2d& rotation,
-				       const TranslationVector& translation,
-				       Eigen::MatrixXd& transformedPointMatrix) const
+               double scale,
+               const Eigen::Matrix2d& rotation,
+               const TranslationVector& translation,
+               Eigen::MatrixXd& transformedPointMatrix) const
 {
   transformedPointMatrix = scale * pointMatrix * rotation.transpose() + translation.replicate(pointMatrix.rows(), 1);
 }
@@ -235,7 +235,7 @@ CoherentPointDriftMatcher2D::output() const
   for (auto point : pointSet2_)
   {
     std::cout << "    " << point.first << " " << point.second << std::endl;
-  }  
+  }
 }
 
 
@@ -264,12 +264,12 @@ extern "C" {
   {
     matcher->setW(w);
   }
-  
+
   void CoherentPointDriftMatcher2D_setMaxIterations(CoherentPointDriftMatcher2D* matcher, int maxIterations)
   {
     matcher->setMaxIterations(maxIterations);
   }
-  
+
   void CoherentPointDriftMatcher2D_setMinIterations(CoherentPointDriftMatcher2D* matcher, int minIterations)
   {
     matcher->setMinIterations(minIterations);
