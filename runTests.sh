@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python -m unittest -v TestEdgeDetector
+python -m unittest -v TestEdgeDetector TestCxxCoherentPointDriftMatcher2D
