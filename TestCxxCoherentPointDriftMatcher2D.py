@@ -1,46 +1,7 @@
 import unittest
 import numpy as np
 from cxx.CxxPointMatcher import CxxCoherentPointDriftMatcher2D
-
-def getSimplePatterns():
-    #
-    # Pattern 1:
-    #   y
-    #   ^
-    #   | o
-    #   |
-    #   | o   o
-    #   +-----------> x
-
-    # Pattern 2:
-    #   y
-    #   ^
-    #   | o o
-    #   |   o
-    #   |
-    #   +-----------> x
-
-    pattern1 = []
-    pattern1.append((0.0, 0.0))
-    pattern1.append((1.0, 0.0))
-    pattern1.append((0.0, 1.0))
-
-    pattern2 = []
-    pattern2.append((0.5, 1.0))
-    pattern2.append((0.5, 0.5))
-    pattern2.append((0.0, 1.0))
-
-    return pattern1, pattern2
-
-def addPointsToMatcher(points, matcher, pointType):
-    for point in points:
-        if pointType == 1:
-            matcher.addPoint1(point[0], point[1])
-        else:
-            matcher.addPoint2(point[0], point[1])
-
-def transform(scale, rotation, translation, points):
-  return scale*np.dot(points, rotation.transpose()) + translation
+from TestUtilities import *
 
 class TestCxxCoherentPointDriftMatcher2D(unittest.TestCase):
     def test_SetFunctionsSmoke(self):

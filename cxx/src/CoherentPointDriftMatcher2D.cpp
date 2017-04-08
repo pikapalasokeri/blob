@@ -1,6 +1,7 @@
 #include "CoherentPointDriftMatcher2D.hpp"
 
 #include "RigidSolver.hpp"
+#include "Utilities.hpp"
 
 #include <Eigen/Dense>
 #include <Eigen/SVD>
@@ -161,7 +162,7 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
     ++ix;
 
     Eigen::MatrixXd transformedPointMatrix1(num1Points, 2);
-    transform(pointMatrix1_, scale, rotation, translation, transformedPointMatrix1);
+    Utilities::transform(pointMatrix1_, scale, rotation, translation, transformedPointMatrix1);
 
     const double constant1 = -1.0/(2.0*sigmaSquare);
     const double constant2 = 2.0 * pi * sigmaSquare * w_ / (1.0 - w_) * double(num1Points)/double(num2Points);
@@ -193,17 +194,6 @@ CoherentPointDriftMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotation
     translation = translationOut;
   }
 }
-
-void
-CoherentPointDriftMatcher2D::transform(const Eigen::MatrixXd& pointMatrix,
-               double scale,
-               const Eigen::Matrix2d& rotation,
-               const TranslationVector& translation,
-               Eigen::MatrixXd& transformedPointMatrix) const
-{
-  transformedPointMatrix = scale * pointMatrix * rotation.transpose() + translation.replicate(pointMatrix.rows(), 1);
-}
-
 
 double
 CoherentPointDriftMatcher2D::computeInitialSigmaSquare() const

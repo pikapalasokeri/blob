@@ -13,8 +13,11 @@ include_directories(${Boost_INCLUDE_DIR}
                     "${PROJECT_SOURCE_DIR}/Eigen")
 
 add_library(pointmatcher SHARED
+  "${PROJECT_SOURCE_DIR}/Utilities.cpp"
+  "${PROJECT_SOURCE_DIR}/SimulatedAnnealingPointMatcher2D.cpp"
   "${PROJECT_SOURCE_DIR}/CoherentPointDriftMatcher2D.cpp"
   "${PROJECT_SOURCE_DIR}/RigidSolver.cpp"
+  "${PROJECT_SOURCE_DIR}/VariablesHandler.cpp"
 )
 
 set(CMAKE_BUILD_TYPE Release)

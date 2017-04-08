@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from EdgeDetector import *
 from timeit import default_timer as timer
 from CoherentPointDriftMatcher import CoherentPointDriftMatcher2D
+from SimulatedAnnealingMatcher import SimulatedAnnealingMatcher2D
+from cxx.CxxSimulatedAnnealingPointMatcher import CxxSimulatedAnnealingPointMatcher2D
 from CoherentPointDriftMatcher import transform
 
 def addEdgesToImage(image, edges, colorIx):
@@ -43,7 +45,7 @@ def comuteClosestNeighborLikeness(points1, points2):
 
 if __name__ == "__main__":
   filePath1 = "images/early_tests_white/4_01.jpg"
-  filePath2 = "images/early_tests_white/4_02.jpg"
+  filePath2 = "images/early_tests_white/4_03.jpg"
 
   start = timer()
   img1 = misc.imread(filePath1)
@@ -55,7 +57,7 @@ if __name__ == "__main__":
   thresholdFactor = 8.0
   radius = 30
 
-  
+
   start = timer()
 
   edgeDetector1 = EdgeDetector(img1)
@@ -65,7 +67,7 @@ if __name__ == "__main__":
 
   end = timer()
   print "edgedetector:", end-start
-  
+
   points1 = np.zeros((len(edges1[0]), 2))
   for ix in range(len(edges1[0])):
     points1[ix, 0] = edges1[0][ix]
@@ -81,15 +83,15 @@ if __name__ == "__main__":
   print points2.shape
   points2 = points2[::2,:]
   print points2.shape
-  
+
 
   '''
   |
   |
   2   2
-  |\ / 
+  |\ /
   | X
-  |/ \ 
+  |/ \
   1---1------------------
   '''
   '''
@@ -106,42 +108,60 @@ if __name__ == "__main__":
 #  matcher.match(0.0)
 #  end = timer()
 #  print "matcher.match:", end-start
-  
+
   print "----------------------------------------------"
-  matcher = CxxCoherentPointDriftMatcher2D()
-  matcher.setW(0.0)
-  matcher.setMaxIterations(50)
-  matcher.setMinIterations(10)
-  matcher.setSigmaSquareChangeTolerance(0.01)
-  
+#  matcher = CxxCoherentPointDriftMatcher2D()
+#  matcher.setW(0.0)
+#  matcher.setMaxIterations(1)
+#  matcher.setMinIterations(0)
+#  matcher.setSigmaSquareChangeTolerance(0.01)
+#  matcher = SimulatedAnnealingMatcher2D()
+  matcher = CxxSimulatedAnnealingPointMatcher2D()
+
+  center1 = np.mean(points1, axis = 0)
+  center2 = np.mean(points2, axis = 0)
+  points1 = points1 - center1
+  points2 = points2 - center2
+
   for p in points1:
     matcher.addPoint1(p[0], p[1])
   for p in points2:
     matcher.addPoint2(p[0], p[1])
-#  matcher.setVerbose(True)
+
+  #matcher.setStartTemperature(10.0)
+  #matcher.setInitialTranslationSigma(1.0)
+  #matcher.setInitialRotationSigma(90.0)
+  matcher.setNumIterations(1000)
+  matcher.setVerbose(True)
   start = timer()
   scale, rotation, translation = matcher.match()
 
   end = timer()
   print "cxxmatcher.match:", end-start
 
+#  exit(0)
+
   #print "target", points2
   #print "before transform", points1
   transformed = transform(scale, rotation, translation, points1)
   #print "after transform", transformed
+
+  transformed = transformed + center2
+  points1 = points1 + center1
+  points2 = points2 + center2
 
   print "Closest neighbor likeness:", comuteClosestNeighborLikeness(points2, transformed)
 
 
   #addEdgesToImage(img1, edges1, 0)
   #addEdgesToImage(img2, edges2, 0)
-  
+
   #print points1
   addNdArrayPointsToImage(img1, points1, 0)
   addNdArrayPointsToImage(img2, points1, 0)
   addNdArrayPointsToImage(img1, points2, 0)
   addNdArrayPointsToImage(img2, points2, 0)
-  
+
   #addNdArrayPointsToImage(img2, points1, 2)
   #addNdArrayPointsToImage(img1, points2, 2)
   #addNdArrayPointsToImage(img2, points2, 2)
@@ -153,5 +173,5 @@ if __name__ == "__main__":
 
   plt.figure()
   plt.imshow(img2)
- 
+
   plt.show()
