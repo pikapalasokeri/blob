@@ -14,18 +14,22 @@ numCorrect = 0
 allImagesReader = FileImageReader("images/early_tests_white_all.config")
 for image in allImagesReader.generate():
     classified = classifier.classify(image)
-
-    firstPart = image.comment.split("_")[-2]
-    secondPart = classified.comment.split("_")[-2]
-    if firstPart == secondPart:
-        correct = True
-        numCorrect += 1
+    if classified is not None:
+        firstPart = image.comment.split("_")[-2]
+        secondPart = classified.comment.split("_")[-2]
+        if firstPart == secondPart:
+            correct = True
+            numCorrect += 1
+        else:
+            correct = False
+        print "     Classified", image.comment, "as", classified.comment, "   ", correct
     else:
-        correct = False
+        print "     Completely failed to classify", image.comment
     totalTries += 1
+    print ""
 
-    print "Classified", image.comment, "as", classified.comment, "   ", correct
-    
+
+
 
 print "Total tries:", totalTries
 print "Correct classifications:", numCorrect
