@@ -21,3 +21,21 @@ add_library(pointmatcher SHARED
 )
 
 set(CMAKE_BUILD_TYPE Release)
+
+
+
+enable_testing()
+
+add_executable(catchTests
+  "${PROJECT_SOURCE_DIR}/test.cpp"
+  "${PROJECT_SOURCE_DIR}/VariablesHandlerTest.cpp")
+
+target_link_libraries(catchTests
+  pointmatcher)
+
+add_test(NAME catchUnitTests
+  COMMAND catchTests)
+
+add_custom_command(TARGET catchTests
+  POST_BUILD
+  COMMAND ctest)
