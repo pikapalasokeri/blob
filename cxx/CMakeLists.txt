@@ -38,4 +38,4 @@ add_test(NAME catchUnitTests
 
 add_custom_command(TARGET catchTests
   POST_BUILD
-  COMMAND ctest)
+  COMMAND ctest --output-on-failure)
