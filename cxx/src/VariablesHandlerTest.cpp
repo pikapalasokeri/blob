@@ -39,11 +39,11 @@ TEST_CASE("Single proposeNewVariables", "[VariablesHandler]")
   Matrix2d expectedRotation;
   expectedRotation <<  0.911943, 0.410316,
                       -0.410316, 0.911943;
-  CHECK(closeEnough(rotation, expectedRotation));
+  CHECK_THAT(rotation, isCloseEnoughTo(expectedRotation));
 
   TranslationVector expectedTranslation;
   expectedTranslation << -12.015, -4.37855;
-  CHECK(closeEnough(translation, expectedTranslation));
+  CHECK_THAT(translation, isCloseEnoughTo(expectedTranslation));
 }
 
 
