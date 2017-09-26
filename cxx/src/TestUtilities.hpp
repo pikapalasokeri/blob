@@ -61,9 +61,8 @@ private:
 };
 
 template <class MatrixType>
-MatrixComparison<MatrixType> isCloseEnoughTo(const MatrixType& referenceMatrix)
+MatrixComparison<MatrixType> isCloseEnoughTo(const MatrixType& referenceMatrix, double tolerance = 1.0e-5)
 {
-  const double tolerance = 1.0e-5;
   return MatrixComparison<MatrixType>(referenceMatrix, tolerance);
 }
 
