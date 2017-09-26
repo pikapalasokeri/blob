@@ -82,8 +82,8 @@ TEST_CASE("setBestAsCurrent", "[VariablesHandler]")
   handler.setCurrentIsBest(); // best is now proposed
   handler.proposeNewVariables(newProposedScale, newProposedRotation, newProposedTranslation);
   handler.acceptProposed(); // current is now new proposed
-  handler.setBestAsCurrent(); // current is now best
-  handler.setCurrentIsBest(); // best is now new proposed
+  handler.setBestAsCurrent(); // current is now best = proposed
+  handler.setCurrentIsBest(); // best is now proposed
 
   double bestScale = -1.0;
   Matrix2d bestRotation;
