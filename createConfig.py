@@ -2,10 +2,17 @@
 
 from ConfigCreator import ConfigCreator
 from FileImageReader import FileImageReader
+import sys
 
-imageReader = FileImageReader("images/early_tests_white_01.config")
-#imageReader = FileImageReader()
-creator = ConfigCreator(imageReader)
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print "Usage: " + sys.argv[0] + " referencelist"
+        print "  where referenlist is a file containing paths to the reference images."
+        exit(0)
 
-creator.readImages()
-creator.calibrateEdgeDetection()
+    referenceListPath = sys.argv[1]
+    imageReader = FileImageReader(referenceListPath)
+    creator = ConfigCreator(imageReader)
+
+    creator.readImages()
+    creator.calibrateEdgeDetection()
