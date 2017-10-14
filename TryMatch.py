@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 from EdgeDetector import *
 from timeit import default_timer as timer
 from CoherentPointDriftMatcher import CoherentPointDriftMatcher2D
-from SimulatedAnnealingMatcher import SimulatedAnnealingMatcher2D
 from cxx.CxxSimulatedAnnealingPointMatcher import CxxSimulatedAnnealingPointMatcher2D
 from CoherentPointDriftMatcher import transform
 
@@ -115,7 +114,6 @@ if __name__ == "__main__":
 #  matcher.setMaxIterations(1)
 #  matcher.setMinIterations(0)
 #  matcher.setSigmaSquareChangeTolerance(0.01)
-#  matcher = SimulatedAnnealingMatcher2D()
   matcher = CxxSimulatedAnnealingPointMatcher2D()
 
   center1 = np.mean(points1, axis = 0)
