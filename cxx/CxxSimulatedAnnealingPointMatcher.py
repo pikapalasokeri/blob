@@ -1,7 +1,7 @@
 from ctypes import *
 from numpy.ctypeslib import ndpointer
 import numpy
-lib = cdll.LoadLibrary('./cxx/build/libpointmatcher.so')
+lib = cdll.LoadLibrary('./cxx/build/libcxxblob.so')
 
 class CxxSimulatedAnnealingPointMatcher2D(object):
     def __init__(self):

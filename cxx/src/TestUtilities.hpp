@@ -1,7 +1,11 @@
+#ifndef TestUtilities_hpp
+#define TestUtilities_hpp
+
+#include "catch.hpp"
 #include <Eigen/Dense>
 #include <cmath>
 
-bool closeEnough(double v1, double v2, double tol = 1.0e-6)
+inline bool closeEnough(double v1, double v2, double tol = 1.0e-6)
 {
   return std::abs(v1 - v2) < tol;
 }
@@ -24,7 +28,7 @@ bool closeEnough(const MatrixType& m1, const MatrixType& m2, double tolerance = 
   return result;
 }
 
-bool isRotationMatrix(const Eigen::Matrix2d& matrix)
+inline bool isRotationMatrix(const Eigen::Matrix2d& matrix)
 {
   bool result = true;
   result &= matrix(0, 0) == matrix(1, 1);
@@ -48,7 +52,7 @@ public:
     return closeEnough(matrix, referenceMatrix_, tolerance_);
   }
 
-  virtual std::string describe() const
+  virtual std::string describe() const override
   {
     std::ostringstream ss;
     ss << "\ncompare matrix with reference\n" << referenceMatrix_;
@@ -61,8 +65,48 @@ private:
 };
 
 template <class MatrixType>
-MatrixComparison<MatrixType> isCloseEnoughTo(const MatrixType& referenceMatrix, double tolerance = 1.0e-5)
+MatrixComparison<MatrixType>
+isCloseEnoughTo(const MatrixType& referenceMatrix, double tolerance = 1.0e-5)
 {
   return MatrixComparison<MatrixType>(referenceMatrix, tolerance);
 }
 
+class IsInsideComparison : public Catch::MatcherBase<std::pair<double, double> >
+{
+public:
+  IsInsideComparison(std::pair<double, double> circleCenter,
+                     double radius)
+    : circleCenter_(circleCenter),
+      radius_(radius)
+  {}
+
+  virtual bool match(const std::pair<double, double>& point) const override
+  {
+    const double xDiff = point.first - circleCenter_.first;
+    const double yDiff = point.second - circleCenter_.second;
+    return xDiff*xDiff + yDiff*yDiff <= radius_*radius_;
+  }
+
+  virtual std::string describe() const override
+  {
+    std::ostringstream ss;
+    ss << "is inside circle ("
+       << circleCenter_.first << ", "
+       << circleCenter_.second << ", "
+       << radius_ << ")";
+    return ss.str();
+  }
+
+private:
+  const std::pair<double, double> circleCenter_;
+  const double radius_;
+};
+
+inline IsInsideComparison
+isInside(std::pair<double, double> circleCenter,
+         double radius)
+{
+  return IsInsideComparison(circleCenter, radius);
+}
+
+#endif
