@@ -28,4 +28,15 @@ private:
   double yMax_;
 };
 
+extern "C"
+{
+  MostPopulatedCircleFinder* MostPopulatedCircleFinder_new();
+  void MostPopulatedCircleFinder_delete(MostPopulatedCircleFinder*);
+  void MostPopulatedCircleFinder_addPoint(MostPopulatedCircleFinder*, double x, double y);
+  bool MostPopulatedCircleFinder_get(MostPopulatedCircleFinder*,
+                                     double radius,
+                                     double* resultX,
+                                     double* resultY);
+}
+
 #endif

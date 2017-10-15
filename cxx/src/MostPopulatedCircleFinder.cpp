@@ -62,3 +62,38 @@ MostPopulatedCircleFinder::get(double radius) const
 
   return std::make_pair(maxHitsX, maxHitsY);
 }
+
+
+extern "C"
+{
+  MostPopulatedCircleFinder* MostPopulatedCircleFinder_new()
+  {
+    return new MostPopulatedCircleFinder();
+  }
+
+  void MostPopulatedCircleFinder_delete(MostPopulatedCircleFinder* finder)
+  {
+    delete finder;
+  }
+
+  void MostPopulatedCircleFinder_addPoint(MostPopulatedCircleFinder* finder, double x, double y)
+  {
+    finder->addPoint(x, y);
+  }
+
+  bool MostPopulatedCircleFinder_get(MostPopulatedCircleFinder* finder,
+                                     double radius,
+                                     double* resultX,
+                                     double* resultY)
+  {
+    const OptionalPoint result = finder->get(radius);
+    if (result)
+    {
+      *resultX = result->first;
+      *resultY = result->second;
+      return true;
+    }
+    else
+      return false;
+  }
+}
