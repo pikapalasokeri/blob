@@ -88,6 +88,22 @@ TEST_CASE("Three points - large radius", "[MostPopulatedCircleFinder]")
   CHECK_THAT(p3, isInside(*circleCenter, radius));
 }
 
+TEST_CASE("Many points over large area", "[MostPopulatedCircleFinder]")
+{
+  MostPopulatedCircleFinder finder;
+  for (double x = 0.0; x < 100; x += 2.0)
+  {
+    for (double y = 0.0; y < 100; y += 2.0)
+    {
+      finder.addPoint(x, y);
+    }
+  }
+
+  const double radius = 25.0;
+  const OptionalPoint circleCenter = finder.get(radius);
+  REQUIRE(bool(circleCenter));
+}
+
 TEST_CASE("Corner", "[MostPopulatedCircleFinder]")
 {
   MostPopulatedCircleFinder finder;
