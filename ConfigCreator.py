@@ -17,8 +17,8 @@ class ConfigCreator:
         self._referenceImagesFigure = plt.figure()
 
         self._sigma = 2.0
-        self._thresholdFactor = 8.0
-        self._radius = 30.0
+        self._thresholdFactor = 2.0
+        self._radius = 40.0
         self._keepFactor = 1.0
 
     def readImages(self):
@@ -51,7 +51,7 @@ class ConfigCreator:
 
         try:
             parameterAsInt = int(inputStr)
-        except e:
+        except:
             print "Exception raised while parsing string."
             return False
 
