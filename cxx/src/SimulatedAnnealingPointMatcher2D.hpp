@@ -2,6 +2,7 @@
 #define SimulatedAnnealingPointMatcher2D_hpp
 
 #include "VariablesHandler.hpp"
+#include "MeanShortestDistanceFitnessComputer.hpp"
 #include "Random.hpp"
 #include "EigenDefs.hpp"
 
@@ -53,9 +54,6 @@ private:
                  const TranslationVector& translation,
                  PointMatrix& transformedPointMatrix) const;
 
-  double computeFitness(const PointMatrix& pointMatrix1,
-                        const PointMatrix& pointMatrix2) const;
-
   double computeFitness(double scale, const RotationMatrix& rotation, const TranslationVector& translation) const;
 
   using DoublePair = std::pair<double, double>;
@@ -74,6 +72,7 @@ private:
   VariablesHandler variablesHandler_;
   bool verbose_;
   int numThreads_;
+  MeanShortestDistanceFitnessComputer fitnessComputer_;
 
   MersenneTwister<std::uniform_real_distribution<double> > uniformRandomGenerator_;
 };

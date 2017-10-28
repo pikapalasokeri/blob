@@ -19,6 +19,7 @@ add_library(cxxblob SHARED
   "${PROJECT_SOURCE_DIR}/RigidSolver.cpp"
   "${PROJECT_SOURCE_DIR}/VariablesHandler.cpp"
   "${PROJECT_SOURCE_DIR}/MostPopulatedCircleFinder.cpp"
+  "${PROJECT_SOURCE_DIR}/MeanShortestDistanceFitnessComputer.cpp"
 )
 
 set(CMAKE_BUILD_TYPE Release)
@@ -30,7 +31,9 @@ enable_testing()
 add_executable(catchTests
   "${PROJECT_SOURCE_DIR}/test.cpp"
   "${PROJECT_SOURCE_DIR}/VariablesHandlerTest.cpp"
-  "${PROJECT_SOURCE_DIR}/MostPopulatedCircleFinderTest.cpp")
+  "${PROJECT_SOURCE_DIR}/MostPopulatedCircleFinderTest.cpp"
+  "${PROJECT_SOURCE_DIR}/MeanShortestDistanceFitnessComputerTest.cpp"
+)
 
 target_link_libraries(catchTests
   cxxblob)

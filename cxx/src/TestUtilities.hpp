@@ -10,8 +10,8 @@ inline bool closeEnough(double v1, double v2, double tol = 1.0e-6)
   return std::abs(v1 - v2) < tol;
 }
 
-template <class MatrixType>
-bool closeEnough(const MatrixType& m1, const MatrixType& m2, double tolerance = 1.0e-6)
+template <class Type>
+bool closeEnough(const Type& m1, const Type& m2, double tolerance = 1.0e-6)
 {
   if (m1.rows() != m2.rows()
       || m1.cols() != m2.cols())
@@ -38,37 +38,37 @@ inline bool isRotationMatrix(const Eigen::Matrix2d& matrix)
   return result;
 }
 
-template <class MatrixType>
-class MatrixComparison : public Catch::MatcherBase<MatrixType>
+template <class Type>
+class ApproximateComparison : public Catch::MatcherBase<Type>
 {
 public:
-  MatrixComparison(const MatrixType& referenceMatrix, double tolerance)
-    : referenceMatrix_(referenceMatrix),
+  ApproximateComparison(const Type& reference, double tolerance)
+    : reference_(reference),
       tolerance_(tolerance)
   {}
 
-  virtual bool match(const MatrixType& matrix) const override
+  virtual bool match(const Type& actual) const override
   {
-    return closeEnough(matrix, referenceMatrix_, tolerance_);
+    return closeEnough(actual, reference_, tolerance_);
   }
 
   virtual std::string describe() const override
   {
     std::ostringstream ss;
-    ss << "\ncompare matrix with reference\n" << referenceMatrix_;
+    ss << "\ncompare with reference\n" << reference_;
     return ss.str();
   }
 
 private:
-  const MatrixType& referenceMatrix_;
+  const Type& reference_;
   const double tolerance_;
 };
 
-template <class MatrixType>
-MatrixComparison<MatrixType>
-isCloseEnoughTo(const MatrixType& referenceMatrix, double tolerance = 1.0e-5)
+template <class Type>
+ApproximateComparison<Type>
+isCloseEnoughTo(const Type& reference, double tolerance = 1.0e-5)
 {
-  return MatrixComparison<MatrixType>(referenceMatrix, tolerance);
+  return ApproximateComparison<Type>(reference, tolerance);
 }
 
 class IsInsideComparison : public Catch::MatcherBase<std::pair<double, double> >

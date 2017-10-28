@@ -117,7 +117,7 @@ SimulatedAnnealingPointMatcher2D::doMatch(double& scaleOut, RotationMatrix& rota
   int numBadMoves = 0;
   int numNoMoves = 0;
 
-  double oldFitness = computeFitness(pointMatrix1_, pointMatrix2_);
+  double oldFitness = fitnessComputer_.compute(pointMatrix1_, pointMatrix2_);
   double bestFitness = oldFitness;
   for (int i = 0; i < numIterations_; ++i)
   {
@@ -209,59 +209,6 @@ SimulatedAnnealingPointMatcher2D::setUpPointMatrices()
   }
 }
 
-namespace
-{
-  double
-  mean(const std::vector<double> v1)
-  {
-    if (v1.size() == 0)
-    {
-      return 0.0;
-    }
-
-    double sum = 0.0;
-    for (double value : v1)
-    {
-      sum += value;
-    }
-
-    return sum / v1.size();
-  }
-}
-
-double
-SimulatedAnnealingPointMatcher2D::computeFitness(const PointMatrix& pointMatrix1,
-                                                 const PointMatrix& pointMatrix2) const
-{
-  assert(pointMatrix2.cols() == 2);
-  const int numRows1 = pointMatrix1.rows();
-  const int numRows2 = pointMatrix2.rows();
-  std::vector<double> shortestFrom1(numRows1, 1.0e10);
-  std::vector<double> shortestFrom2(numRows2, 1.0e10);
-
-  for (int rowIx1 = 0; rowIx1 < numRows1; ++rowIx1)
-  {
-    const double x1 = pointMatrix1(rowIx1, 0);
-    const double y1 = pointMatrix1(rowIx1, 1);
-    for (int rowIx2 = 0; rowIx2 < numRows2; ++rowIx2)
-    {
-      const double diffX = x1 - pointMatrix2(rowIx2, 0);
-      const double diffY = y1 - pointMatrix2(rowIx2, 1);
-      const double squareDistance = diffX * diffX + diffY * diffY;
-
-      if (squareDistance < shortestFrom1[rowIx1])
-      {
-        shortestFrom1[rowIx1] = squareDistance;
-      }
-      if (squareDistance < shortestFrom2[rowIx2])
-      {
-        shortestFrom2[rowIx2] = squareDistance;
-      }
-    }
-  }
-
-  return mean(shortestFrom1) + mean(shortestFrom2);
-}
 
 double
 SimulatedAnnealingPointMatcher2D::computeFitness(double scale, const RotationMatrix& rotation, const TranslationVector& translation) const
@@ -269,7 +216,7 @@ SimulatedAnnealingPointMatcher2D::computeFitness(double scale, const RotationMat
   PointMatrix transformedPointMatrix1;
   Utilities::transform(pointMatrix1_, scale, rotation, translation, transformedPointMatrix1);
 
-  return computeFitness(transformedPointMatrix1, pointMatrix2_);
+  return fitnessComputer_.compute(transformedPointMatrix1, pointMatrix2_);
 }
 
 void
