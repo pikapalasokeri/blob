@@ -23,11 +23,11 @@ namespace
     return sum / v1.size();
   }
 
-  pair<vector<double>, vector<double>>
+  pair<vector<double>, vector<double> >
   computeShortestDistances(const PointMatrix& pointMatrix1,
                            const PointMatrix& pointMatrix2)
   {
-    pair<vector<double>, vector<double>> shortestDistances;
+    pair<vector<double>, vector<double> > shortestDistances;
 
     const int numRows1 = pointMatrix1.rows();
     const int numRows2 = pointMatrix2.rows();
@@ -70,7 +70,7 @@ double MeanShortestDistanceFitnessComputer::compute(const PointMatrix& points1,
       || points2.rows() == 0)
     return 0.0;
 
-  const pair<vector<double>, vector<double>> shortest =
+  const pair<vector<double>, vector<double> > shortest =
     computeShortestDistances(points1, points2);
   return mean(shortest.first) + mean(shortest.second);
 }
