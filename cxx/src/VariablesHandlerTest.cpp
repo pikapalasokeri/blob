@@ -2,17 +2,11 @@
 #include "VariablesHandler.hpp"
 #include "TestUtilities.hpp"
 
-#include <iostream>
-#include <Eigen/Dense>
-
-using namespace Eigen;
-
-
 TEST_CASE("Default best","[VariablesHandler]")
 {
   VariablesHandler handler(1.0, 1.0);
   double scale = -1.0;
-  Matrix2d rotation;
+  RotationMatrix rotation;
   TranslationVector translation;
 
   rotation << -1.0, -1.0, -1.0, -1.0;
@@ -20,15 +14,15 @@ TEST_CASE("Default best","[VariablesHandler]")
 
   handler.getBest(scale, rotation, translation);
   CHECK(scale == 1.0);
-  CHECK(rotation == Matrix2d::Identity(2, 2));
-  CHECK(translation == MatrixXd::Zero(1, 2));
+  CHECK(rotation == RotationMatrix::Identity(2, 2));
+  CHECK(translation == TranslationVector::Zero(1, 2));
 }
 
 TEST_CASE("Single proposeNewVariables", "[VariablesHandler]")
 {
   VariablesHandler handler(360.0, 10.0);
   double scale = -1.0;
-  Matrix2d rotation;
+  RotationMatrix rotation;
   TranslationVector translation;
 
   handler.proposeNewVariables(scale, rotation, translation);
@@ -36,7 +30,7 @@ TEST_CASE("Single proposeNewVariables", "[VariablesHandler]")
   CHECK(scale == 1.0);
 
   CHECK(isRotationMatrix(rotation));
-  Matrix2d expectedRotation;
+  RotationMatrix expectedRotation;
   expectedRotation <<  0.911943, 0.410316,
                       -0.410316, 0.911943;
   CHECK_THAT(rotation, isCloseEnoughTo(expectedRotation));
@@ -50,7 +44,7 @@ TEST_CASE("acceptProposed, setCurrentIsBest", "[VariablesHandler]")
 {
   VariablesHandler handler(360.0, 10.0);
   double proposedScale = -1.0;
-  Matrix2d proposedRotation;
+  RotationMatrix proposedRotation;
   TranslationVector proposedTranslation;
 
   handler.proposeNewVariables(proposedScale, proposedRotation, proposedTranslation);
@@ -58,7 +52,7 @@ TEST_CASE("acceptProposed, setCurrentIsBest", "[VariablesHandler]")
   handler.setCurrentIsBest();
 
   double bestScale = -1.0;
-  Matrix2d bestRotation;
+  RotationMatrix bestRotation;
   TranslationVector bestTranslation;
   handler.getBest(bestScale, bestRotation, bestTranslation);
 
@@ -71,10 +65,10 @@ TEST_CASE("setBestAsCurrent", "[VariablesHandler]")
 {
   VariablesHandler handler(360.0, 10.0);
   double proposedScale = -1.0;
-  Matrix2d proposedRotation;
+  RotationMatrix proposedRotation;
   TranslationVector proposedTranslation;
   double newProposedScale = -1.0;
-  Matrix2d newProposedRotation;
+  RotationMatrix newProposedRotation;
   TranslationVector newProposedTranslation;
 
   handler.proposeNewVariables(proposedScale, proposedRotation, proposedTranslation);
@@ -86,7 +80,7 @@ TEST_CASE("setBestAsCurrent", "[VariablesHandler]")
   handler.setCurrentIsBest(); // best is now proposed
 
   double bestScale = -1.0;
-  Matrix2d bestRotation;
+  RotationMatrix bestRotation;
   TranslationVector bestTranslation;
   handler.getBest(bestScale, bestRotation, bestTranslation);
 
@@ -101,7 +95,7 @@ TEST_CASE("setRotationSigma, setTranslationSigma", "[VariablesHandler]")
   handler.setRotationSigma(0.0);
   handler.setTranslationSigma(0.0);
   double scale = -1.0;
-  Matrix2d rotation;
+  RotationMatrix rotation;
   TranslationVector translation;
 
   handler.proposeNewVariables(scale, rotation, translation);
@@ -109,7 +103,7 @@ TEST_CASE("setRotationSigma, setTranslationSigma", "[VariablesHandler]")
   CHECK(scale == 1.0);
 
   CHECK(isRotationMatrix(rotation));
-  Matrix2d expectedRotation;
+  RotationMatrix expectedRotation;
   expectedRotation <<  1.0, 0.0,
                        0.0, 1.0;
   CHECK_THAT(rotation, isCloseEnoughTo(expectedRotation));

@@ -93,7 +93,7 @@ void
 SimulatedAnnealingPointMatcher2D::match(double* scaleOut, double* rotationOut, double* translationOut)
 {
   double scale;
-  Eigen::Matrix2d rotation;
+  RotationMatrix rotation;
   TranslationVector translation;
   doMatch(scale, rotation, translation);
 
@@ -107,7 +107,7 @@ SimulatedAnnealingPointMatcher2D::match(double* scaleOut, double* rotationOut, d
 }
 
 void
-SimulatedAnnealingPointMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rotationOut, TranslationVector& translationOut)
+SimulatedAnnealingPointMatcher2D::doMatch(double& scaleOut, RotationMatrix& rotationOut, TranslationVector& translationOut)
 {
   setUpPointMatrices();
   variablesHandler_.setRotationSigma(initialRotationSigma_);
@@ -129,7 +129,7 @@ SimulatedAnnealingPointMatcher2D::doMatch(double& scaleOut, Eigen::Matrix2d& rot
     }
 
     double proposedScale;
-    Eigen::Matrix2d proposedRotation;
+    RotationMatrix proposedRotation;
     TranslationVector proposedTranslation;
     variablesHandler_.proposeNewVariables(proposedScale, proposedRotation, proposedTranslation);
     const double newFitness = computeFitness(proposedScale, proposedRotation, proposedTranslation);
@@ -194,14 +194,14 @@ SimulatedAnnealingPointMatcher2D::setUpPointMatrices()
               << "Num threads: " << numThreads_ << std::endl;
   }
 
-  pointMatrix1_ = Eigen::MatrixXd(num1Points, 2);
+  pointMatrix1_ = PointMatrix(num1Points, 2);
   for (int i = 0; i < num1Points; ++i)
   {
     pointMatrix1_(i, 0) = pointSet1_[i].first;
     pointMatrix1_(i, 1) = pointSet1_[i].second;
   }
 
-  pointMatrix2_ = Eigen::MatrixXd(num2Points, 2);
+  pointMatrix2_ = PointMatrix(num2Points, 2);
   for (int i = 0; i < num2Points; ++i)
   {
     pointMatrix2_(i, 0) = pointSet2_[i].first;
@@ -230,8 +230,8 @@ namespace
 }
 
 double
-SimulatedAnnealingPointMatcher2D::computeFitness(const Eigen::MatrixXd& pointMatrix1,
-                                                 const Eigen::MatrixXd& pointMatrix2) const
+SimulatedAnnealingPointMatcher2D::computeFitness(const PointMatrix& pointMatrix1,
+                                                 const PointMatrix& pointMatrix2) const
 {
   assert(pointMatrix2.cols() == 2);
   const int numRows1 = pointMatrix1.rows();
@@ -241,10 +241,12 @@ SimulatedAnnealingPointMatcher2D::computeFitness(const Eigen::MatrixXd& pointMat
 
   for (int rowIx1 = 0; rowIx1 < numRows1; ++rowIx1)
   {
+    const double x1 = pointMatrix1(rowIx1, 0);
+    const double y1 = pointMatrix1(rowIx1, 1);
     for (int rowIx2 = 0; rowIx2 < numRows2; ++rowIx2)
     {
-      const double diffX = pointMatrix1(rowIx1, 0) - pointMatrix2(rowIx2, 0);
-      const double diffY = pointMatrix1(rowIx1, 1) - pointMatrix2(rowIx2, 1);
+      const double diffX = x1 - pointMatrix2(rowIx2, 0);
+      const double diffY = y1 - pointMatrix2(rowIx2, 1);
       const double squareDistance = diffX * diffX + diffY * diffY;
 
       if (squareDistance < shortestFrom1[rowIx1])
@@ -262,9 +264,9 @@ SimulatedAnnealingPointMatcher2D::computeFitness(const Eigen::MatrixXd& pointMat
 }
 
 double
-SimulatedAnnealingPointMatcher2D::computeFitness(double scale, const Eigen::Matrix2d& rotation, const TranslationVector& translation) const
+SimulatedAnnealingPointMatcher2D::computeFitness(double scale, const RotationMatrix& rotation, const TranslationVector& translation) const
 {
-  Eigen::MatrixXd transformedPointMatrix1;
+  PointMatrix transformedPointMatrix1;
   Utilities::transform(pointMatrix1_, scale, rotation, translation, transformedPointMatrix1);
 
   return computeFitness(transformedPointMatrix1, pointMatrix2_);

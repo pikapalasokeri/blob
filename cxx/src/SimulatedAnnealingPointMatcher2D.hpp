@@ -43,27 +43,27 @@ public:
   void output() const;
 
 private:
-  void doMatch(double& scaleOut, Eigen::Matrix2d& rotationOut, TranslationVector& translationOut);
+  void doMatch(double& scaleOut, RotationMatrix& rotationOut, TranslationVector& translationOut);
 
   void setUpPointMatrices();
 
-  void transform(const Eigen::MatrixXd& pointMatrix,
+  void transform(const PointMatrix& pointMatrix,
                  double scale,
-                 const Eigen::Matrix2d& rotation,
+                 const RotationMatrix& rotation,
                  const TranslationVector& translation,
-                 Eigen::MatrixXd& transformedPointMatrix) const;
+                 PointMatrix& transformedPointMatrix) const;
 
-  double computeFitness(const Eigen::MatrixXd& pointMatrix1,
-                        const Eigen::MatrixXd& pointMatrix2) const;
+  double computeFitness(const PointMatrix& pointMatrix1,
+                        const PointMatrix& pointMatrix2) const;
 
-  double computeFitness(double scale, const Eigen::Matrix2d& rotation, const TranslationVector& translation) const;
+  double computeFitness(double scale, const RotationMatrix& rotation, const TranslationVector& translation) const;
 
   using DoublePair = std::pair<double, double>;
   using PointVector = std::vector<DoublePair>;
   PointVector pointSet1_;
   PointVector pointSet2_;
-  Eigen::MatrixXd pointMatrix1_;
-  Eigen::MatrixXd pointMatrix2_;
+  PointMatrix pointMatrix1_;
+  PointMatrix pointMatrix2_;
   int numIterations_;
   double startTemperature_;
   double initialRotationSigma_;

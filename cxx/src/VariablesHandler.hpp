@@ -13,7 +13,7 @@ public:
                    double translationSigma);
 
   void proposeNewVariables(double& scale,
-                           Eigen::Matrix2d& rotation,
+                           RotationMatrix& rotation,
                            TranslationVector& translation);
 
   void acceptProposed();
@@ -23,7 +23,7 @@ public:
   void setBestAsCurrent();
 
   void getBest(double& scale,
-               Eigen::Matrix2d& rotation,
+               RotationMatrix& rotation,
                TranslationVector& translation) const;
 
   void setRotationSigma(double);
@@ -35,15 +35,15 @@ private:
   double translationSigma_;
 
   double currentScale_;
-  Eigen::Matrix2d currentRotation_;
+  RotationMatrix currentRotation_;
   TranslationVector currentTranslation_;
 
   double proposedScale_;
-  Eigen::Matrix2d proposedRotation_;
+  RotationMatrix proposedRotation_;
   TranslationVector proposedTranslation_;
 
   double bestScale_;
-  Eigen::Matrix2d bestRotation_;
+  RotationMatrix bestRotation_;
   TranslationVector bestTranslation_;
 
   const double pi_;

@@ -18,7 +18,7 @@ VariablesHandler::VariablesHandler(double rotationSigma,
 
 void
 VariablesHandler::proposeNewVariables(double& scale,
-                                      Eigen::Matrix2d& rotation,
+                                      RotationMatrix& rotation,
                                       TranslationVector& translation)
 {
   proposedScale_ = 1.0;
@@ -27,7 +27,7 @@ VariablesHandler::proposeNewVariables(double& scale,
   const double rotationRadians = pi_ / 180.0 * rotationDegrees;
   const double cosRotation = cos(rotationRadians);
   const double sinRotation = sin(rotationRadians);
-  Eigen::Matrix2d thisRotation;
+  RotationMatrix thisRotation;
   thisRotation << cosRotation, -sinRotation,
                   sinRotation,  cosRotation;
   proposedRotation_ = thisRotation * currentRotation_;
@@ -69,7 +69,7 @@ VariablesHandler::setBestAsCurrent()
 
 void
 VariablesHandler::getBest(double& scale,
-                          Eigen::Matrix2d& rotation,
+                          RotationMatrix& rotation,
                           TranslationVector& translation) const
 {
   scale = bestScale_;
