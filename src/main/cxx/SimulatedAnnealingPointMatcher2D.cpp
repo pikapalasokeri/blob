@@ -90,20 +90,20 @@ SimulatedAnnealingPointMatcher2D::setNumThreads(int numThreads)
 }
 
 void
-SimulatedAnnealingPointMatcher2D::match(double* scaleOut, double* rotationOut, double* translationOut)
+SimulatedAnnealingPointMatcher2D::match(double scaleOut[1][1], double rotationOut[2][2], double translationOut[1][2])
 {
   double scale;
   RotationMatrix rotation;
   TranslationVector translation;
   doMatch(scale, rotation, translation);
 
-  scaleOut[0] = scale;
-  rotationOut[0] = rotation(0, 0);
-  rotationOut[1] = rotation(0, 1);
-  rotationOut[2] = rotation(1, 0);
-  rotationOut[3] = rotation(1, 1);
-  translationOut[0] = translation(0, 0);
-  translationOut[1] = translation(0, 1);
+  scaleOut[0][0] = scale;
+  rotationOut[0][0] = rotation(0, 0);
+  rotationOut[0][1] = rotation(0, 1);
+  rotationOut[1][0] = rotation(1, 0);
+  rotationOut[1][1] = rotation(1, 1);
+  translationOut[0][0] = translation(0, 0);
+  translationOut[0][1] = translation(0, 1);
 }
 
 void
@@ -234,82 +234,5 @@ SimulatedAnnealingPointMatcher2D::output() const
   for (auto point : pointSet2_)
   {
     std::cout << "    " << point.first << " " << point.second << std::endl;
-  }
-}
-
-extern "C" {
-  SimulatedAnnealingPointMatcher2D* SimulatedAnnealingPointMatcher2D_new()
-  {
-    return new SimulatedAnnealingPointMatcher2D();
-  }
-
-  void SimulatedAnnealingPointMatcher2D_delete(SimulatedAnnealingPointMatcher2D* matcher)
-  {
-    delete matcher;
-  }
-
-  void SimulatedAnnealingPointMatcher2D_addPoint1(SimulatedAnnealingPointMatcher2D* matcher, double x, double y)
-  {
-    matcher->addPoint1(x,y);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_addPoint2(SimulatedAnnealingPointMatcher2D* matcher, double x, double y)
-  {
-    matcher->addPoint2(x,y);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_setNumIterations(SimulatedAnnealingPointMatcher2D* matcher, int numIterations)
-  {
-    matcher->setNumIterations(numIterations);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_setStartTemperature(SimulatedAnnealingPointMatcher2D* matcher, double temperature)
-  {
-    matcher->setStartTemperature(temperature);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_setInitialRotationSigma(SimulatedAnnealingPointMatcher2D* matcher, double sigma)
-  {
-    matcher->setInitialRotationSigma(sigma);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_setSlowRotationSigma(SimulatedAnnealingPointMatcher2D* matcher, double sigma)
-  {
-    matcher->setSlowRotationSigma(sigma);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_setInitialTranslationSigma(SimulatedAnnealingPointMatcher2D* matcher, double sigma)
-  {
-    matcher->setInitialTranslationSigma(sigma);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_setSlowTranslationSigma(SimulatedAnnealingPointMatcher2D* matcher, double sigma)
-  {
-    matcher->setSlowTranslationSigma(sigma);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_setSlowMovementBreakpoint(SimulatedAnnealingPointMatcher2D* matcher, double breakpoint)
-  {
-    matcher->setSlowMovementBreakpoint(breakpoint);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_setVerbose(SimulatedAnnealingPointMatcher2D* matcher, bool verbose)
-  {
-    matcher->setVerbose(verbose);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_setNumThreads(SimulatedAnnealingPointMatcher2D* matcher, int numThreads)
-  {
-    matcher->setNumThreads(numThreads);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_match(SimulatedAnnealingPointMatcher2D* matcher, double* scale, double* rotation, double* translation)
-  {
-    matcher->match(scale, rotation, translation);
-  }
-
-  void SimulatedAnnealingPointMatcher2D_output(SimulatedAnnealingPointMatcher2D* matcher)
-  {
-    matcher->output();
   }
 }

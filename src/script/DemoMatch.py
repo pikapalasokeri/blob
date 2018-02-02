@@ -3,13 +3,12 @@
 from scipy import misc
 from scipy import ndimage
 import numpy as np
-from cxx.CxxPointMatcher import CxxCoherentPointDriftMatcher2D
+from CoherentPointDriftMatcher2D import CoherentPointDriftMatcher2D
 
 import matplotlib.pyplot as plt
 from EdgeDetector import *
 from timeit import default_timer as timer
-from CoherentPointDriftMatcher import CoherentPointDriftMatcher2D
-from cxx.CxxSimulatedAnnealingPointMatcher import CxxSimulatedAnnealingPointMatcher2D
+from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
 from CoherentPointDriftMatcher import transform
 
 def addEdgesToImage(image, edges, colorIx):
@@ -43,8 +42,8 @@ def comuteClosestNeighborLikeness(points1, points2):
   return np.mean(from1ClosestNeighbor) + np.mean(from2ClosestNeighbor)
 
 if __name__ == "__main__":
-  filePath1 = "images/early_tests_white/4_01.jpg"
-  filePath2 = "images/early_tests_white/4_03.jpg"
+  filePath1 = "../../images/early_tests_white/4_01.jpg"
+  filePath2 = "../../images/early_tests_white/4_03.jpg"
 
   start = timer()
   img1 = misc.imread(filePath1)
@@ -114,7 +113,7 @@ if __name__ == "__main__":
 #  matcher.setMaxIterations(1)
 #  matcher.setMinIterations(0)
 #  matcher.setSigmaSquareChangeTolerance(0.01)
-  matcher = CxxSimulatedAnnealingPointMatcher2D()
+  matcher = SimulatedAnnealingPointMatcher2D()
 
   center1 = np.mean(points1, axis = 0)
   center2 = np.mean(points2, axis = 0)

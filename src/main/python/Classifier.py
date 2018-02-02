@@ -1,6 +1,6 @@
 import numpy as np
 from EdgeDetector import EdgeDetector
-from cxx.CxxSimulatedAnnealingPointMatcher import CxxSimulatedAnnealingPointMatcher2D
+from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
 from CoherentPointDriftMatcher import transform
 
 class Classifier:
@@ -69,7 +69,7 @@ def _getLikenessScore(reference, edgesToClassify):
     centeredReference = reference - referenceCenter
     centeredEdgesToClassify = edgesToClassify - edgesToClassifyCenter
 
-    matcher = CxxSimulatedAnnealingPointMatcher2D()
+    matcher = SimulatedAnnealingPointMatcher2D()
     matcher.setNumIterations(2000)
 
     for p in centeredEdgesToClassify:

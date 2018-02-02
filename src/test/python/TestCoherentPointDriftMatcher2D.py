@@ -1,18 +1,18 @@
 import unittest
 import numpy as np
-from cxx.CxxPointMatcher import CxxCoherentPointDriftMatcher2D
+from CoherentPointDriftMatcher2D import *
 from TestUtilities import *
 
-class TestCxxCoherentPointDriftMatcher2D(unittest.TestCase):
+class TestCoherentPointDriftMatcher2D(unittest.TestCase):
     def test_SetFunctionsSmoke(self):
-        m = CxxCoherentPointDriftMatcher2D()
+        m = CoherentPointDriftMatcher2D()
         m.setW(0.1)
         m.setMaxIterations(20)
         m.setMinIterations(10)
         m.setSigmaSquareChangeTolerance(0.001)
 
     def test_SameMatch(self):
-        m = CxxCoherentPointDriftMatcher2D()
+        m = CoherentPointDriftMatcher2D()
 
         pattern1, _ = getSimplePatterns()
         addPointsToMatcher(pattern1, m, 1)
@@ -30,7 +30,7 @@ class TestCxxCoherentPointDriftMatcher2D(unittest.TestCase):
     # algorithm itself is to blame is not very likely.
     @unittest.expectedFailure
     def test_SimpleMatch(self):
-        m = CxxCoherentPointDriftMatcher2D()
+        m = CoherentPointDriftMatcher2D()
 
         p2, p1 = getSimplePatterns()
         addPointsToMatcher(p1, m, 1)

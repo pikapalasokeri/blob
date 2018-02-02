@@ -67,20 +67,21 @@ CoherentPointDriftMatcher2D::setVerbose(bool verbose)
 }
 
 void
-CoherentPointDriftMatcher2D::match(double* scaleOut, double* rotationOut, double* translationOut)
+CoherentPointDriftMatcher2D::match(double scaleOut[1][1],
+                                   double rotationOut[2][2],
+                                   double translationOut[1][2])
 {
   double scale;
   Eigen::Matrix2d rotation;
   TranslationVector translation;
   doMatch(scale, rotation, translation);
-
-  scaleOut[0] = scale;
-  rotationOut[0] = rotation(0, 0);
-  rotationOut[1] = rotation(0, 1);
-  rotationOut[2] = rotation(1, 0);
-  rotationOut[3] = rotation(1, 1);
-  translationOut[0] = translation(0, 0);
-  translationOut[1] = translation(0, 1);
+  scaleOut[0][0] = scale;
+  rotationOut[0][0] = rotation(0, 0);
+  rotationOut[0][1] = rotation(0, 1);
+  rotationOut[1][0] = rotation(1, 0);
+  rotationOut[1][1] = rotation(1, 1);
+  translationOut[0][0] = translation(0, 0);
+  translationOut[0][1] = translation(0, 1);
 }
 
 void
@@ -225,63 +226,5 @@ CoherentPointDriftMatcher2D::output() const
   for (auto point : pointSet2_)
   {
     std::cout << "    " << point.first << " " << point.second << std::endl;
-  }
-}
-
-
-extern "C" {
-  CoherentPointDriftMatcher2D* CoherentPointDriftMatcher2D_new()
-  {
-    return new CoherentPointDriftMatcher2D();
-  }
-
-  void CoherentPointDriftMatcher2D_delete(CoherentPointDriftMatcher2D* matcher)
-  {
-    delete matcher;
-  }
-
-  void CoherentPointDriftMatcher2D_addPoint1(CoherentPointDriftMatcher2D* matcher, double x, double y)
-  {
-    matcher->addPoint1(x,y);
-  }
-
-  void CoherentPointDriftMatcher2D_addPoint2(CoherentPointDriftMatcher2D* matcher, double x, double y)
-  {
-    matcher->addPoint2(x,y);
-  }
-
-  void CoherentPointDriftMatcher2D_setW(CoherentPointDriftMatcher2D* matcher, double w)
-  {
-    matcher->setW(w);
-  }
-
-  void CoherentPointDriftMatcher2D_setMaxIterations(CoherentPointDriftMatcher2D* matcher, int maxIterations)
-  {
-    matcher->setMaxIterations(maxIterations);
-  }
-
-  void CoherentPointDriftMatcher2D_setMinIterations(CoherentPointDriftMatcher2D* matcher, int minIterations)
-  {
-    matcher->setMinIterations(minIterations);
-  }
-
-  void CoherentPointDriftMatcher2D_setSigmaSquareChangeTolerance(CoherentPointDriftMatcher2D* matcher, double sigmaSquareChangeTolerance)
-  {
-    matcher->setSigmaSquareChangeTolerance(sigmaSquareChangeTolerance);
-  }
-
-  void CoherentPointDriftMatcher2D_setVerbose(CoherentPointDriftMatcher2D* matcher, bool verbose)
-  {
-    matcher->setVerbose(verbose);
-  }
-
-  void CoherentPointDriftMatcher2D_match(CoherentPointDriftMatcher2D* matcher, double* scale, double* rotation, double* translation)
-  {
-    matcher->match(scale, rotation, translation);
-  }
-
-  void CoherentPointDriftMatcher2D_output(CoherentPointDriftMatcher2D* matcher)
-  {
-    matcher->output();
   }
 }

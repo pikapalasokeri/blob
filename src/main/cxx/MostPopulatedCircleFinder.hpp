@@ -14,7 +14,9 @@ public:
       xMax_(-std::numeric_limits<double>::max()),
       yMin_(std::numeric_limits<double>::max()),
       yMax_(-std::numeric_limits<double>::max())
-  {}
+      {}
+
+  MostPopulatedCircleFinder(double*, int, int);
 
   void addPoint(double x, double y);
 
@@ -27,16 +29,5 @@ private:
   double yMin_;
   double yMax_;
 };
-
-extern "C"
-{
-  MostPopulatedCircleFinder* MostPopulatedCircleFinder_new();
-  void MostPopulatedCircleFinder_delete(MostPopulatedCircleFinder*);
-  void MostPopulatedCircleFinder_addPoint(MostPopulatedCircleFinder*, double x, double y);
-  bool MostPopulatedCircleFinder_get(MostPopulatedCircleFinder*,
-                                     double radius,
-                                     double* resultX,
-                                     double* resultY);
-}
 
 #endif

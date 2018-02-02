@@ -39,7 +39,7 @@ public:
 
   void setNumThreads(int);
 
-  void match(double* scale, double* rotation, double* translation);
+  void match(double scale[1][1], double rotation[2][2], double translation[1][2]);
 
   void output() const;
 
@@ -76,23 +76,5 @@ private:
 
   MersenneTwister<std::uniform_real_distribution<double> > uniformRandomGenerator_;
 };
-
-extern "C" {
-  SimulatedAnnealingPointMatcher2D* SimulatedAnnealingPointMatcher2D_new();
-  void SimulatedAnnealingPointMatcher2D_delete(SimulatedAnnealingPointMatcher2D*);
-  void SimulatedAnnealingPointMatcher2D_addPoint1(SimulatedAnnealingPointMatcher2D*, double x, double y);
-  void SimulatedAnnealingPointMatcher2D_addPoint2(SimulatedAnnealingPointMatcher2D*, double x, double y);
-  void SimulatedAnnealingPointMatcher2D_setNumIterations(SimulatedAnnealingPointMatcher2D*, int);
-  void SimulatedAnnealingPointMatcher2D_setStartTemperature(SimulatedAnnealingPointMatcher2D*, double);
-  void SimulatedAnnealingPointMatcher2D_setInitialRotationSigma(SimulatedAnnealingPointMatcher2D*, double);
-  void SimulatedAnnealingPointMatcher2D_setSlowRotationSigma(SimulatedAnnealingPointMatcher2D*, double);
-  void SimulatedAnnealingPointMatcher2D_setInitialTranslationSigma(SimulatedAnnealingPointMatcher2D*, double);
-  void SimulatedAnnealingPointMatcher2D_setSlowTranslationSigma(SimulatedAnnealingPointMatcher2D*, double);
-  void SimulatedAnnealingPointMatcher2D_setSlowMovementBreakpoint(SimulatedAnnealingPointMatcher2D*, double);
-  void SimulatedAnnealingPointMatcher2D_setVerbose(SimulatedAnnealingPointMatcher2D*, bool);
-  void SimulatedAnnealingPointMatcher2D_setNumThreads(SimulatedAnnealingPointMatcher2D*, int);
-  void SimulatedAnnealingPointMatcher2D_match(SimulatedAnnealingPointMatcher2D*, double* scale, double* rotation, double* translation);
-  void SimulatedAnnealingPointMatcher2D_output(SimulatedAnnealingPointMatcher2D*);
-}
 
 #endif

@@ -28,7 +28,7 @@ public:
 
   void setVerbose(bool);
 
-  void match(double* scale, double* rotation, double* translation);
+  void match(double scale[1][1], double rotation[2][2], double translation[1][2]);
 
   void output() const;
 
@@ -56,19 +56,5 @@ private:
   bool verbose_;
   int numThreads_;
 };
-
-extern "C" {
-  CoherentPointDriftMatcher2D* CoherentPointDriftMatcher2D_new();
-  void CoherentPointDriftMatcher2D_delete(CoherentPointDriftMatcher2D*);
-  void CoherentPointDriftMatcher2D_addPoint1(CoherentPointDriftMatcher2D*, double x, double y);
-  void CoherentPointDriftMatcher2D_addPoint2(CoherentPointDriftMatcher2D*, double x, double y);
-  void CoherentPointDriftMatcher2D_setW(CoherentPointDriftMatcher2D*, double);
-  void CoherentPointDriftMatcher2D_setMaxIterations(CoherentPointDriftMatcher2D*, int);
-  void CoherentPointDriftMatcher2D_setMinIterations(CoherentPointDriftMatcher2D*, int);
-  void CoherentPointDriftMatcher2D_setSigmaSquareChangeTolerance(CoherentPointDriftMatcher2D*, double);
-  void CoherentPointDriftMatcher2D_setVerbose(CoherentPointDriftMatcher2D*, bool);
-  void CoherentPointDriftMatcher2D_match(CoherentPointDriftMatcher2D*, double* scale, double* rotation, double* translation);
-  void CoherentPointDriftMatcher2D_output(CoherentPointDriftMatcher2D*);
-}
 
 #endif

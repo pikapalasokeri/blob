@@ -18,18 +18,25 @@ namespace Catch
   };
 }
 
+void addPoint(std::vector<double>& points, double x, double y)
+{
+  points.push_back(x);
+  points.push_back(y);
+}
+
 TEST_CASE("No points", "[MostPopulatedCircleFinder]")
 {
-  MostPopulatedCircleFinder finder;
+  MostPopulatedCircleFinder finder(nullptr, 0, 2);
   const OptionalPoint p = finder.get(0.02);
   CHECK(!p);
 }
 
 TEST_CASE("Bad radius", "[MostPopulatedCircleFinder]")
 {
-  MostPopulatedCircleFinder finder;
-  finder.addPoint(0.0, 0.0);
-  finder.addPoint(1.0, 1.0);
+  std::vector<double> points;
+  addPoint(points, 0.0, 0.0);
+  addPoint(points, 1.0, 1.0);
+  MostPopulatedCircleFinder finder(&points[0], 2, 2);
 
   const OptionalPoint p1 = finder.get(0.0);
   CHECK(!p1);
@@ -40,8 +47,9 @@ TEST_CASE("Bad radius", "[MostPopulatedCircleFinder]")
 
 TEST_CASE("One point", "[MostPopulatedCircleFinder]")
 {
-  MostPopulatedCircleFinder finder;
-  finder.addPoint(1.0, 1.0);
+  std::vector<double> points;
+  addPoint(points, 1.0, 1.0);
+  MostPopulatedCircleFinder finder(&points[0], 1, 2);
 
   const double radius = 0.1;
   const OptionalPoint circleCenter = finder.get(radius);
@@ -52,13 +60,15 @@ TEST_CASE("One point", "[MostPopulatedCircleFinder]")
 
 TEST_CASE("Three points - small radius", "[MostPopulatedCircleFinder]")
 {
-  MostPopulatedCircleFinder finder;
+  std::vector<double> points;
   const Point p1(0.0, 0.0);
   const Point p2(3.0, 0.0);
   const Point p3(4.0, 0.0);
-  finder.addPoint(p1.first, p1.second);
-  finder.addPoint(p2.first, p2.second);
-  finder.addPoint(p3.first, p3.second);
+  addPoint(points, p1.first, p1.second);
+  addPoint(points, p2.first, p2.second);
+  addPoint(points, p3.first, p3.second);
+
+  MostPopulatedCircleFinder finder(&points[0], 3, 2);
 
   const double radius = 1.0;
   const OptionalPoint circleCenter = finder.get(radius);
@@ -71,13 +81,14 @@ TEST_CASE("Three points - small radius", "[MostPopulatedCircleFinder]")
 
 TEST_CASE("Three points - large radius", "[MostPopulatedCircleFinder]")
 {
-  MostPopulatedCircleFinder finder;
+  std::vector<double> points;
   const Point p1(0.0, 0.0);
   const Point p2(2.0, 0.0);
   const Point p3(3.0, 0.0);
-  finder.addPoint(p1.first, p1.second);
-  finder.addPoint(p2.first, p2.second);
-  finder.addPoint(p3.first, p3.second);
+  addPoint(points, p1.first, p1.second);
+  addPoint(points, p2.first, p2.second);
+  addPoint(points, p3.first, p3.second);
+  MostPopulatedCircleFinder finder(&points[0], 3, 2);
 
   const double radius = 2.0;
   const OptionalPoint circleCenter = finder.get(radius);
@@ -90,14 +101,15 @@ TEST_CASE("Three points - large radius", "[MostPopulatedCircleFinder]")
 
 TEST_CASE("Many points over large area", "[MostPopulatedCircleFinder]")
 {
-  MostPopulatedCircleFinder finder;
+  std::vector<double> points;
   for (double x = 0.0; x < 100; x += 2.0)
   {
     for (double y = 0.0; y < 100; y += 2.0)
     {
-      finder.addPoint(x, y);
+      addPoint(points, x, y);
     }
   }
+  MostPopulatedCircleFinder finder(&points[0], points.size()/2, 2);
 
   const double radius = 25.0;
   const OptionalPoint circleCenter = finder.get(radius);
@@ -106,13 +118,14 @@ TEST_CASE("Many points over large area", "[MostPopulatedCircleFinder]")
 
 TEST_CASE("Corner", "[MostPopulatedCircleFinder]")
 {
-  MostPopulatedCircleFinder finder;
+  std::vector<double> points;
   const Point p1(0.0, 0.0);
   const Point p2(1.0, 0.0);
   const Point p3(0.0, 1.0);
-  finder.addPoint(p1.first, p1.second);
-  finder.addPoint(p2.first, p2.second);
-  finder.addPoint(p3.first, p3.second);
+  addPoint(points, p1.first, p1.second);
+  addPoint(points, p2.first, p2.second);
+  addPoint(points, p3.first, p3.second);
+  MostPopulatedCircleFinder finder(&points[0], 3, 2);
 
   const double radius = 1.0;
   const OptionalPoint circleCenter = finder.get(radius);
@@ -127,13 +140,14 @@ TEST_CASE("Corner", "[MostPopulatedCircleFinder]")
 
 TEST_CASE("Non-integer coordinates", "[MostPopulatedCircleFinder]")
 {
-  MostPopulatedCircleFinder finder;
+  std::vector<double> points;
   const Point p1(0.5, 0.5);
   const Point p2(1.0, 0.0);
   const Point p3(1.0, 1.0);
-  finder.addPoint(p1.first, p1.second);
-  finder.addPoint(p2.first, p2.second);
-  finder.addPoint(p3.first, p3.second);
+  addPoint(points, p1.first, p1.second);
+  addPoint(points, p2.first, p2.second);
+  addPoint(points, p3.first, p3.second);
+  MostPopulatedCircleFinder finder(&points[0], 3, 2);
 
   const double radius = 1.0;
   const OptionalPoint circleCenter = finder.get(radius);

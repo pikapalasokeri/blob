@@ -1,5 +1,19 @@
 #include "MostPopulatedCircleFinder.hpp"
 
+MostPopulatedCircleFinder::MostPopulatedCircleFinder(double* points, int dim1, int dim2)
+  : xMin_(std::numeric_limits<double>::max()),
+    xMax_(-std::numeric_limits<double>::max()),
+    yMin_(std::numeric_limits<double>::max()),
+    yMax_(-std::numeric_limits<double>::max())
+{
+  assert(dim2 == 2);
+  assert(0 == dim1 % 2);
+  for (int i = 0; i < dim1; ++i)
+  {
+    addPoint(points[i*2], points[i*2+1]);
+  }
+}
+
 void
 MostPopulatedCircleFinder::addPoint(double x, double y)
 {
@@ -63,37 +77,3 @@ MostPopulatedCircleFinder::get(double radius) const
   return std::make_pair(maxHitsX, maxHitsY);
 }
 
-
-extern "C"
-{
-  MostPopulatedCircleFinder* MostPopulatedCircleFinder_new()
-  {
-    return new MostPopulatedCircleFinder();
-  }
-
-  void MostPopulatedCircleFinder_delete(MostPopulatedCircleFinder* finder)
-  {
-    delete finder;
-  }
-
-  void MostPopulatedCircleFinder_addPoint(MostPopulatedCircleFinder* finder, double x, double y)
-  {
-    finder->addPoint(x, y);
-  }
-
-  bool MostPopulatedCircleFinder_get(MostPopulatedCircleFinder* finder,
-                                     double radius,
-                                     double* resultX,
-                                     double* resultY)
-  {
-    const OptionalPoint result = finder->get(radius);
-    if (result)
-    {
-      *resultX = result->first;
-      *resultY = result->second;
-      return true;
-    }
-    else
-      return false;
-  }
-}

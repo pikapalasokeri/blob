@@ -1,12 +1,11 @@
 import unittest
 import numpy as np
-from cxx.CxxSimulatedAnnealingPointMatcher import CxxSimulatedAnnealingPointMatcher2D
+from SimulatedAnnealingPointMatcher2D import *
 from TestUtilities import *
 
-
-class TestCxxSimulatedAnnealingPointMatcher(unittest.TestCase):
+class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
     def test_SetFunctionsSmoke(self):
-        m = CxxSimulatedAnnealingPointMatcher2D()
+        m = SimulatedAnnealingPointMatcher2D()
         m.setNumIterations(10)
         m.setStartTemperature(1.0)
         m.setInitialRotationSigma(2.0)
@@ -18,7 +17,7 @@ class TestCxxSimulatedAnnealingPointMatcher(unittest.TestCase):
         m.setNumThreads(2)
 
     def test_SimpleMatch(self):
-        m = CxxSimulatedAnnealingPointMatcher2D()
+        m = SimulatedAnnealingPointMatcher2D()
         points, dummy = getSimplePatterns()
 
         pointsAsNpArray = np.array(points)

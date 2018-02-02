@@ -1,0 +1,15 @@
+cmake_minimum_required (VERSION 3.5)
+project (blob_src_script)
+
+set(PROJECT_SOURCE_DIR .)
+
+install(FILES createConfig.py
+              DemoClassifier.py
+              DemoEdgeDetector.py
+              DemoMatch.py
+              main.py
+              wrapper.sh
+  DESTINATION ${INSTALL_DIR}
+  PERMISSIONS OWNER_READ OWNER_EXECUTE
+              GROUP_READ GROUP_EXECUTE
+              WORLD_READ WORLD_EXECUTE)

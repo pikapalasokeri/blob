@@ -1,7 +1,16 @@
 import unittest
 from scipy import misc
 import numpy as np
+import sys
+import os
 from EdgeDetector import *
+
+def readImage(relativePath):
+    # Ugly hack since python unittests depend on files.
+    # Copy test files somewhere before running test instead.
+    dirName = os.path.dirname(__file__)
+    path = os.path.join(dirName, relativePath)
+    return misc.imread(path)
 
 class TestEdgeDetector(unittest.TestCase):
     def test_SimpleCreate(self):
@@ -48,7 +57,7 @@ class TestEdgeDetector(unittest.TestCase):
             self.assertEqual(points[ix, 1], edges[1][ix])
 
     def test_RealImage(self):
-        image = misc.imread("images_unittest/1.jpg")
+        image = readImage("images_unittest/1.jpg")
         e = EdgeDetector(image)
         edges = e.getEdgesAsPoints(2.2, 6.5, 30)
         self.assertEquals(edges.shape, (140, 2))
