@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from EdgeDetector import *
 from timeit import default_timer as timer
 from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
+from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
 from CoherentPointDriftMatcher import transform
 
 def addEdgesToImage(image, edges, colorIx):
@@ -113,17 +114,17 @@ if __name__ == "__main__":
 #  matcher.setMaxIterations(1)
 #  matcher.setMinIterations(0)
 #  matcher.setSigmaSquareChangeTolerance(0.01)
-  matcher = SimulatedAnnealingPointMatcher2D()
-
+  
   center1 = np.mean(points1, axis = 0)
   center2 = np.mean(points2, axis = 0)
   points1 = points1 - center1
   points2 = points2 - center2
 
+  fitnessComputer = MeanShortestDistanceFitnessComputer(points2);
+  matcher = SimulatedAnnealingPointMatcher2D(fitnessComputer)
+
   for p in points1:
     matcher.addPoint1(p[0], p[1])
-  for p in points2:
-    matcher.addPoint2(p[0], p[1])
 
   #matcher.setStartTemperature(10.0)
   #matcher.setInitialTranslationSigma(1.0)
