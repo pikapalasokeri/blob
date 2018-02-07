@@ -1,11 +1,12 @@
 #include "SimulatedAnnealingPointMatcher2D.hpp"
 
+#include "FitnessComputer.hpp"
 #include "Utilities.hpp"
 
 #include <iostream>
 
 SimulatedAnnealingPointMatcher2D::SimulatedAnnealingPointMatcher2D(
-  const MeanShortestDistanceFitnessComputer& fitnessComputer)
+  const FitnessComputer& fitnessComputer)
   :  numIterations_(200),
      startTemperature_(10.0),
      initialRotationSigma_(90.0),

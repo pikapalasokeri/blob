@@ -3,9 +3,11 @@
 %{
   #define SWIG_FILE_WITH_INIT
   #include "SimulatedAnnealingPointMatcher2D.hpp"
+  #include "FitnessComputer.hpp"
 %}
 
 %include "numpy.i"
+%include "FitnessComputer.hpp"
 
 %init
 %{
@@ -19,7 +21,7 @@
 class SimulatedAnnealingPointMatcher2D
 {
 public:
-  SimulatedAnnealingPointMatcher2D(const MeanShortestDistanceFitnessComputer&);
+  SimulatedAnnealingPointMatcher2D(const FitnessComputer&);
 
   ~SimulatedAnnealingPointMatcher2D();
 

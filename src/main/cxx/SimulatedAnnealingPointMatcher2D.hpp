@@ -2,7 +2,6 @@
 #define SimulatedAnnealingPointMatcher2D_hpp
 
 #include "VariablesHandler.hpp"
-#include "MeanShortestDistanceFitnessComputer.hpp"
 #include "Random.hpp"
 #include "EigenDefs.hpp"
 
@@ -10,10 +9,12 @@
 #include <utility>
 #include <Eigen/Dense>
 
+class FitnessComputer;
+
 class SimulatedAnnealingPointMatcher2D
 {
 public:
-  SimulatedAnnealingPointMatcher2D(const MeanShortestDistanceFitnessComputer&);
+  SimulatedAnnealingPointMatcher2D(const FitnessComputer&);
 
   ~SimulatedAnnealingPointMatcher2D();
 
@@ -69,7 +70,7 @@ private:
   VariablesHandler variablesHandler_;
   bool verbose_;
   int numThreads_;
-  const MeanShortestDistanceFitnessComputer& fitnessComputer_;
+  const FitnessComputer& fitnessComputer_;
 
   MersenneTwister<std::uniform_real_distribution<double> > uniformRandomGenerator_;
 };
