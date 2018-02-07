@@ -59,18 +59,45 @@ namespace
 
     return shortestDistances;
   }
+
+  PointMatrix
+  toMatrix(const double* points, int dim1, int dim2)
+  {
+    PointMatrix result(dim1, dim2);
+    for (int i = 0; i < dim1; ++i)
+    {
+      for (int j = 0; j < dim2; ++j)
+      {
+        result(i, j) = points[i * dim2 + j];
+      }
+    }
+
+    return result;
+  }
 }
 
-double MeanShortestDistanceFitnessComputer::compute(const PointMatrix& points1,
-                                                    const PointMatrix& points2) const
+MeanShortestDistanceFitnessComputer::MeanShortestDistanceFitnessComputer(
+  const PointMatrix& referencePoints)
+  : referencePoints_(referencePoints)
+{}
+
+MeanShortestDistanceFitnessComputer::MeanShortestDistanceFitnessComputer(
+  const double* referencePoints,
+  int dim1,
+  int dim2)
+  : referencePoints_(toMatrix(referencePoints, dim1, dim2))
+{}
+
+double
+MeanShortestDistanceFitnessComputer::compute(const PointMatrix& points) const
 {
-  assert(points1.cols() == 2);
-  assert(points2.cols() == 2);
-  if (points1.rows() == 0
-      || points2.rows() == 0)
+  assert(points.cols() == 2);
+  assert(referencePoints_.cols() == 2);
+  if (points.rows() == 0
+      || referencePoints_.rows() == 0)
     return 0.0;
 
   const pair<vector<double>, vector<double> > shortest =
-    computeShortestDistances(points1, points2);
+    computeShortestDistances(points, referencePoints_);
   return mean(shortest.first) + mean(shortest.second);
 }

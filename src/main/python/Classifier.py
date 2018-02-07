@@ -1,6 +1,7 @@
 import numpy as np
 from EdgeDetector import EdgeDetector
 from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
+from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
 from CoherentPointDriftMatcher import transform
 
 class Classifier:
@@ -69,14 +70,12 @@ def _getLikenessScore(reference, edgesToClassify):
     centeredReference = reference - referenceCenter
     centeredEdgesToClassify = edgesToClassify - edgesToClassifyCenter
 
-    matcher = SimulatedAnnealingPointMatcher2D()
+    fitnessComputer = MeanShortestDistanceFitnessComputer(centeredReference)
+    matcher = SimulatedAnnealingPointMatcher2D(fitnessComputer)
     matcher.setNumIterations(2000)
 
     for p in centeredEdgesToClassify:
         matcher.addPoint1(p[0], p[1])
-
-    for p in centeredReference:
-        matcher.addPoint2(p[0], p[1])
 
     scale, rotation, translation = matcher.match()
     if scale < 0.8 or scale > 1.2:

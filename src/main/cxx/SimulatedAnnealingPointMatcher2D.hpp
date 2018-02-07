@@ -13,13 +13,11 @@
 class SimulatedAnnealingPointMatcher2D
 {
 public:
-  SimulatedAnnealingPointMatcher2D();
+  SimulatedAnnealingPointMatcher2D(const MeanShortestDistanceFitnessComputer&);
 
   ~SimulatedAnnealingPointMatcher2D();
 
   void addPoint1(double x, double y);
-
-  void addPoint2(double x, double y);
 
   void setNumIterations(int);
 
@@ -61,7 +59,6 @@ private:
   PointVector pointSet1_;
   PointVector pointSet2_;
   PointMatrix pointMatrix1_;
-  PointMatrix pointMatrix2_;
   int numIterations_;
   double startTemperature_;
   double initialRotationSigma_;
@@ -72,7 +69,7 @@ private:
   VariablesHandler variablesHandler_;
   bool verbose_;
   int numThreads_;
-  MeanShortestDistanceFitnessComputer fitnessComputer_;
+  const MeanShortestDistanceFitnessComputer& fitnessComputer_;
 
   MersenneTwister<std::uniform_real_distribution<double> > uniformRandomGenerator_;
 };

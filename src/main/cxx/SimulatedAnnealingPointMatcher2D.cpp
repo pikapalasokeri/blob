@@ -4,7 +4,8 @@
 
 #include <iostream>
 
-SimulatedAnnealingPointMatcher2D::SimulatedAnnealingPointMatcher2D()
+SimulatedAnnealingPointMatcher2D::SimulatedAnnealingPointMatcher2D(
+  const MeanShortestDistanceFitnessComputer& fitnessComputer)
   :  numIterations_(200),
      startTemperature_(10.0),
      initialRotationSigma_(90.0),
@@ -15,7 +16,8 @@ SimulatedAnnealingPointMatcher2D::SimulatedAnnealingPointMatcher2D()
      variablesHandler_(initialRotationSigma_,
                        initialTranslationSigma_),
      verbose_(false),
-     numThreads_(4)
+     numThreads_(4),
+     fitnessComputer_(fitnessComputer)
 {
 }
 
@@ -27,12 +29,6 @@ void
 SimulatedAnnealingPointMatcher2D::addPoint1(double x, double y)
 {
   pointSet1_.emplace_back(x, y);
-}
-
-void
-SimulatedAnnealingPointMatcher2D::addPoint2(double x, double y)
-{
-  pointSet2_.emplace_back(x, y);
 }
 
 void
@@ -117,7 +113,7 @@ SimulatedAnnealingPointMatcher2D::doMatch(double& scaleOut, RotationMatrix& rota
   int numBadMoves = 0;
   int numNoMoves = 0;
 
-  double oldFitness = fitnessComputer_.compute(pointMatrix1_, pointMatrix2_);
+  double oldFitness = fitnessComputer_.compute(pointMatrix1_);
   double bestFitness = oldFitness;
   for (int i = 0; i < numIterations_; ++i)
   {
@@ -200,13 +196,6 @@ SimulatedAnnealingPointMatcher2D::setUpPointMatrices()
     pointMatrix1_(i, 0) = pointSet1_[i].first;
     pointMatrix1_(i, 1) = pointSet1_[i].second;
   }
-
-  pointMatrix2_ = PointMatrix(num2Points, 2);
-  for (int i = 0; i < num2Points; ++i)
-  {
-    pointMatrix2_(i, 0) = pointSet2_[i].first;
-    pointMatrix2_(i, 1) = pointSet2_[i].second;
-  }
 }
 
 
@@ -216,7 +205,7 @@ SimulatedAnnealingPointMatcher2D::computeFitness(double scale, const RotationMat
   PointMatrix transformedPointMatrix1;
   Utilities::transform(pointMatrix1_, scale, rotation, translation, transformedPointMatrix1);
 
-  return fitnessComputer_.compute(transformedPointMatrix1, pointMatrix2_);
+  return fitnessComputer_.compute(transformedPointMatrix1);
 }
 
 void

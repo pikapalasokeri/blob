@@ -5,7 +5,6 @@ set(PROJECT_SOURCE_DIR .)
 
 install(FILES Classifier.py
               CoherentPointDriftMatcher.py
-              Classifier.py
               ConfigCreator.py
               EdgeDetectionConfig.py
               EdgeDetector.py

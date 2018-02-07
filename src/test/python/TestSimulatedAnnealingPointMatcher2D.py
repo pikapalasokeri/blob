@@ -1,11 +1,13 @@
 import unittest
 import numpy as np
 from SimulatedAnnealingPointMatcher2D import *
+from MeanShortestDistanceFitnessComputer import *
 from TestUtilities import *
 
 class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
     def test_SetFunctionsSmoke(self):
-        m = SimulatedAnnealingPointMatcher2D()
+        c = MeanShortestDistanceFitnessComputer(np.zeros((0, 2)))
+        m = SimulatedAnnealingPointMatcher2D(c)
         m.setNumIterations(10)
         m.setStartTemperature(1.0)
         m.setInitialRotationSigma(2.0)
@@ -17,7 +19,6 @@ class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
         m.setNumThreads(2)
 
     def test_SimpleMatch(self):
-        m = SimulatedAnnealingPointMatcher2D()
         points, dummy = getSimplePatterns()
 
         pointsAsNpArray = np.array(points)
@@ -25,8 +26,10 @@ class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
         translation = np.array([[0.11, -0.03]])
         points2 = transform(1.0, R, translation, pointsAsNpArray)
 
+        c = MeanShortestDistanceFitnessComputer(points2)
+        m = SimulatedAnnealingPointMatcher2D(c)
+
         addPointsToMatcher(points, m, 1)
-        addPointsToMatcher(points2, m, 2)
         m.setSlowMovementBreakpoint(0.75)
         m.setInitialTranslationSigma(0.2)
         m.setSlowTranslationSigma(0.01)

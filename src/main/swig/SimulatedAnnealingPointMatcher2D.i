@@ -19,13 +19,11 @@
 class SimulatedAnnealingPointMatcher2D
 {
 public:
-  SimulatedAnnealingPointMatcher2D();
+  SimulatedAnnealingPointMatcher2D(const MeanShortestDistanceFitnessComputer&);
 
   ~SimulatedAnnealingPointMatcher2D();
 
   void addPoint1(double x, double y);
-
-  void addPoint2(double x, double y);
 
   void setNumIterations(int);
 
