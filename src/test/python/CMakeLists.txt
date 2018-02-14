@@ -11,3 +11,5 @@ add_custom_target(pythonTests ALL)
 add_custom_command(TARGET pythonTests
   POST_BUILD
   COMMAND ctest --output-on-failure)
+
+add_dependencies(pythonTests swig)

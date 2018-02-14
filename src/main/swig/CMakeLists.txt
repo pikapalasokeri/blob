@@ -38,12 +38,18 @@ set_property(SOURCE "${PROJECT_SOURCE_DIR}/AbsoluteNeighborFitnessComputer.i" PR
 swig_add_module(AbsoluteNeighborFitnessComputer python "${PROJECT_SOURCE_DIR}/AbsoluteNeighborFitnessComputer.i")
 swig_link_libraries(AbsoluteNeighborFitnessComputer blob)
 
-install(TARGETS
+set(SWIG_TARGETS
   ${SWIG_MODULE_MostPopulatedCircleFinder_REAL_NAME}
   ${SWIG_MODULE_CoherentPointDriftMatcher2D_REAL_NAME}
   ${SWIG_MODULE_SimulatedAnnealingPointMatcher2D_REAL_NAME}
   ${SWIG_MODULE_MeanShortestDistanceFitnessComputer_REAL_NAME}
-  ${SWIG_MODULE_AbsoluteNeighborFitnessComputer_REAL_NAME}
+  ${SWIG_MODULE_AbsoluteNeighborFitnessComputer_REAL_NAME})
+
+add_custom_target(swig)
+add_dependencies(swig ${SWIG_TARGETS})
+
+install(TARGETS
+  ${SWIG_TARGETS}
   LIBRARY DESTINATION ${INSTALL_DIR}/lib)
 
 set(SWIG_OUTDIR "${CMAKE_BINARY_DIR}/src/main/swig")
