@@ -6,4 +6,5 @@ python -m unittest -v \
        TestMostPopulatedCircleFinder\
        TestCoherentPointDriftMatcher2D\
        TestSimulatedAnnealingPointMatcher2D\
-       TestEdgeDetector
+       TestEdgeDetector\
+       TestAbsoluteNeighborFitnessComputer

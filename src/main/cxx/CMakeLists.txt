@@ -23,6 +23,7 @@ add_library(blob SHARED
   "${PROJECT_SOURCE_DIR}/VariablesHandler.cpp"
   "${PROJECT_SOURCE_DIR}/MostPopulatedCircleFinder.cpp"
   "${PROJECT_SOURCE_DIR}/MeanShortestDistanceFitnessComputer.cpp"
+  "${PROJECT_SOURCE_DIR}/AbsoluteNeighborFitnessComputer.cpp"
 )
 
 set(CMAKE_BUILD_TYPE Release)

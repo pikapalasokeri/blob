@@ -24,6 +24,7 @@ add_executable(catchTests
   "${PROJECT_SOURCE_DIR}/VariablesHandlerTest.cpp"
   "${PROJECT_SOURCE_DIR}/MostPopulatedCircleFinderTest.cpp"
   "${PROJECT_SOURCE_DIR}/MeanShortestDistanceFitnessComputerTest.cpp"
+  "${PROJECT_SOURCE_DIR}/AbsoluteNeighborFitnessComputerTest.cpp"
 )
 
 target_link_libraries(catchTests

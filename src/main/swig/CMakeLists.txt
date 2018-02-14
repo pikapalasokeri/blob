@@ -34,11 +34,16 @@ set_property(SOURCE "${PROJECT_SOURCE_DIR}/MeanShortestDistanceFitnessComputer.i
 swig_add_module(MeanShortestDistanceFitnessComputer python "${PROJECT_SOURCE_DIR}/MeanShortestDistanceFitnessComputer.i")
 swig_link_libraries(MeanShortestDistanceFitnessComputer blob)
 
+set_property(SOURCE "${PROJECT_SOURCE_DIR}/AbsoluteNeighborFitnessComputer.i" PROPERTY CPLUSPLUS ON)
+swig_add_module(AbsoluteNeighborFitnessComputer python "${PROJECT_SOURCE_DIR}/AbsoluteNeighborFitnessComputer.i")
+swig_link_libraries(AbsoluteNeighborFitnessComputer blob)
+
 install(TARGETS
   ${SWIG_MODULE_MostPopulatedCircleFinder_REAL_NAME}
   ${SWIG_MODULE_CoherentPointDriftMatcher2D_REAL_NAME}
   ${SWIG_MODULE_SimulatedAnnealingPointMatcher2D_REAL_NAME}
   ${SWIG_MODULE_MeanShortestDistanceFitnessComputer_REAL_NAME}
+  ${SWIG_MODULE_AbsoluteNeighborFitnessComputer_REAL_NAME}
   LIBRARY DESTINATION ${INSTALL_DIR}/lib)
 
 set(SWIG_OUTDIR "${CMAKE_BINARY_DIR}/src/main/swig")
@@ -47,4 +52,5 @@ install(FILES
   ${SWIG_OUTDIR}/CoherentPointDriftMatcher2D.py
   ${SWIG_OUTDIR}/SimulatedAnnealingPointMatcher2D.py
   ${SWIG_OUTDIR}/MeanShortestDistanceFitnessComputer.py
+  ${SWIG_OUTDIR}/AbsoluteNeighborFitnessComputer.py
   DESTINATION ${INSTALL_DIR}/python)

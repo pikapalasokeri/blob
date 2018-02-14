@@ -2,14 +2,14 @@
 #include "MeanShortestDistanceFitnessComputer.hpp"
 #include "TestUtilities.hpp"
 
-TEST_CASE("No points - zero fitness", "[MeanShortestDistanceFitnessComputer]")
+TEST_CASE("MSDFC: No points - zero fitness", "[MeanShortestDistanceFitnessComputer]")
 {
   PointMatrix empty;
   const MeanShortestDistanceFitnessComputer c(empty);
   CHECK(c.compute(empty) == 0.0);
 }
 
-TEST_CASE("One point matrix - zero fitness", "[MeanShortestDistanceFitnessComputer]")
+TEST_CASE("MSDFC: One point matrix - zero fitness", "[MeanShortestDistanceFitnessComputer]")
 {
   const PointMatrix points(10, 2);
   const MeanShortestDistanceFitnessComputer c1(points);
@@ -20,7 +20,7 @@ TEST_CASE("One point matrix - zero fitness", "[MeanShortestDistanceFitnessComput
   CHECK(c2.compute(PointMatrix(10, 2)) == 0.0);
 }
 
-TEST_CASE("Rectangle of points", "[MeanShortestDistanceFitnessComputer]")
+TEST_CASE("MSDFC: Rectangle of points", "[MeanShortestDistanceFitnessComputer]")
 {
   PointMatrix points1(2, 2);
   points1 << 0.0, 0.0,
@@ -33,7 +33,7 @@ TEST_CASE("Rectangle of points", "[MeanShortestDistanceFitnessComputer]")
   CHECK(c.compute(points1) == 2.0);
 }
 
-TEST_CASE("Asymmetric square of points", "[MeanShortestDistanceFitnessComputer]")
+TEST_CASE("MSDFC: Asymmetric square of points", "[MeanShortestDistanceFitnessComputer]")
 {
   PointMatrix points1(1, 2);
   points1 << 0.0, 0.0;
@@ -55,7 +55,7 @@ TEST_CASE("Asymmetric square of points", "[MeanShortestDistanceFitnessComputer]"
   CHECK_THAT(c.compute(points1), isCloseEnoughTo(2.33333));
 }
 
-TEST_CASE("Asymmetric square plus one way off", "[MeanShortestDistanceFitnessComputer]")
+TEST_CASE("MSDFC: Asymmetric square plus one way off", "[MeanShortestDistanceFitnessComputer]")
 {
   PointMatrix points1(2, 2);
   points1 << 0.0, 0.0,   // a

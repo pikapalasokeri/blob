@@ -1,5 +1,6 @@
 #include "MeanShortestDistanceFitnessComputer.hpp"
 
+#include "Utilities.hpp"
 #include <utility>
 
 using namespace std;
@@ -59,21 +60,6 @@ namespace
 
     return shortestDistances;
   }
-
-  PointMatrix
-  toMatrix(const double* points, int dim1, int dim2)
-  {
-    PointMatrix result(dim1, dim2);
-    for (int i = 0; i < dim1; ++i)
-    {
-      for (int j = 0; j < dim2; ++j)
-      {
-        result(i, j) = points[i * dim2 + j];
-      }
-    }
-
-    return result;
-  }
 }
 
 MeanShortestDistanceFitnessComputer::MeanShortestDistanceFitnessComputer(
@@ -85,7 +71,7 @@ MeanShortestDistanceFitnessComputer::MeanShortestDistanceFitnessComputer(
   const double* referencePoints,
   int dim1,
   int dim2)
-  : referencePoints_(toMatrix(referencePoints, dim1, dim2))
+  : referencePoints_(Utilities::toPointMatrix(referencePoints, dim1, dim2))
 {}
 
 double

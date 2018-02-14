@@ -4,17 +4,20 @@
 
 namespace Utilities
 {
-void
-transform(const PointMatrix& pointMatrix,
-          double scale,
-          const RotationMatrix& rotation,
-          const TranslationVector& translation,
-          PointMatrix& transformedPointMatrix);
+  void
+  transform(const PointMatrix& pointMatrix,
+            double scale,
+            const RotationMatrix& rotation,
+            const TranslationVector& translation,
+            PointMatrix& transformedPointMatrix);
 
-void
-transform(const Eigen::MatrixXd& pointMatrix,
-          double scale,
-          const Eigen::Matrix2d& rotation,
-          const TranslationVector& translation,
-          Eigen::MatrixXd& transformedPointMatrix);
+  void
+  transform(const Eigen::MatrixXd& pointMatrix,
+            double scale,
+            const Eigen::Matrix2d& rotation,
+            const TranslationVector& translation,
+            Eigen::MatrixXd& transformedPointMatrix);
+
+  PointMatrix
+  toPointMatrix(const double* points, int dim1, int dim2);
 }
