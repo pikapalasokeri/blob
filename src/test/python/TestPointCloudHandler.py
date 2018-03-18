@@ -19,10 +19,10 @@ class TestSavePointCloudToWriteable(unittest.TestCase):
         PointCloudHandler.savePointCloudToWriteable(x, y, writeable)
 
         self.assertEqual(len(writeable.strings), 3)
-        self.assertEqual(len(writeable.strings[0]), 12 + 27)
+        self.assertEqual(len(writeable.strings[0]), 12 + 28)
         self.assertEqual(writeable.strings[0][0:12], "# created on")
-        self.assertEqual(writeable.strings[1], "p 0.0 0.0")
-        self.assertEqual(writeable.strings[2], "p 1.0 2.0")
+        self.assertEqual(writeable.strings[1], "p 0.0 0.0\n")
+        self.assertEqual(writeable.strings[2], "p 1.0 2.0\n")
 
 class TestGetPointsFromIterable(unittest.TestCase):
     def test_SinglePoint(self):

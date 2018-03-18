@@ -6,6 +6,7 @@ set(PROJECT_SOURCE_DIR .)
 install(FILES Classifier.py
               CoherentPointDriftMatcher.py
               ConfigCreator.py
+              DirectoryImageReader.py
               EdgeDetectionConfig.py
               EdgeDetector.py
               FileImageReader.py

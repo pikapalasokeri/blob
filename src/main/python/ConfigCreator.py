@@ -1,13 +1,18 @@
 import matplotlib.pyplot as plt
 import math
+import os
 from ImageUtilities import addPointsToImage
 from EdgeDetector import EdgeDetector
 from ReferenceImage import ReferenceImage
+from DirectoryImageReader import DirectoryImageReader
+import PointCloudHandler
 
-sigmaNumber = 0
-thresholdFactorNumber = 1
-radiusNumber = 2
-keepFactorNumber = 3
+sigmaNumber = 1
+thresholdFactorNumber = 2
+radiusNumber = 3
+keepFactorNumber = 4
+dumpToFileNumber = 9
+exitNumber = 0
 
 class ConfigCreator:
     def __init__(self, imageSupplier):
@@ -44,6 +49,8 @@ class ConfigCreator:
         print "  " + str(thresholdFactorNumber) + " thresholdFactor:", self._thresholdFactor
         print "  " + str(radiusNumber)          + " radius:", self._radius
         print "  " + str(keepFactorNumber)      + " keepFactor:", self._keepFactor
+        print "  " + str(dumpToFileNumber)      + " dump point clouds to file"
+        print "  " + str(exitNumber)            + " exit"
 
     def _tryUpdateParameter(self, inputStr):
         if not inputStr:
@@ -55,8 +62,11 @@ class ConfigCreator:
             print "Exception raised while parsing string."
             return False
 
-        if parameterAsInt < 0 or parameterAsInt > 3:
+        if parameterAsInt == exitNumber:
             return False
+        if parameterAsInt == dumpToFileNumber:
+            self._dumpPointsToFile()
+            return True
 
         valueStr = raw_input("New value: ")
         try:
@@ -91,3 +101,26 @@ class ConfigCreator:
             ax.imshow(imageToShow)
 
         plt.show(block=False)
+
+    def _dumpPointsToFile(self):
+        inputDirStr = _userCheckedInput("Image dir path: ")
+        outputDirStr = _userCheckedInput("Output dir path: ")
+        outputPrefixStr = _userCheckedInput("Output prefix str: ")
+
+        imageReader = DirectoryImageReader(inputDirStr)
+        for image in imageReader.generate():
+            print image.comment
+            edgeDetector = EdgeDetector(image.image)
+            x, y = edgeDetector.getEdges(self._sigma, self._thresholdFactor, self._radius)
+
+            outFilePath = os.path.join(outputDirStr, outputPrefixStr + image.comment + PointCloudHandler.CLOUDEXTENSION)
+            outFile = open(outFilePath, "w")
+            PointCloudHandler.savePointCloudToWriteable(x, y, outFile)
+
+def _userCheckedInput(displayString):
+    inputStr = raw_input(displayString)
+    while True:
+        if raw_input("Correct? (y/n) ") == "y":
+            break
+        inputStr = raw_input(displayString)
+    return inputStr

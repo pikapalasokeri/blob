@@ -1,6 +1,7 @@
 import numpy as np
 import datetime
 
+CLOUDEXTENSION = ".cloud"
 COMMENT = "#"
 POINT = "p"
 
@@ -31,6 +32,6 @@ def getPointsFromIterable(lineIterable):
     return resultX, resultY
 
 def savePointCloudToWriteable(xList, yList, writeable):
-    writeable.write(COMMENT + " created on " + datetime.datetime.now().isoformat())
+    writeable.write(COMMENT + " created on " + datetime.datetime.now().isoformat() + "\n")
     for x, y in zip(xList, yList):
-        writeable.write(POINT + " " + str(x[0]) + " " + str(y[0]))
+        writeable.write(POINT + " " + str(x[0]) + " " + str(y[0]) + "\n")
