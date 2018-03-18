@@ -1,7 +1,30 @@
 import unittest
 import PointCloudHandler
+import numpy as np
 
-class TestPointCloudHandler(unittest.TestCase):
+class TestSavePointCloudToWriteable(unittest.TestCase):
+    class StringStorer:
+        def __init__(self):
+            self.strings = []
+        def write(self, string):
+            self.strings.append(string)
+
+    def test_SimpleWrite(self):
+        x = np.zeros((2, 1))
+        y = np.zeros((2, 1))
+        x[1] = 1.0
+        y[1] = 2.0
+
+        writeable = self.StringStorer()
+        PointCloudHandler.savePointCloudToWriteable(x, y, writeable)
+
+        self.assertEqual(len(writeable.strings), 3)
+        self.assertEqual(len(writeable.strings[0]), 12 + 27)
+        self.assertEqual(writeable.strings[0][0:12], "# created on")
+        self.assertEqual(writeable.strings[1], "p 0.0 0.0")
+        self.assertEqual(writeable.strings[2], "p 1.0 2.0")
+
+class TestGetPointsFromIterable(unittest.TestCase):
     def test_SinglePoint(self):
         lines = ["p 1.32 -1.0"]
         x, y = PointCloudHandler.getPointsFromIterable(lines)

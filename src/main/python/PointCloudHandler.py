@@ -1,4 +1,8 @@
 import numpy as np
+import datetime
+
+COMMENT = "#"
+POINT = "p"
 
 def getPointsFromIterable(lineIterable):
     points = []
@@ -6,9 +10,9 @@ def getPointsFromIterable(lineIterable):
         line = l.strip()
         if len(line) == 0:
             continue
-        elif line[0] == "#":
+        elif line[0] == COMMENT:
             continue
-        elif line[0] == "p":
+        elif line[0] == POINT:
             pointLine = filter(None, line.split(" "))
             x = float(pointLine[1])
             y = float(pointLine[2])
@@ -25,3 +29,8 @@ def getPointsFromIterable(lineIterable):
         resultY[i] = point[1]
 
     return resultX, resultY
+
+def savePointCloudToWriteable(xList, yList, writeable):
+    writeable.write(COMMENT + " created on " + datetime.datetime.now().isoformat())
+    for x, y in zip(xList, yList):
+        writeable.write(POINT + " " + str(x[0]) + " " + str(y[0]))
