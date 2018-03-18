@@ -7,4 +7,5 @@ python -m unittest -v \
        TestCoherentPointDriftMatcher2D\
        TestSimulatedAnnealingPointMatcher2D\
        TestEdgeDetector\
-       TestAbsoluteNeighborFitnessComputer
+       TestAbsoluteNeighborFitnessComputer\
+       TestPointCloudHandler
