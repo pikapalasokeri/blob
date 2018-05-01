@@ -3,7 +3,7 @@ project (blob_src_main_swig)
 
 set(PROJECT_SOURCE_DIR .)
 find_package(SWIG REQUIRED)
-find_package(PythonLibs REQUIRED)
+find_package(PythonLibs 3 REQUIRED)
 
 include(${SWIG_USE_FILE})
 

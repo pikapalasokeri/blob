@@ -1,6 +1,5 @@
 from scipy import ndimage
 import numpy as np
-import matplotlib.pyplot as plt
 import ImageUtilities
 
 class EdgeDetector:

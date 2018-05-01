@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from scipy import misc
 from scipy import ndimage
@@ -50,7 +50,7 @@ if __name__ == "__main__":
   img1 = misc.imread(filePath1)
   img2 = misc.imread(filePath2)
   end = timer()
-  print "imread:", end-start
+  print("imread:", end-start)
 
   sigma = 2
   thresholdFactor = 8.0
@@ -65,23 +65,23 @@ if __name__ == "__main__":
   edges2 = edgeDetector2.getEdges(sigma, thresholdFactor, radius)
 
   end = timer()
-  print "edgedetector:", end-start
+  print("edgedetector:", end-start)
 
   points1 = np.zeros((len(edges1[0]), 2))
   for ix in range(len(edges1[0])):
     points1[ix, 0] = edges1[0][ix]
     points1[ix, 1] = edges1[1][ix]
-  print points1.shape
+  print(points1.shape)
   points1 = points1[::2,:]
-  print points1.shape
+  print(points1.shape)
 
   points2 = np.zeros((len(edges2[0]), 2))
   for ix in range(len(edges2[0])):
     points2[ix, 0] = edges2[0][ix]
     points2[ix, 1] = edges2[1][ix]
-  print points2.shape
+  print(points2.shape)
   points2 = points2[::2,:]
-  print points2.shape
+  print(points2.shape)
 
 
   '''
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 #  end = timer()
 #  print "matcher.match:", end-start
 
-  print "----------------------------------------------"
+  print("----------------------------------------------")
 #  matcher = CxxCoherentPointDriftMatcher2D()
 #  matcher.setW(0.0)
 #  matcher.setMaxIterations(1)
@@ -135,7 +135,7 @@ if __name__ == "__main__":
   scale, rotation, translation = matcher.match()
 
   end = timer()
-  print "cxxmatcher.match:", end-start
+  print("cxxmatcher.match:", end-start)
 
 #  exit(0)
 
@@ -148,7 +148,7 @@ if __name__ == "__main__":
   points1 = points1 + center1
   points2 = points2 + center2
 
-  print "Closest neighbor likeness:", comuteClosestNeighborLikeness(points2, transformed)
+  print("Closest neighbor likeness:", comuteClosestNeighborLikeness(points2, transformed))
 
 
   #addEdgesToImage(img1, edges1, 0)

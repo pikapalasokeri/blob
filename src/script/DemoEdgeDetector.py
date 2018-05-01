@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from scipy import misc
 from scipy import ndimage
@@ -18,20 +18,20 @@ if __name__ == "__main__":
   sigma = 4
   thresholdFactor = 0.4
   edges = edgeDetector.getEdges(sigma, thresholdFactor)
-  print "Got", len(edges[0]), "edge points at sigma", sigma, "and thresholdFactor", thresholdFactor
+  print("Got", len(edges[0]), "edge points at sigma", sigma, "and thresholdFactor", thresholdFactor)
   addEdgesToImage(img, edges, 0)
   addEdgesToImage(img, edges, 2)
 
   sigma = 8
   thresholdFactor = 0.1
   edges = edgeDetector.getEdges(sigma, thresholdFactor)
-  print "Got", len(edges[0]), "edge points at sigma", sigma, "and thresholdFactor", thresholdFactor
+  print("Got", len(edges[0]), "edge points at sigma", sigma, "and thresholdFactor", thresholdFactor)
   addEdgesToImage(img, edges, 1)
 
   sigma = 16
   thresholdFactor = 0.01
   edges = edgeDetector.getEdges(sigma, thresholdFactor)
-  print "Got", len(edges[0]), "edge points at sigma", sigma, "and thresholdFactor", thresholdFactor  
+  print("Got", len(edges[0]), "edge points at sigma", sigma, "and thresholdFactor", thresholdFactor)  
   addEdgesToImage(img, edges, 2)
 
   plt.figure()

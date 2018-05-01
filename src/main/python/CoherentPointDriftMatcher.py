@@ -30,16 +30,16 @@ class CoherentPointDriftMatcher2D:
     oldSigmaSquare = 1.0e+10; # should be large enough
     while not registered:
       start = timer()
-      print ix
+      print(ix)
       ix += 1
 
       sigmaSquareChange = abs(oldSigmaSquare - sigmaSquare)
       oldSigmaSquare = sigmaSquare
-      print "Change in sigmaSquare:", sigmaSquareChange
-      print "scale:", theta[0]
-      print "rotation:", theta[1]
-      print "translation:", theta[2]
-      print "sigmaSquare:", sigmaSquare
+      print("Change in sigmaSquare:", sigmaSquareChange)
+      print("scale:", theta[0])
+      print("rotation:", theta[1])
+      print("translation:", theta[2])
+      print("sigmaSquare:", sigmaSquare)
       if ix == 100 or sigmaSquare < 0.0 or (ix > 50 and sigmaSquareChange < 0.001):
         return theta[0], theta[1], theta[2]
       transformedPointSet1 = transform(theta[0], theta[1], theta[2], self._pointSet1)
@@ -64,18 +64,18 @@ class CoherentPointDriftMatcher2D:
       denominators += constant2
       P = numerators / denominators
 
-      print "Normalized sum(P):", np.sum(np.sum(P))/(numIPoints*numJPoints)
-      print "MeanMax(P,0)", np.mean(np.max(P,axis=0))
-      print "MeanMax(P,1)", np.mean(np.max(P,axis=1))
-      print "MedianMax(P,0)", np.median(np.max(P,axis=0))
-      print "MedianMax(P,1)", np.median(np.max(P,axis=1))
+      print("Normalized sum(P):", np.sum(np.sum(P))/(numIPoints*numJPoints))
+      print("MeanMax(P,0)", np.mean(np.max(P,axis=0)))
+      print("MeanMax(P,1)", np.mean(np.max(P,axis=1)))
+      print("MedianMax(P,0)", np.median(np.max(P,axis=0)))
+      print("MedianMax(P,1)", np.median(np.max(P,axis=1)))
       
 
       end = timer()
-      print "loop:", end-start
+      print("loop:", end-start)
       theta, sigmaSquare = self._solveRigid(P)
 
-      print theta, sigmaSquare
+      print(theta, sigmaSquare)
 
   def _computeSigmaSquare(self):
     sum = 0.0
@@ -116,7 +116,7 @@ class CoherentPointDriftMatcher2D:
     sigmaSquare = 1.0/(2.0*NP) * (np.trace(np.dot(Shat.transpose(), np.dot(diag, Shat))) - a * np.trace(np.dot(A.transpose(), R)))
     
     end = timer()
-    print "one iteration _solveRigid:", end-start
+    print("one iteration _solveRigid:", end-start)
     return (a, R, t), sigmaSquare
 
 def transform(scale, rotation, translation, points):

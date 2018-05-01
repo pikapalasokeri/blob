@@ -19,7 +19,7 @@ class TestCoherentPointDriftMatcher2D(unittest.TestCase):
         addPointsToMatcher(pattern1, m, 2)
 
         scale, rotation, translation = m.match()
-        self.assertAlmostEquals(scale, 1.0)
+        self.assertAlmostEqual(scale[0][0], 1.0)
         self.assertMatrixAlmostEquals(rotation, np.eye(2))
         self.assertMatrixAlmostEquals(translation, np.zeros((1, 2)))
 
@@ -37,12 +37,12 @@ class TestCoherentPointDriftMatcher2D(unittest.TestCase):
         addPointsToMatcher(p2, m, 2)
 
         scale, rotation, translation = m.match()
-        self.assertAlmostEquals(scale, 2.0)
+        self.assertAlmostEqual(scale, 2.0)
 #        self.assertMatrixAlmostEquals(rotation, np.eye(2))
 #        self.assertMatrixAlmostEquals(translation, np.zeros((1, 2)))
 
     def assertMatrixAlmostEquals(self, matrix1, matrix2):
-        self.assertEquals(matrix1.shape, matrix2.shape)
+        self.assertEqual(matrix1.shape, matrix2.shape)
 
         for row1, row2 in zip(matrix1, matrix2):
             for val1, val2 in zip(row1, row2):

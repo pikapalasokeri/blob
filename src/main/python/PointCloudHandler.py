@@ -14,7 +14,7 @@ def getPointsFromIterable(lineIterable):
         elif line[0] == COMMENT:
             continue
         elif line[0] == POINT:
-            pointLine = filter(None, line.split(" "))
+            pointLine = [_f for _f in line.split(" ") if _f]
             x = float(pointLine[1])
             y = float(pointLine[2])
 

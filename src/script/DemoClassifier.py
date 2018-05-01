@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from Classifier import Classifier
 from EdgeDetectionConfig import EdgeDetectionConfig
@@ -10,10 +10,10 @@ def runDemo():
     #referenceImageReader = FileImageReader("../demoseries/clean_demo_series_6_crop.config")
     referenceImageReader = FileImageReader("/home/pikapalasokeri/demoseries/clean_demo_series_6_crop_small.config")
     referenceImages = [x for x in referenceImageReader.generate()]
-    print "Reference images generated."
+    print("Reference images generated.")
 
     classifier = Classifier(config, referenceImages)
-    print "Classifier created."
+    print("Classifier created.")
 
     # just try to classify the references as sanity check.
     totalTries = 0
@@ -33,20 +33,20 @@ def runDemo():
                 numCorrect += 1
             else:
                 correct = False
-            print "     Classified", image.comment, "as", classified.comment, "   ", correct
+            print("     Classified", image.comment, "as", classified.comment, "   ", correct)
         else:
-            print "     Completely failed to classify", image.comment
+            print("     Completely failed to classify", image.comment)
         totalTries += 1
-        print ""
+        print("")
 
-    print "Total tries:", totalTries
-    print "Correct classifications:", numCorrect
+    print("Total tries:", totalTries)
+    print("Correct classifications:", numCorrect)
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:
         runDemo()
     elif sys.argv[1] == "profile":
-        print "Running through cProfile..."
+        print("Running through cProfile...")
         import cProfile
         cProfile.run(runDemo())
     else:

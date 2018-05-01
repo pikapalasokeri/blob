@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 from Classifier import Classifier
 from EdgeDetectionConfig import EdgeDetectionConfig
 from FileImageReader import FileImageReader
@@ -52,6 +52,6 @@ if __name__ == "__main__":
   classifier = Classifier(edgeDetectionConfig, referenceImages)
   for image in imageCreator.generate():
     classifiedImage = classifier.classify(image)
-    print "Got image", image
-    print "Classified as", classifiedImage
+    print("Got image", image)
+    print("Classified as", classifiedImage)
 

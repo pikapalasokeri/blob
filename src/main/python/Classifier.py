@@ -14,11 +14,11 @@ class Classifier:
         edgesToClassify = self._detectEdges(image)
         bestScore = float("Inf")
         currentGuess = None
-        print image.comment
+        print(image.comment)
         for refEdges, reference in zip(self._referenceEdges, self._references):
             score = _getLikenessScore(refEdges, edgesToClassify)
 
-            print "    ", reference.comment, "   ", score
+            print("    ", reference.comment, "   ", score)
             if score is None:
                 continue
 

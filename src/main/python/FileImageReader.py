@@ -13,11 +13,11 @@ class FileImageReader:
 
     def generate(self):
         if len(self._imagesFromConfigFile) == 0:
-            inputStr = raw_input("Path to image (leave empty when done): ")
+            inputStr = input("Path to image (leave empty when done): ")
             while inputStr:
                 filePath = inputStr
-                comment = raw_input("Comment: ")
-                inputStr = raw_input("Path to image (leave empty when done): ")
+                comment = input("Comment: ")
+                inputStr = input("Path to image (leave empty when done): ")
                 yield ReferenceImage(misc.imread(filePath), comment)
         else:
             for referenceImage in self._imagesFromConfigFile:

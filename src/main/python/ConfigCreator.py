@@ -28,29 +28,29 @@ class ConfigCreator:
 
     def readImages(self):
         self._referenceImages.extend(self._imageSupplier.generate())
-        print "Read " + str(len(self._referenceImages)) + " images."
+        print("Read " + str(len(self._referenceImages)) + " images.")
 
     def calibrateEdgeDetection(self):
         self._drawReferenceImages()
 
         while True:
-            print "Current parameters:"
+            print("Current parameters:")
             self._printIndentedParameters()
-            inputStr = raw_input("Which parameter? ")
+            inputStr = input("Which parameter? ")
             if not self._tryUpdateParameter(inputStr):
                 break
             self._drawReferenceImages()
 
-        print "Final parameters:"
+        print("Final parameters:")
         self._printIndentedParameters()
 
     def _printIndentedParameters(self):
-        print "  " + str(sigmaNumber)           + " sigma:", self._sigma
-        print "  " + str(thresholdFactorNumber) + " thresholdFactor:", self._thresholdFactor
-        print "  " + str(radiusNumber)          + " radius:", self._radius
-        print "  " + str(keepFactorNumber)      + " keepFactor:", self._keepFactor
-        print "  " + str(dumpToFileNumber)      + " dump point clouds to file"
-        print "  " + str(exitNumber)            + " exit"
+        print("  " + str(sigmaNumber)           + " sigma:", self._sigma)
+        print("  " + str(thresholdFactorNumber) + " thresholdFactor:", self._thresholdFactor)
+        print("  " + str(radiusNumber)          + " radius:", self._radius)
+        print("  " + str(keepFactorNumber)      + " keepFactor:", self._keepFactor)
+        print("  " + str(dumpToFileNumber)      + " dump point clouds to file")
+        print("  " + str(exitNumber)            + " exit")
 
     def _tryUpdateParameter(self, inputStr):
         if not inputStr:
@@ -59,7 +59,7 @@ class ConfigCreator:
         try:
             parameterAsInt = int(inputStr)
         except:
-            print "Exception raised while parsing string."
+            print("Exception raised while parsing string.")
             return False
 
         if parameterAsInt == exitNumber:
@@ -68,11 +68,11 @@ class ConfigCreator:
             self._dumpPointsToFile()
             return True
 
-        valueStr = raw_input("New value: ")
+        valueStr = input("New value: ")
         try:
             valueAsFloat = float(valueStr)
         except:
-            print "Exception raised while parsing string."
+            print("Exception raised while parsing string.")
             return False
 
         if parameterAsInt == sigmaNumber:
@@ -89,7 +89,7 @@ class ConfigCreator:
 
     def _drawReferenceImages(self):
         numPlotsPerSide = int(math.ceil(math.sqrt(len(self._referenceImages))))
-        print "numPlotsPerSide:", numPlotsPerSide
+        print("numPlotsPerSide:", numPlotsPerSide)
         for ix, reference in enumerate(self._referenceImages):
             ax = self._referenceImagesFigure.add_subplot(numPlotsPerSide, numPlotsPerSide, ix + 1)
 
@@ -109,7 +109,7 @@ class ConfigCreator:
 
         imageReader = DirectoryImageReader(inputDirStr)
         for image in imageReader.generate():
-            print image.comment
+            print(image.comment)
             edgeDetector = EdgeDetector(image.image)
             x, y = edgeDetector.getEdges(self._sigma, self._thresholdFactor, self._radius)
 
@@ -118,9 +118,9 @@ class ConfigCreator:
             PointCloudHandler.savePointCloudToWriteable(x, y, outFile)
 
 def _userCheckedInput(displayString):
-    inputStr = raw_input(displayString)
+    inputStr = input(displayString)
     while True:
-        if raw_input("Correct? (y/n) ") == "y":
+        if input("Correct? (y/n) ") == "y":
             break
-        inputStr = raw_input(displayString)
+        inputStr = input(displayString)
     return inputStr
