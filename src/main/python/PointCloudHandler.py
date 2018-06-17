@@ -5,6 +5,7 @@ CLOUDEXTENSION = ".cloud"
 COMMENT = "#"
 POINT = "p"
 
+
 def getPointsFromIterable(lineIterable):
     points = []
     for l in lineIterable:
@@ -30,6 +31,7 @@ def getPointsFromIterable(lineIterable):
         resultY[i] = point[1]
 
     return resultX, resultY
+
 
 def savePointCloudToWriteable(xList, yList, writeable):
     writeable.write(COMMENT + " created on " + datetime.datetime.now().isoformat() + "\n")
