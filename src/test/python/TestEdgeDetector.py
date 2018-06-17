@@ -1,9 +1,9 @@
 import unittest
 from scipy import misc
 import numpy as np
-import sys
 import os
-from EdgeDetector import *
+from EdgeDetector import EdgeDetector
+
 
 def readImage(relativePath):
     # Ugly hack since python unittests depend on files.
@@ -12,25 +12,26 @@ def readImage(relativePath):
     path = os.path.join(dirName, relativePath)
     return misc.imread(path)
 
+
 class TestEdgeDetector(unittest.TestCase):
     def test_SimpleCreate(self):
         randomImage = np.random.rand(2, 2, 3)
-        tmp = EdgeDetector(randomImage)
+        EdgeDetector(randomImage)
 
     def test_WrongImageDimensions(self):
         wrongDimensions1 = np.random.rand(1, 1)
         wrongDimensions2 = np.random.rand(1, 1, 1, 1)
         with self.assertRaises(Exception):
-            tmp = EdgeDetector(wrongDimensions1)
+            EdgeDetector(wrongDimensions1)
         with self.assertRaises(Exception):
-            tmp = EdgeDetector(wrongDimensions2)
+            EdgeDetector(wrongDimensions2)
 
         wrongDimensions3 = np.random.rand(1, 1, 2)
         wrongDimensions4 = np.random.rand(1, 1, 4)
         with self.assertRaises(Exception):
-            tmp = EdgeDetector(wrongDimensions3)
+            EdgeDetector(wrongDimensions3)
         with self.assertRaises(Exception):
-            tmp = EdgeDetector(wrongDimensions4)
+            EdgeDetector(wrongDimensions4)
 
     def test_SimpleImage(self):
         simpleImage = np.zeros((12, 12, 3))
