@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
-from MostPopulatedCircleFinder import *
+from MostPopulatedCircleFinder import MostPopulatedCircleFinder
+
 
 class TestMostPopulatedCircleFinder(unittest.TestCase):
     def test_NoResult(self):
