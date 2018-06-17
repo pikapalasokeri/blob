@@ -1,8 +1,9 @@
 from ReferenceImage import ReferenceImage
 from scipy import misc
 
+
 class FileImageReader:
-    def __init__(self, configFile = None):
+    def __init__(self, configFile=None):
         self._imagesFromConfigFile = []
         self._indexInConfigFileImages = 0
         if configFile is not None:
