@@ -4,6 +4,7 @@ from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
 from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
 from CoherentPointDriftMatcher import transform
 
+
 class Classifier:
     def __init__(self, edgeDetectionConfig, references):
         self._references = references
@@ -48,7 +49,7 @@ class Classifier:
         accumulatedKeep = 0.0
         accumulatedKeepCorrection = 0.0
         for point in points:
-            if accumulatedKeep-accumulatedKeepCorrection < keepThreshold:
+            if accumulatedKeep - accumulatedKeepCorrection < keepThreshold:
                 newPoints.append(point)
         accumulatedKeep += keepThreshold
 
@@ -57,6 +58,7 @@ class Classifier:
 
         return newPoints
 
+
 def _convertToMatrix(points):
     newPoints = np.zeros((len(points[0]), 2))
     for ix in range(len(points[0])):
@@ -64,9 +66,10 @@ def _convertToMatrix(points):
         newPoints[ix, 1] = points[1][ix]
     return newPoints
 
+
 def _getLikenessScore(reference, edgesToClassify):
-    referenceCenter = np.mean(reference, axis = 0)
-    edgesToClassifyCenter = np.mean(edgesToClassify, axis = 0)
+    referenceCenter = np.mean(reference, axis=0)
+    edgesToClassifyCenter = np.mean(edgesToClassify, axis=0)
     centeredReference = reference - referenceCenter
     centeredEdgesToClassify = edgesToClassify - edgesToClassifyCenter
 
@@ -84,11 +87,13 @@ def _getLikenessScore(reference, edgesToClassify):
     transformed = transform(scale, rotation, translation, centeredEdgesToClassify)
     return _computeClosestNeighborLikeness(centeredReference, transformed)
 
+
 def _computeClosestNeighborLikeness(points1, points2):
     squareDistances = _computeSquareDistances(points1, points2)
     from1ClosestNeighbor = np.min(squareDistances, axis=1)
     from2ClosestNeighbor = np.min(squareDistances, axis=0)
     return np.mean(from1ClosestNeighbor) + np.mean(from2ClosestNeighbor)
+
 
 def _computeSquareDistances(points1, points2):
     numPoints1 = points1.shape[0]
@@ -97,8 +102,9 @@ def _computeSquareDistances(points1, points2):
     squareDistances = np.zeros((numPoints1, numPoints2))
     for i, point1 in enumerate(points1):
         for j, point2 in enumerate(points2):
-            squareDistances[i,j] = _computeSquareDistance(point1, point2)
+            squareDistances[i, j] = _computeSquareDistance(point1, point2)
     return squareDistances
+
 
 def _computeSquareDistance(point1, point2):
     diff = point1 - point2
