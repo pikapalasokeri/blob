@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def getSimplePatterns():
     #
     # Pattern 1:
@@ -30,6 +31,7 @@ def getSimplePatterns():
 
     return pattern1, pattern2
 
+
 def addPointsToMatcher(points, matcher, pointType):
     for point in points:
         if pointType == 1:
@@ -37,8 +39,10 @@ def addPointsToMatcher(points, matcher, pointType):
         else:
             matcher.addPoint2(point[0], point[1])
 
+
 def transform(scale, rotation, translation, points):
-  return scale*np.dot(points, rotation.transpose()) + translation
+    return scale * np.dot(points, rotation.transpose()) + translation
+
 
 def getRotationMatrix(angleDegrees):
     alphaRadians = np.pi / 180 * angleDegrees
