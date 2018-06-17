@@ -1,7 +1,8 @@
 import unittest
 import numpy as np
-from CoherentPointDriftMatcher2D import *
-from TestUtilities import *
+from CoherentPointDriftMatcher2D import CoherentPointDriftMatcher2D
+import TestUtilities as Utils
+
 
 class TestCoherentPointDriftMatcher2D(unittest.TestCase):
     def test_SetFunctionsSmoke(self):
@@ -14,9 +15,9 @@ class TestCoherentPointDriftMatcher2D(unittest.TestCase):
     def test_SameMatch(self):
         m = CoherentPointDriftMatcher2D()
 
-        pattern1, _ = getSimplePatterns()
-        addPointsToMatcher(pattern1, m, 1)
-        addPointsToMatcher(pattern1, m, 2)
+        pattern1, _ = Utils.getSimplePatterns()
+        Utils.addPointsToMatcher(pattern1, m, 1)
+        Utils.addPointsToMatcher(pattern1, m, 2)
 
         scale, rotation, translation = m.match()
         self.assertAlmostEqual(scale[0][0], 1.0)
@@ -32,9 +33,9 @@ class TestCoherentPointDriftMatcher2D(unittest.TestCase):
     def test_SimpleMatch(self):
         m = CoherentPointDriftMatcher2D()
 
-        p2, p1 = getSimplePatterns()
-        addPointsToMatcher(p1, m, 1)
-        addPointsToMatcher(p2, m, 2)
+        p2, p1 = Utils.getSimplePatterns()
+        Utils.addPointsToMatcher(p1, m, 1)
+        Utils.addPointsToMatcher(p2, m, 2)
 
         scale, rotation, translation = m.match()
         self.assertAlmostEqual(scale, 2.0)
@@ -47,4 +48,3 @@ class TestCoherentPointDriftMatcher2D(unittest.TestCase):
         for row1, row2 in zip(matrix1, matrix2):
             for val1, val2 in zip(row1, row2):
                 self.assertAlmostEqual(val1, val2)
-
