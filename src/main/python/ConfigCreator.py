@@ -3,7 +3,6 @@ import math
 import os
 from ImageUtilities import addPointsToImage
 from EdgeDetector import EdgeDetector
-from ReferenceImage import ReferenceImage
 from DirectoryImageReader import DirectoryImageReader
 import PointCloudHandler
 
@@ -13,6 +12,7 @@ radiusNumber = 3
 keepFactorNumber = 4
 dumpToFileNumber = 9
 exitNumber = 0
+
 
 class ConfigCreator:
     def __init__(self, imageSupplier):
@@ -45,12 +45,12 @@ class ConfigCreator:
         self._printIndentedParameters()
 
     def _printIndentedParameters(self):
-        print("  " + str(sigmaNumber)           + " sigma:", self._sigma)
+        print("  " + str(sigmaNumber) + " sigma:", self._sigma)
         print("  " + str(thresholdFactorNumber) + " thresholdFactor:", self._thresholdFactor)
-        print("  " + str(radiusNumber)          + " radius:", self._radius)
-        print("  " + str(keepFactorNumber)      + " keepFactor:", self._keepFactor)
-        print("  " + str(dumpToFileNumber)      + " dump point clouds to file")
-        print("  " + str(exitNumber)            + " exit")
+        print("  " + str(radiusNumber) + " radius:", self._radius)
+        print("  " + str(keepFactorNumber) + " keepFactor:", self._keepFactor)
+        print("  " + str(dumpToFileNumber) + " dump point clouds to file")
+        print("  " + str(exitNumber) + " exit")
 
     def _tryUpdateParameter(self, inputStr):
         if not inputStr:
@@ -86,7 +86,6 @@ class ConfigCreator:
 
         return True
 
-
     def _drawReferenceImages(self):
         numPlotsPerSide = int(math.ceil(math.sqrt(len(self._referenceImages))))
         print("numPlotsPerSide:", numPlotsPerSide)
@@ -116,6 +115,7 @@ class ConfigCreator:
             outFilePath = os.path.join(outputDirStr, outputPrefixStr + image.comment + PointCloudHandler.CLOUDEXTENSION)
             outFile = open(outFilePath, "w")
             PointCloudHandler.savePointCloudToWriteable(x, y, outFile)
+
 
 def _userCheckedInput(displayString):
     inputStr = input(displayString)
