@@ -1,9 +1,10 @@
 import unittest
 import numpy as np
-from SimulatedAnnealingPointMatcher2D import *
-from MeanShortestDistanceFitnessComputer import *
-from AbsoluteNeighborFitnessComputer import *
-from TestUtilities import *
+from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
+from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
+from AbsoluteNeighborFitnessComputer import AbsoluteNeighborFitnessComputer
+import TestUtilities as Utils
+
 
 class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
     def test_SetFunctionsSmoke(self):
@@ -20,17 +21,17 @@ class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
         m.setNumThreads(2)
 
     def test_SimpleMatchMeanShortestDistance(self):
-        points, dummy = getSimplePatterns()
+        points, dummy = Utils.getSimplePatterns()
 
         pointsAsNpArray = np.array(points)
-        R = getRotationMatrix(35+180)
+        R = Utils.getRotationMatrix(35 + 180)
         translation = np.array([[0.11, -0.03]])
-        points2 = transform(1.0, R, translation, pointsAsNpArray)
+        points2 = Utils.transform(1.0, R, translation, pointsAsNpArray)
 
         c = MeanShortestDistanceFitnessComputer(points2)
         m = SimulatedAnnealingPointMatcher2D(c)
 
-        addPointsToMatcher(points, m, 1)
+        Utils.addPointsToMatcher(points, m, 1)
         m.setSlowMovementBreakpoint(0.75)
         m.setInitialTranslationSigma(0.2)
         m.setSlowTranslationSigma(0.01)
@@ -45,17 +46,17 @@ class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
         self.assertMatrixAlmostEquals(translation, translation, numDigits)
 
     def test_SimpleMatchAbsoluteNeighbor(self):
-        points, dummy = getSimplePatterns()
+        points, dummy = Utils.getSimplePatterns()
 
         pointsAsNpArray = np.array(points)
-        R = getRotationMatrix(35+180)
+        R = Utils.getRotationMatrix(35 + 180)
         translation = np.array([[0.11, -0.03]])
-        points2 = transform(1.0, R, translation, pointsAsNpArray)
+        points2 = Utils.transform(1.0, R, translation, pointsAsNpArray)
 
         c = AbsoluteNeighborFitnessComputer(points2, 0.1)
         m = SimulatedAnnealingPointMatcher2D(c)
 
-        addPointsToMatcher(points, m, 1)
+        Utils.addPointsToMatcher(points, m, 1)
         m.setSlowMovementBreakpoint(0.75)
         m.setInitialRotationSigma(360)
         m.setInitialTranslationSigma(0.2)
@@ -70,7 +71,7 @@ class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
         self.assertMatrixAlmostEquals(rotation, R, numDigits)
         self.assertMatrixAlmostEquals(translation, translation, numDigits)
 
-    def assertMatrixAlmostEquals(self, matrix1, matrix2, numDigits = 7):
+    def assertMatrixAlmostEquals(self, matrix1, matrix2, numDigits=7):
         self.assertEqual(matrix1.shape, matrix2.shape)
 
         for row1, row2 in zip(matrix1, matrix2):
