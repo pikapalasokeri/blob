@@ -9,7 +9,9 @@ add_test(NAME pythonUnitTests
 # E501 line too long (X > 79 characters)
 set(FLAKE8_IGNORE_LIST "E501")
 add_test(NAME pythonFlake8Test
-  COMMAND "flake8" "--ignore=${FLAKE8_IGNORE_LIST}" "${CMAKE_CURRENT_SOURCE_DIR}/../../main/python")
+  COMMAND "flake8" "--ignore=${FLAKE8_IGNORE_LIST}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../../main/python"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../../test/python")
 
 add_custom_target(pythonTests ALL)
 
