@@ -40,17 +40,17 @@ class TestEdgeDetector(unittest.TestCase):
         e = EdgeDetector(simpleImage)
         edges = e.getEdges(1.0, 17.0, 10.0)
 
-        self.assertEqual(edges[0][0], [0.0])
+        self.assertEqual(edges[0][0], [0.5])
         self.assertEqual(edges[1][0], [0.0])
 
-        self.assertEqual(edges[0][1], [1.0])
+        self.assertEqual(edges[0][1], [1.5])
         self.assertEqual(edges[1][1], [2.0])
 
         self.assertEqual(edges[0][2], [0.0])
-        self.assertEqual(edges[1][2], [0.0])
+        self.assertEqual(edges[1][2], [0.5])
 
         self.assertEqual(edges[0][3], [2.0])
-        self.assertEqual(edges[1][3], [1.0])
+        self.assertEqual(edges[1][3], [1.5])
 
         points = e.getEdgesAsPoints(1.0, 17.0, 10.0)
         for ix in range(len(edges[0])):
@@ -74,3 +74,26 @@ class TestEdgeDetector(unittest.TestCase):
         e = EdgeDetector(emptyImage)
         noEdges = e.getEdgesAsPoints(2.0, 6.0, 30.0)
         self.assertEqual(noEdges.shape, (0, 2))
+
+#    def test_NoDuplicatePoints(self):
+#        image = np.zeros((5, 5, 3))
+#        image[2, 2, 0] = 255
+#        image[2, 2, 1] = 255
+#        image[2, 2, 2] = 255
+#
+#        e = EdgeDetector(image)
+#        edges = e.getEdges(0.0, 1.0, 100.0)
+#
+#        for x, y in zip(edges[0], edges[1]):
+#            print(x, y)
+#
+#        for i in range(len(edges[0])):
+#            x1 = edges[0][i]
+#            y1 = edges[1][i]
+#            for j in range(i):
+#                x2 = edges[0][j]
+#                y2 = edges[1][j]
+#                print("--------")
+#                print(x1, y1)
+#                print(x2, y2)
+#                self.assertFalse((x1 == x2) and (y1 == y2))

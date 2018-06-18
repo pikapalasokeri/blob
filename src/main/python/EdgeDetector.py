@@ -44,7 +44,7 @@ def _findZeroCrossings(oneDImage, thresholdFactor):
     downDiff = np.abs(oneDImage[:-1, :] - oneDImage[1:, :])
     downCrossings = np.nonzero((downSignDiff != 0.0) & (downDiff > threshold))
 
-    return (np.concatenate((rightCrossings[0], downCrossings[0])), np.concatenate((rightCrossings[1], downCrossings[1])))
+    return (np.concatenate((rightCrossings[0] + 0.5, downCrossings[0])), np.concatenate((rightCrossings[1], downCrossings[1] + 0.5)))
 
 
 def _keepInsideRadius(points, radius):

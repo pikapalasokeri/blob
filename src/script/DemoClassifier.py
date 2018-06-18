@@ -6,7 +6,7 @@ from FileImageReader import FileImageReader
 import sys
 
 def runDemo():
-    config = EdgeDetectionConfig(2, 2, 40, 1.0)
+    config = EdgeDetectionConfig(2, 2, 41, 1.0)
     #referenceImageReader = FileImageReader("../demoseries/clean_demo_series_6_crop.config")
     referenceImageReader = FileImageReader("/home/pikapalasokeri/demoseries/clean_demo_series_6_crop_small.config")
     referenceImages = [x for x in referenceImageReader.generate()]
