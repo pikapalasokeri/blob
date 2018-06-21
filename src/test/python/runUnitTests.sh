@@ -8,4 +8,5 @@ python3 -m unittest -v \
        TestSimulatedAnnealingPointMatcher2D\
        TestEdgeDetector\
        TestAbsoluteNeighborFitnessComputer\
-       TestPointCloudHandler
+       TestPointCloudHandler\
+       TestPointCloud

@@ -3,6 +3,7 @@ from scipy import misc
 import numpy as np
 import os
 from EdgeDetector import EdgeDetector
+from PointCloud import PointCloud
 
 
 def readImage(relativePath):
@@ -37,63 +38,33 @@ class TestEdgeDetector(unittest.TestCase):
         simpleImage = np.zeros((12, 12, 3))
         simpleImage[1, 1, 0] = 255
 
+        expectedPointCloud = PointCloud()
+        expectedPointCloud.addXY(0.5, 0.0)
+        expectedPointCloud.addXY(1.5, 2.0)
+        expectedPointCloud.addXY(0.0, 0.5)
+        expectedPointCloud.addXY(2.0, 1.5)
+
         e = EdgeDetector(simpleImage)
-        edges = e.getEdges(1.0, 17.0, 10.0)
+        pointCloud = e.getEdges(1.0, 17.0, 10.0)
 
-        self.assertEqual(edges[0][0], [0.5])
-        self.assertEqual(edges[1][0], [0.0])
-
-        self.assertEqual(edges[0][1], [1.5])
-        self.assertEqual(edges[1][1], [2.0])
-
-        self.assertEqual(edges[0][2], [0.0])
-        self.assertEqual(edges[1][2], [0.5])
-
-        self.assertEqual(edges[0][3], [2.0])
-        self.assertEqual(edges[1][3], [1.5])
-
-        points = e.getEdgesAsPoints(1.0, 17.0, 10.0)
-        for ix in range(len(edges[0])):
-            self.assertEqual(points[ix, 0], edges[0][ix])
-            self.assertEqual(points[ix, 1], edges[1][ix])
+        for point, expectedPoint in zip(pointCloud, expectedPointCloud):
+            self.assertEqual(point[0], expectedPoint[0])
+            self.assertEqual(point[1], expectedPoint[1])
 
     def test_RealImage(self):
         image = readImage("images_unittest/1.jpg")
         e = EdgeDetector(image)
-        edges = e.getEdgesAsPoints(2.2, 6.5, 30)
-        self.assertEqual(edges.shape, (140, 2))
+        cloud = e.getEdges(2.2, 6.5, 30)
+        self.assertEqual(cloud.size(), 140)
 
-        fewEdges = e.getEdgesAsPoints(2.2, 26.0, 30)
-        self.assertEqual(fewEdges.shape, (2, 2))
+        fewPointsCloud = e.getEdges(2.2, 26.0, 30)
+        self.assertEqual(fewPointsCloud.size(), 2)
 
-        noEdges = e.getEdgesAsPoints(2.2, 27.0, 30)
-        self.assertEqual(noEdges.shape, (0, 2))
+        noPointsCloud = e.getEdges(2.2, 27.0, 30)
+        self.assertEqual(noPointsCloud.size(), 0)
 
     def test_EmptyImage(self):
         emptyImage = np.zeros((0, 0, 3))
         e = EdgeDetector(emptyImage)
-        noEdges = e.getEdgesAsPoints(2.0, 6.0, 30.0)
-        self.assertEqual(noEdges.shape, (0, 2))
-
-#    def test_NoDuplicatePoints(self):
-#        image = np.zeros((5, 5, 3))
-#        image[2, 2, 0] = 255
-#        image[2, 2, 1] = 255
-#        image[2, 2, 2] = 255
-#
-#        e = EdgeDetector(image)
-#        edges = e.getEdges(0.0, 1.0, 100.0)
-#
-#        for x, y in zip(edges[0], edges[1]):
-#            print(x, y)
-#
-#        for i in range(len(edges[0])):
-#            x1 = edges[0][i]
-#            y1 = edges[1][i]
-#            for j in range(i):
-#                x2 = edges[0][j]
-#                y2 = edges[1][j]
-#                print("--------")
-#                print(x1, y1)
-#                print(x2, y2)
-#                self.assertFalse((x1 == x2) and (y1 == y2))
+        noPointsCloud = e.getEdges(2.0, 6.0, 30.0)
+        self.assertEqual(noPointsCloud.size(), 0)

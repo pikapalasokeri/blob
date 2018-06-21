@@ -3,6 +3,7 @@ from EdgeDetector import EdgeDetector
 from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
 from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
 from CoherentPointDriftMatcher import transform
+from PointCloud import PointCloud
 
 
 class Classifier:
@@ -42,28 +43,28 @@ class Classifier:
     but I'm keeping it since it seems to work very well for everything else,
     and 0.8 and 0.2 are off by 2 at most.
     '''
-    def _trimEdges(self, points):
-        newPoints = []
+    def _trimEdges(self, cloud):
+        newCloud = PointCloud()
 
         keepThreshold = self._edgeDetectionConfig.keepFactor
         accumulatedKeep = 0.0
         accumulatedKeepCorrection = 0.0
-        for point in points:
+        for point in cloud:
             if accumulatedKeep - accumulatedKeepCorrection < keepThreshold:
-                newPoints.append(point)
+                newCloud.addPoint(point)
         accumulatedKeep += keepThreshold
 
         if accumulatedKeep - accumulatedKeepCorrection >= 1.0:
             accumulatedKeepCorrection += 1.0
 
-        return newPoints
+        return newCloud
 
 
 def _convertToMatrix(points):
-    newPoints = np.zeros((len(points[0]), 2))
-    for ix in range(len(points[0])):
-        newPoints[ix, 0] = points[0][ix]
-        newPoints[ix, 1] = points[1][ix]
+    newPoints = np.zeros((points.size(), 2))
+    for ix, point in enumerate(points):
+        newPoints[ix, 0] = point[0]
+        newPoints[ix, 1] = point[1]
     return newPoints
 
 

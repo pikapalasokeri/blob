@@ -11,6 +11,7 @@ install(FILES Classifier.py
               EdgeDetector.py
               FileImageReader.py
               ImageUtilities.py
+              PointCloud.py
               PointCloudHandler.py
               ReferenceImage.py
   DESTINATION ${INSTALL_DIR}/python)

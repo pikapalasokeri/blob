@@ -1,6 +1,7 @@
 from scipy import ndimage
 import numpy as np
 import ImageUtilities
+from PointCloud import PointCloud
 
 
 class EdgeDetector:
@@ -18,14 +19,6 @@ class EdgeDetector:
         laplacianOfGaussian = ndimage.gaussian_laplace(self._oneDImage, scale)  # ish 0.57 seconds
         zeroCrossings = _findZeroCrossings(laplacianOfGaussian, thresholdFactor)  # ish 0.25 sec
         return _keepInsideRadius(zeroCrossings, radius)  # ish 0.05 secs
-
-    def getEdgesAsPoints(self, scale, thresholdFactor, radius):
-        edges = self.getEdges(scale, thresholdFactor, radius)
-        points = np.zeros((len(edges[0]), 2))
-        for ix in range(len(edges[0])):
-            points[ix, 0] = edges[0][ix]
-            points[ix, 1] = edges[1][ix]
-        return points
 
 
 def _findZeroCrossings(oneDImage, thresholdFactor):
@@ -48,25 +41,14 @@ def _findZeroCrossings(oneDImage, thresholdFactor):
 
 
 def _keepInsideRadius(points, radius):
-    if len(points[0]) == 0:
-        emptyPoints = np.zeros((0, 1))
-        return emptyPoints, emptyPoints
-
     xMean = np.mean(points[0])
     yMean = np.mean(points[1])
 
-    result = []
+    result = PointCloud()
     radiusSquare = radius**2
     for x, y in zip(points[0], points[1]):
         squareDistanceFromMean = float((x - xMean)**2 + (y - yMean)**2)
         if squareDistanceFromMean <= radiusSquare:
-            result.append((x, y))
+            result.addXY(x, y)
 
-    numPoints = len(result)
-    resultX = np.zeros((numPoints, 1))
-    resultY = np.zeros((numPoints, 1))
-    for i, point in enumerate(result):
-        resultX[i] = point[0]
-        resultY[i] = point[1]
-
-    return resultX, resultY
+    return result

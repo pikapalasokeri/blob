@@ -93,9 +93,9 @@ class ConfigCreator:
             ax = self._referenceImagesFigure.add_subplot(numPlotsPerSide, numPlotsPerSide, ix + 1)
 
             edgeDetector = EdgeDetector(reference.image)
-            points = edgeDetector.getEdgesAsPoints(self._sigma, self._thresholdFactor, self._radius)
+            edges = edgeDetector.getEdges(self._sigma, self._thresholdFactor, self._radius)
             imageToShow = reference.image.copy()
-            addPointsToImage(imageToShow, points, 1)
+            addPointsToImage(imageToShow, edges, 1)
 
             ax.imshow(imageToShow)
 

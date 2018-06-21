@@ -67,18 +67,18 @@ if __name__ == "__main__":
   end = timer()
   print("edgedetector:", end-start)
 
-  points1 = np.zeros((len(edges1[0]), 2))
-  for ix in range(len(edges1[0])):
-    points1[ix, 0] = edges1[0][ix]
-    points1[ix, 1] = edges1[1][ix]
+  points1 = np.zeros((edges1.size(), 2))
+  for ix, point in enumerate(edges1):
+    points1[ix, 0] = point[0]
+    points1[ix, 1] = point[1]
   print(points1.shape)
   points1 = points1[::2,:]
   print(points1.shape)
 
-  points2 = np.zeros((len(edges2[0]), 2))
-  for ix in range(len(edges2[0])):
-    points2[ix, 0] = edges2[0][ix]
-    points2[ix, 1] = edges2[1][ix]
+  points2 = np.zeros((edges2.size(), 2))
+  for ix, point in enumerate(edges2):
+    points2[ix, 0] = point[0]
+    points2[ix, 1] = point[1]
   print(points2.shape)
   points2 = points2[::2,:]
   print(points2.shape)
