@@ -11,7 +11,8 @@ set(FLAKE8_IGNORE_LIST "E501")
 add_test(NAME pythonFlake8Test
   COMMAND "flake8" "--ignore=${FLAKE8_IGNORE_LIST}"
   "${CMAKE_CURRENT_SOURCE_DIR}/../../main/python"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../../test/python")
+  "${CMAKE_CURRENT_SOURCE_DIR}/../../test/python"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../../script")
 
 add_custom_target(pythonTests ALL)
 
