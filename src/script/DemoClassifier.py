@@ -5,9 +5,10 @@ from EdgeDetectionConfig import EdgeDetectionConfig
 from FileImageReader import FileImageReader
 import sys
 
+
 def runDemo():
     config = EdgeDetectionConfig(2, 2, 41, 1.0)
-    #referenceImageReader = FileImageReader("../demoseries/clean_demo_series_6_crop.config")
+    # referenceImageReader = FileImageReader("../demoseries/clean_demo_series_6_crop.config")
     referenceImageReader = FileImageReader("/home/pikapalasokeri/demoseries/clean_demo_series_6_crop_small.config")
     referenceImages = [x for x in referenceImageReader.generate()]
     print("Reference images generated.")
@@ -19,7 +20,7 @@ def runDemo():
     totalTries = 0
     numCorrect = 0
     allImagesReader = FileImageReader("/home/pikapalasokeri/demoseries/clean_demo_series_6_crop.config")
-    #allImagesReader = FileImageReader("../demoseries/clean_demo_series_6_crop_small.config")
+    # allImagesReader = FileImageReader("../demoseries/clean_demo_series_6_crop_small.config")
     for image in allImagesReader.generate():
         classified = classifier.classify(image)
 
