@@ -11,6 +11,7 @@ from timeit import default_timer as timer
 from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
 from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
 from CoherentPointDriftMatcher import transform
+from ImageUtilities import rgb2grayNaive
 
 
 def addEdgesToImage(image, edges, colorIx):
@@ -63,8 +64,8 @@ if __name__ == "__main__":
 
     start = timer()
 
-    edgeDetector1 = EdgeDetector(img1)
-    edgeDetector2 = EdgeDetector(img2)
+    edgeDetector1 = EdgeDetector(rgb2grayNaive(img1))
+    edgeDetector2 = EdgeDetector(rgb2grayNaive(img2))
     edges1 = edgeDetector1.getEdges(sigma, thresholdFactor, radius)
     edges2 = edgeDetector2.getEdges(sigma, thresholdFactor, radius)
 

@@ -4,6 +4,7 @@ from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
 from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
 from CoherentPointDriftMatcher import transform
 from PointCloud import PointCloud
+from ImageUtilities import rgb2grayNaive
 
 
 class Classifier:
@@ -30,7 +31,7 @@ class Classifier:
         return currentGuess
 
     def _detectEdges(self, image):
-        edgeDetector = EdgeDetector(image.image)
+        edgeDetector = EdgeDetector(rgb2grayNaive(image.image))
         edges = edgeDetector.getEdges(self._edgeDetectionConfig.sigma,
                                       self._edgeDetectionConfig.thresholdFactor,
                                       self._edgeDetectionConfig.radius)
