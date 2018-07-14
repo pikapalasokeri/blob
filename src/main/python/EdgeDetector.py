@@ -45,6 +45,6 @@ def _keepInsideRadius(points, radius):
     for x, y in zip(points[0], points[1]):
         squareDistanceFromMean = float((x - xMean)**2 + (y - yMean)**2)
         if squareDistanceFromMean <= radiusSquare:
-            result.addXY(x, y)
+            result.addXY(float(x), float(y))
 
     return result

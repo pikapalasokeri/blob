@@ -6,9 +6,15 @@ class PointCloud:
         self._points = np.empty([0, 2])
 
     def addXY(self, x, y):
+        if (type(x) != float or type(y) != float):
+            raise ValueError("Point coordinates must be float")
+
         self._points = np.append(self._points, [[x, y]], axis=0)
 
     def addPoint(self, point):
+        if (type(point[0]) != float or type(point[1]) != float):
+            raise ValueError("Point coordinates must be float")
+
         self._points = np.append(self._points, [point], axis=0)
 
     def size(self):
