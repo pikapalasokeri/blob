@@ -17,3 +17,15 @@ class TestPointCloud(unittest.TestCase):
         self.assertEquals(points[0][1], 2.0)
         self.assertEquals(points[1][0], 3.0)
         self.assertEquals(points[1][1], 4.0)
+
+    def test_AddNonFloatXY(self):
+        c = PointCloud()
+        with self.assertRaises(ValueError):
+            c.addXY(2.0, "not float")
+
+    def test_AddNonFloatPoint(self):
+        c = PointCloud()
+        with self.assertRaises(ValueError):
+            c.addPoint(["not float", 1.0])
+
+        # No coverage yet for ndarray float64 stuff
