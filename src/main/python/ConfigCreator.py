@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import math
 import os
-from ImageUtilities import addPointsToImage
+from ImageUtilities import addPointsToImage, rgb2grayNaive
 from EdgeDetector import EdgeDetector
 from DirectoryImageReader import DirectoryImageReader
 import PointCloudHandler
@@ -92,7 +92,7 @@ class ConfigCreator:
         for ix, reference in enumerate(self._referenceImages):
             ax = self._referenceImagesFigure.add_subplot(numPlotsPerSide, numPlotsPerSide, ix + 1)
 
-            edgeDetector = EdgeDetector(reference.image)
+            edgeDetector = EdgeDetector(rgb2grayNaive(reference.image))
             edges = edgeDetector.getEdges(self._sigma, self._thresholdFactor, self._radius)
             imageToShow = reference.image.copy()
             addPointsToImage(imageToShow, edges, 1)
@@ -104,17 +104,18 @@ class ConfigCreator:
     def _dumpPointsToFile(self):
         inputDirStr = _userCheckedInput("Image dir path: ")
         outputDirStr = _userCheckedInput("Output dir path: ")
-        outputPrefixStr = _userCheckedInput("Output prefix str: ")
+        outputPostfixStr = _userCheckedInput("Output postfix str: ")
 
         imageReader = DirectoryImageReader(inputDirStr)
         for image in imageReader.generate():
             print(image.comment)
-            edgeDetector = EdgeDetector(image.image)
-            x, y = edgeDetector.getEdges(self._sigma, self._thresholdFactor, self._radius)
+            edgeDetector = EdgeDetector(rgb2grayNaive(image.image))
+            cloud = edgeDetector.getEdges(self._sigma, self._thresholdFactor, self._radius)
 
-            outFilePath = os.path.join(outputDirStr, outputPrefixStr + image.comment + PointCloudHandler.CLOUDEXTENSION)
+            outFilePath = os.path.join(outputDirStr, image.comment + outputPostfixStr)
             outFile = open(outFilePath, "w")
-            PointCloudHandler.savePointCloudToWriteable(x, y, outFile)
+            PointCloudHandler.savePointCloudToWriteable(cloud, outFile)
+            outFile.close()
 
 
 def _userCheckedInput(displayString):

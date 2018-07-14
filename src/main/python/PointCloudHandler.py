@@ -1,32 +1,43 @@
-import datetime
 from PointCloud import PointCloud
-
-CLOUDEXTENSION = ".cloud"
-COMMENT = "#"
-POINT = "p"
+import json
 
 
-def getPointCloudFromIterable(lineIterable):
-    pointCloud = PointCloud()
-    for l in lineIterable:
-        line = l.strip()
-        if len(line) == 0:
-            continue
-        elif line[0] == COMMENT:
-            continue
-        elif line[0] == POINT:
-            pointLine = [_f for _f in line.split(" ") if _f]
-            x = float(pointLine[1])
-            y = float(pointLine[2])
-
-            pointCloud.addXY(x, y)
-        else:
-            raise Exception("Invalid line type in CloudPoint iterable")
-
-    return pointCloud
+def getPointCloudFromIterable(readable):
+    return json.load(readable, cls=PointCloudJsonDecoder)
 
 
 def savePointCloudToWriteable(pointCloud, writeable):
-    writeable.write(COMMENT + " created on " + datetime.datetime.now().isoformat() + "\n")
-    for point in pointCloud:
-        writeable.write(POINT + " " + str(point[0]) + " " + str(point[1]) + "\n")
+    json.dump(pointCloud, writeable, cls=PointCloudJsonEncoder, indent=2, sort_keys=True)
+
+
+class PointCloudJsonEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, PointCloud):
+            points = []
+            for point in obj:
+                points.append({"x": point[0],
+                               "y": point[1]})
+
+            return {
+                "__type__": "PointCloud",
+                "points": points,
+            }
+        else:
+            return json.JSONEncoder.default(self, obj)
+
+
+class PointCloudJsonDecoder(json.JSONDecoder):
+    def __init__(self, *args, **kargs):
+        json.JSONDecoder.__init__(self, object_hook=self.dict_to_object)
+
+    def dict_to_object(self, d):
+        if "__type__" not in d:
+            return d
+
+        if d["__type__"] == "PointCloud":
+            result = PointCloud()
+            for point in d["points"]:
+                result.addXY(point["x"], point["y"])
+            return result
+
+        return d
