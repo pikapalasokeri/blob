@@ -1,6 +1,7 @@
 #ifndef MostPopulatedCircleFinder_hpp
 #define MostPopulatedCircleFinder_hpp
 
+#include <vector>
 #include <utility>
 #include <boost/optional.hpp>
 

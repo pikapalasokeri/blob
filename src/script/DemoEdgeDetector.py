@@ -12,6 +12,7 @@ def addEdgesToImage(image, edges, colorIx):
         col = point[1]
         image[int(row), int(col), colorIx] = 255
 
+
 if __name__ == "__main__":
     filePath = "../../images/TryEdgeDetector.jpg"
     img = misc.imread(filePath)

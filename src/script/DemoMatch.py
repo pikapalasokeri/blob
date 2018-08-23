@@ -48,6 +48,7 @@ def comuteClosestNeighborLikeness(points1, points2):
     from2ClosestNeighbor = np.min(squareDistances, axis=0)
     return np.mean(from1ClosestNeighbor) + np.mean(from2ClosestNeighbor)
 
+
 if __name__ == "__main__":
     filePath1 = "../../images/early_tests_white/4_01.jpg"
     filePath2 = "../../images/early_tests_white/4_03.jpg"

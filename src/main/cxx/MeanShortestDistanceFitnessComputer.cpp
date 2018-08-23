@@ -1,6 +1,7 @@
 #include "MeanShortestDistanceFitnessComputer.hpp"
 
 #include "Utilities.hpp"
+#include <vector>
 #include <utility>
 
 using namespace std;

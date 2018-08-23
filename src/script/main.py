@@ -46,6 +46,7 @@ def _getImageCreator(commandLineArguments):
     else:
         raise Exception("Image reader argument is not supported.")
 
+
 if __name__ == "__main__":
     commandLineArguments = _parseCommandLine(sys.argv)
     edgeDetectionConfig = _getEdgeDetectionConfig(commandLineArguments)
