@@ -7,6 +7,7 @@ install(FILES createConfig.py
               DemoClassifier.py
               DemoEdgeDetector.py
               DemoMatch.py
+              DemoSimpleThrow.py
               main.py
               wrapper.sh
   DESTINATION ${INSTALL_DIR}

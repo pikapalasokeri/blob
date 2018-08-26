@@ -2,19 +2,20 @@
 
 import RPi.GPIO as gpio
 from time import sleep
+from GpioPinHandler import GpioPinHandler
 
-relayPin = 14
-gpio.setmode(gpio.BCM)
-gpio.setup(relayPin, gpio.OUT)
+
+pinHandler = GpioPinHandler()
+outPin = pinHandler.registerOutPin(14)
 
 try:
-    gpio.output(relayPin, 0)
+    outPin.setLow()
     while True:
-        gpio.output(relayPin, 1)
+        outPin.setHigh()
         sleep(0.5)
-        gpio.output(relayPin, 0)
+        outPin.setLow()
         sleep(6.0)
 
-    gpio.output(relayPin, 0)
-except KeyboardInterrupt:
+finally:
+    outPin.setLow()
     gpio.cleanup()

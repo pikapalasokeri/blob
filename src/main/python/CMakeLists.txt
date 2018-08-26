@@ -10,6 +10,7 @@ install(FILES Classifier.py
               EdgeDetectionConfig.py
               EdgeDetector.py
               FileImageReader.py
+              GpioPinHandler.py
               ImageUtilities.py
               PointCloud.py
               PointCloudHandler.py
