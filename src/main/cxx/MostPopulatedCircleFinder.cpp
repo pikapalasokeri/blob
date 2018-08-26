@@ -1,5 +1,8 @@
 #include "MostPopulatedCircleFinder.hpp"
 
+#include <cstddef>
+#include <cassert>
+
 MostPopulatedCircleFinder::MostPopulatedCircleFinder(double* points, int dim1, int dim2)
   : xMin_(std::numeric_limits<double>::max()),
     xMax_(-std::numeric_limits<double>::max()),
@@ -26,11 +29,12 @@ MostPopulatedCircleFinder::addPoint(double x, double y)
   yMax_ = std::max(y, yMax_);
 }
 
-OptionalPoint
+Point
 MostPopulatedCircleFinder::get(double radius) const
 {
   if (xy_.empty() || radius <= 0.0)
-    return boost::none;
+    return Point(std::numeric_limits<double>::quiet_NaN(),
+                 std::numeric_limits<double>::quiet_NaN());
 
   const double radiusSquare = radius*radius;
   const size_t step = 1;
@@ -74,6 +78,6 @@ MostPopulatedCircleFinder::get(double radius) const
     }
   }
 
-  return std::make_pair(maxHitsX, maxHitsY);
+  return Point(maxHitsX, maxHitsY);
 }
 

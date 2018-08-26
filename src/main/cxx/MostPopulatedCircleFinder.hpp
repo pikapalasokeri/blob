@@ -1,11 +1,11 @@
 #ifndef MostPopulatedCircleFinder_hpp
 #define MostPopulatedCircleFinder_hpp
 
+#include <limits>
 #include <vector>
 #include <utility>
-#include <boost/optional.hpp>
 
-using OptionalPoint = boost::optional<std::pair<double, double> >;
+using Point = std::pair<double, double>;
 
 class MostPopulatedCircleFinder
 {
@@ -21,7 +21,7 @@ public:
 
   void addPoint(double x, double y);
 
-  OptionalPoint get(double radius) const;
+  Point get(double radius) const;
 
 private:
   std::vector<double> xy_;

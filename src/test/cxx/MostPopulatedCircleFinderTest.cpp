@@ -27,8 +27,8 @@ void addPoint(std::vector<double>& points, double x, double y)
 TEST_CASE("No points", "[MostPopulatedCircleFinder]")
 {
   MostPopulatedCircleFinder finder(nullptr, 0, 2);
-  const OptionalPoint p = finder.get(0.02);
-  CHECK(!p);
+  const Point p = finder.get(0.02);
+  CHECK(std::isnan(p.first));
 }
 
 TEST_CASE("Bad radius", "[MostPopulatedCircleFinder]")
@@ -38,11 +38,11 @@ TEST_CASE("Bad radius", "[MostPopulatedCircleFinder]")
   addPoint(points, 1.0, 1.0);
   MostPopulatedCircleFinder finder(&points[0], 2, 2);
 
-  const OptionalPoint p1 = finder.get(0.0);
-  CHECK(!p1);
+  const Point p1 = finder.get(0.0);
+  CHECK(std::isnan(p1.first));
 
-  const OptionalPoint p2 = finder.get(-1.0);
-  CHECK(!p2);
+  const Point p2 = finder.get(-1.0);
+  CHECK(std::isnan(p2.first));
 }
 
 TEST_CASE("One point", "[MostPopulatedCircleFinder]")
@@ -52,10 +52,10 @@ TEST_CASE("One point", "[MostPopulatedCircleFinder]")
   MostPopulatedCircleFinder finder(&points[0], 1, 2);
 
   const double radius = 0.1;
-  const OptionalPoint circleCenter = finder.get(radius);
+  const Point circleCenter = finder.get(radius);
 
-  REQUIRE(bool(circleCenter));
-  CHECK_THAT(std::make_pair(1.0, 1.0), isInside(*circleCenter, radius));
+  REQUIRE(!std::isnan(circleCenter.first));
+  CHECK_THAT(std::make_pair(1.0, 1.0), isInside(circleCenter, radius));
 }
 
 TEST_CASE("Three points - small radius", "[MostPopulatedCircleFinder]")
@@ -71,12 +71,12 @@ TEST_CASE("Three points - small radius", "[MostPopulatedCircleFinder]")
   MostPopulatedCircleFinder finder(&points[0], 3, 2);
 
   const double radius = 1.0;
-  const OptionalPoint circleCenter = finder.get(radius);
+  const Point circleCenter = finder.get(radius);
 
-  REQUIRE(bool(circleCenter));
-  CHECK_THAT(p1, !isInside(*circleCenter, radius));
-  CHECK_THAT(p2, isInside(*circleCenter, radius));
-  CHECK_THAT(p3, isInside(*circleCenter, radius));
+  REQUIRE(!std::isnan(circleCenter.first));
+  CHECK_THAT(p1, !isInside(circleCenter, radius));
+  CHECK_THAT(p2, isInside(circleCenter, radius));
+  CHECK_THAT(p3, isInside(circleCenter, radius));
 }
 
 TEST_CASE("Three points - large radius", "[MostPopulatedCircleFinder]")
@@ -91,12 +91,12 @@ TEST_CASE("Three points - large radius", "[MostPopulatedCircleFinder]")
   MostPopulatedCircleFinder finder(&points[0], 3, 2);
 
   const double radius = 2.0;
-  const OptionalPoint circleCenter = finder.get(radius);
+  const Point circleCenter = finder.get(radius);
 
-  REQUIRE(bool(circleCenter));
-  CHECK_THAT(p1, isInside(*circleCenter, radius));
-  CHECK_THAT(p2, isInside(*circleCenter, radius));
-  CHECK_THAT(p3, isInside(*circleCenter, radius));
+  REQUIRE(!std::isnan(circleCenter.first));
+  CHECK_THAT(p1, isInside(circleCenter, radius));
+  CHECK_THAT(p2, isInside(circleCenter, radius));
+  CHECK_THAT(p3, isInside(circleCenter, radius));
 }
 
 TEST_CASE("Many points over large area", "[MostPopulatedCircleFinder]")
@@ -112,8 +112,9 @@ TEST_CASE("Many points over large area", "[MostPopulatedCircleFinder]")
   MostPopulatedCircleFinder finder(&points[0], points.size()/2, 2);
 
   const double radius = 25.0;
-  const OptionalPoint circleCenter = finder.get(radius);
-  REQUIRE(bool(circleCenter));
+  const Point circleCenter = finder.get(radius);
+  REQUIRE(!std::isnan(circleCenter.first));
+  REQUIRE(!std::isnan(circleCenter.second));
 }
 
 TEST_CASE("Corner", "[MostPopulatedCircleFinder]")
@@ -128,14 +129,14 @@ TEST_CASE("Corner", "[MostPopulatedCircleFinder]")
   MostPopulatedCircleFinder finder(&points[0], 3, 2);
 
   const double radius = 1.0;
-  const OptionalPoint circleCenter = finder.get(radius);
+  const Point circleCenter = finder.get(radius);
 
-  REQUIRE(bool(circleCenter));
-  CHECK_THAT(p1, isInside(*circleCenter, radius));
-  CHECK_THAT(p2, isInside(*circleCenter, radius));
-  CHECK_THAT(p3, isInside(*circleCenter, radius));
-  CHECK(circleCenter->first == 0.0);
-  CHECK(circleCenter->second == 0.0);
+  REQUIRE(!std::isnan(circleCenter.first));
+  CHECK_THAT(p1, isInside(circleCenter, radius));
+  CHECK_THAT(p2, isInside(circleCenter, radius));
+  CHECK_THAT(p3, isInside(circleCenter, radius));
+  CHECK(circleCenter.first == 0.0);
+  CHECK(circleCenter.second == 0.0);
 }
 
 TEST_CASE("Non-integer coordinates", "[MostPopulatedCircleFinder]")
@@ -150,12 +151,12 @@ TEST_CASE("Non-integer coordinates", "[MostPopulatedCircleFinder]")
   MostPopulatedCircleFinder finder(&points[0], 3, 2);
 
   const double radius = 1.0;
-  const OptionalPoint circleCenter = finder.get(radius);
+  const Point circleCenter = finder.get(radius);
 
-  REQUIRE(bool(circleCenter));
-  CHECK_THAT(p1, isInside(*circleCenter, radius));
-  CHECK_THAT(p2, isInside(*circleCenter, radius));
-  CHECK_THAT(p3, !isInside(*circleCenter, radius));
-  CHECK(circleCenter->first == 0.5);
-  CHECK(circleCenter->second == 0.0);
+  REQUIRE(!std::isnan(circleCenter.first));
+  CHECK_THAT(p1, isInside(circleCenter, radius));
+  CHECK_THAT(p2, isInside(circleCenter, radius));
+  CHECK_THAT(p3, !isInside(circleCenter, radius));
+  CHECK(circleCenter.first == 0.5);
+  CHECK(circleCenter.second == 0.0);
 }
