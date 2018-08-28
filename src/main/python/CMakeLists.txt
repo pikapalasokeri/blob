@@ -4,6 +4,7 @@ project (blob_src_main_python)
 set(PROJECT_SOURCE_DIR .)
 
 install(FILES Classifier.py
+              ClassifierPipelineCreator.py
               CoherentPointDriftMatcher.py
               ConfigCreator.py
               DirectoryImageReader.py
@@ -11,6 +12,7 @@ install(FILES Classifier.py
               EdgeDetector.py
               FileImageReader.py
               GpioPinHandler.py
+              ImageGridWidget.py
               ImageUtilities.py
               PointCloud.py
               PointCloudHandler.py
