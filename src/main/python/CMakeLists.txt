@@ -17,4 +17,5 @@ install(FILES Classifier.py
               PointCloud.py
               PointCloudHandler.py
               ReferenceImage.py
+              TopologyEditorWidget.py
   DESTINATION ${INSTALL_DIR}/python)
