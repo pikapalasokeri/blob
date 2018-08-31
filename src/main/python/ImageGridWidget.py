@@ -8,12 +8,12 @@ class DummyWidget(QWidget):
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        painter.drawRect(5, 5, 100, 100)
+        painter.drawRect(0, 0, 280, 280)
 
 
 def addImagesToGrid(grid):
-    for i in range(0, 6):
-        for j in range(0, 3):
+    for i in range(0, 2):
+        for j in range(0, 2):
             dummyImage = DummyWidget()
             grid.addWidget(dummyImage, j, i)
 

@@ -31,8 +31,8 @@ class Model(QObject):
 class JsonTextEdit(QPlainTextEdit):
     newTextChanged = pyqtSignal(str)
 
-    def __init__(self, parent):
-        super().__init__(parent)
+    def __init__(self, text, parent):
+        super().__init__(text, parent)
         self.textChanged.connect(self.newTextChangedProxy)
 
     def newTextChangedProxy(self):
@@ -44,7 +44,7 @@ class JsonEditorWidget(QWidget):
 
     def __init__(self, parent, model):
         super().__init__(parent)
-        editor = JsonTextEdit(self)
+        editor = JsonTextEdit("[]", self)
         editor.setStyleSheet("QPlainTextEdit{font-family: Courier New;}")
         editor.resize(400, 700)
 
