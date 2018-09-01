@@ -17,6 +17,10 @@ class ImageTableModel(QAbstractTableModel):
         super().__init__(parent)
         self._rowCount = 0
         self._imageSize = imageSize
+        self._pipeline = None
+        self._currentLastStage = None
+        self._originalImages = []
+        self._currentPixmaps = []
 
     def rowCount(self, parent):
         return self._rowCount
@@ -35,6 +39,16 @@ class ImageTableModel(QAbstractTableModel):
 
         return QVariant()
 
+    def setPipeline(self, pipeline):
+        if self._pipeline != pipeline:
+            print("set pipeline")
+            self._pipeline = pipeline
+            self._executePipelineUntil(self._currentLastStage)
+
+    def setLastPipelineState(self, lastStage):
+        self._currentLastStage = lastStage
+        self._executePipelineUntil(self._currentLastStage)
+
     def loadNewImages(self, arg):
         filePaths = QFileDialog.getOpenFileNames(caption="Select one or more images to open",
                                                  filter="Images (*.jpg *.png)")[0]
@@ -43,9 +57,23 @@ class ImageTableModel(QAbstractTableModel):
 
             self._originalFiles = filePaths
             self._originalImages = [QImage(path) for path in filePaths]
-            self._currentPixmaps = [QPixmap(image.scaledToWidth(self._imageSize)) for image in self._originalImages]
+            self._executePipelineUntil(self._currentLastStage)
+
             self._rowCount = int(len(self._currentPixmaps) / COLUMN_COUNT)
             if len(self._currentPixmaps) % COLUMN_COUNT > 0:
                 self._rowCount += 1
 
             self.endResetModel()
+
+    def _executePipelineUntil(self, stageName):
+        self.beginResetModel()
+
+        if stageName is None:
+            self._currentPixmaps = [QPixmap(image.scaledToWidth(self._imageSize)) for image in self._originalImages]
+        else:
+            self._currentPixmaps = []
+            for image in self._originalImages:
+                processedImage = self._pipeline.executeUntil(stageName, image)
+                self._currentPixmaps.append(QPixmap(processedImage.scaledToWidth(self._imageSize)))
+
+        self.endResetModel()

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QGridLayout, QWidget
 from ImageGrid import ImageGridWidget
-from TopologyEditorWidget import TopologyEditorWidget
+from TopologyEditorWidget import TopologyEditorWidget, JsonParser
 from ImageTableModel import ImageTableModel
 import ImageGrid
 
@@ -16,8 +16,11 @@ class ClassifierPipelineCreator(QMainWindow):
         self.setWindowTitle("Classifier pipeline creator")
 
         model = ImageTableModel(self, ImageGrid.IMAGE_SIZE)
+        self._jsonParser = JsonParser()
+        self._jsonParser.processingModelUpdated.connect(model.setPipeline)
+
         imageGrid = ImageGridWidget(self, model)
-        topologyEditor = TopologyEditorWidget(self)
+        topologyEditor = TopologyEditorWidget(self, self._jsonParser)
 
         mainGrid = QGridLayout()
         mainGrid.addWidget(imageGrid, 0, 0)

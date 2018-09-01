@@ -15,20 +15,14 @@ class JsonParser(QObject):
         super().__init__()
 
     def tryUpdate(self, maybeJsonText):
-        print("Trying update...")
-        print(maybeJsonText)
         try:
             validJson = json.loads(maybeJsonText)
             if type(validJson) == list:
                 nodeNames = []
                 for element in validJson:
-                    print("element:", element)
                     if "name" in element:
                         nodeNames.append(element["name"])
-                print("validJson:")
-                print(validJson)
                 self.processingModelUpdated.emit(self._jsonToPipeline(validJson))
-                print("emitted signals")
         except json.JSONDecodeError as e:
             print(str(e))
 
@@ -37,7 +31,6 @@ class JsonParser(QObject):
         pipeline.appendStage(PipelineStage.NopStage(), RAW_IMAGE_STAGE)
 
         for element in jsonDict:
-            print(element)
             name = element["name"]
             stageType = element["type"]
             if stageType == "EdgeDetector":
@@ -91,20 +84,14 @@ class NodeListWidget(QWidget):
         self._nodeList.resize(200, 400)
 
     def update(self, pipeline):
-        print("Updating node list...")
-        # read shit from model and update this list
         nodeNames = pipeline.getStageNames()
-        print(nodeNames)
         self._nodeList.clear()
         self._nodeList.addItems(nodeNames)
 
 
 class TopologyEditorWidget(QWidget):
-    def __init__(self, parent):
+    def __init__(self, parent, jsonParser):
         super().__init__(parent)
-
-        self._jsonParser = JsonParser()
-        jsonParser = self._jsonParser
 
         jsonEditor = JsonEditorWidget(self, jsonParser)
         nodeList = NodeListWidget(self)

@@ -9,6 +9,11 @@ class NopStage:
     def getImageRepresentation(self):
         return self._image
 
+    def __ne__(self, other):
+        if type(self) != type(other):
+            return True
+        return False
+
 
 class EdgeDetectorStage:
     def __init__(self, sigma, threshold):
@@ -21,3 +26,11 @@ class EdgeDetectorStage:
 
     def getImageRepresentation(self):
         return None
+
+    def __ne__(self, other):
+        if type(self) != type(other):
+            return True
+        if self._sigma != other._sigma:
+            return True
+        if self._threshold != other._threshold:
+            return True
