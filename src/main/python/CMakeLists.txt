@@ -12,7 +12,8 @@ install(FILES Classifier.py
               EdgeDetector.py
               FileImageReader.py
               GpioPinHandler.py
-              ImageGridWidget.py
+              ImageGrid.py
+              ImageTableModel.py
               ImageUtilities.py
               PointCloud.py
               PointCloudHandler.py

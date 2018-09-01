@@ -3,8 +3,13 @@ from PyQt5.QtCore import QObject, pyqtSignal
 import json
 
 
+class Executor:
+    def execute(self, image):
+        return image
+
+
 class Model(QObject):
-    modelUpdated = pyqtSignal(list)
+    modelDefinitionUpdated = pyqtSignal(list)
 
     def __init__(self):
         super().__init__()
@@ -23,9 +28,14 @@ class Model(QObject):
                         nodeNames.append(element["name"])
                 print("validJson:")
                 print(validJson)
-                self.modelUpdated.emit(nodeNames)
+                self.modelDefinitionUpdated.emit(nodeNames)
         except json.JSONDecodeError as e:
             print(str(e))
+
+    def updateExecutor(self, sinkNodeName):
+        pass
+        # Create execution graph from source (raw images) to supplied sink
+        # return Executor()
 
 
 class JsonTextEdit(QPlainTextEdit):
@@ -40,8 +50,6 @@ class JsonTextEdit(QPlainTextEdit):
 
 
 class JsonEditorWidget(QWidget):
-    textChangedWithText = pyqtSignal(str)
-
     def __init__(self, parent, model):
         super().__init__(parent)
         editor = JsonTextEdit("[]", self)
@@ -62,7 +70,11 @@ class NodeListWidget(QWidget):
         # read shit from model and update this list
         print(nodeNames)
         self._nodeList.clear()
+        self._nodeList.addItem(self._rawImagesNode())
         self._nodeList.addItems(nodeNames)
+
+    def _rawImagesNode(self):
+        return "Raw images"
 
 
 class TopologyEditorWidget(QWidget):
@@ -70,13 +82,16 @@ class TopologyEditorWidget(QWidget):
         super().__init__(parent)
 
         self._model = Model()
-        jsonEditor = JsonEditorWidget(self, self._model)
-        nodeList = NodeListWidget(self)
+        model = self._model
 
-        self._model.modelUpdated.connect(nodeList.update)
+        jsonEditor = JsonEditorWidget(self, model)
+        nodeList = NodeListWidget(self)
+        nodeList.update([])
 
         grid = QGridLayout()
         grid.addWidget(nodeList, 0, 0)
         grid.addWidget(jsonEditor, 0, 1)
-
         self.setLayout(grid)
+
+        model.modelDefinitionUpdated.connect(nodeList.update)
+        nodeList._nodeList.itemClicked.connect(model.updateExecutor)

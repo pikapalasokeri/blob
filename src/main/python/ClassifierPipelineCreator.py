@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QMainWindow, QGridLayout, QWidget
-from ImageGridWidget import ImageGridWidget
+from ImageGrid import ImageGridWidget
 from TopologyEditorWidget import TopologyEditorWidget
+from ImageTableModel import ImageTableModel
+import ImageGrid
 
 
 class ClassifierPipelineCreator(QMainWindow):
@@ -13,7 +15,8 @@ class ClassifierPipelineCreator(QMainWindow):
         self.setCentralWidget(mainWidget)
         self.setWindowTitle("Classifier pipeline creator")
 
-        imageGrid = ImageGridWidget(self)
+        model = ImageTableModel(self, ImageGrid.IMAGE_SIZE)
+        imageGrid = ImageGridWidget(self, model)
         topologyEditor = TopologyEditorWidget(self)
 
         mainGrid = QGridLayout()
