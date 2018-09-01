@@ -3,17 +3,11 @@ from PyQt5.QtCore import QObject, pyqtSignal
 import json
 
 
-class Executor:
-    def execute(self, image):
-        return image
-
-
-class Model(QObject):
-    modelDefinitionUpdated = pyqtSignal(list)
+class JsonParser(QObject):
+    nodesUpdated = pyqtSignal(list)
 
     def __init__(self):
         super().__init__()
-        self._currentNodes = []
 
     def tryUpdate(self, maybeJsonText):
         print("Trying update...")
@@ -28,14 +22,9 @@ class Model(QObject):
                         nodeNames.append(element["name"])
                 print("validJson:")
                 print(validJson)
-                self.modelDefinitionUpdated.emit(nodeNames)
+                self.nodesUpdated.emit(nodeNames)
         except json.JSONDecodeError as e:
             print(str(e))
-
-    def updateExecutor(self, sinkNodeName):
-        pass
-        # Create execution graph from source (raw images) to supplied sink
-        # return Executor()
 
 
 class JsonTextEdit(QPlainTextEdit):
@@ -50,13 +39,13 @@ class JsonTextEdit(QPlainTextEdit):
 
 
 class JsonEditorWidget(QWidget):
-    def __init__(self, parent, model):
+    def __init__(self, parent, jsonParser):
         super().__init__(parent)
         editor = JsonTextEdit("[]", self)
         editor.setStyleSheet("QPlainTextEdit{font-family: Courier New;}")
         editor.resize(400, 700)
 
-        editor.newTextChanged.connect(model.tryUpdate)
+        editor.newTextChanged.connect(jsonParser.tryUpdate)
 
 
 class NodeListWidget(QWidget):
@@ -81,10 +70,10 @@ class TopologyEditorWidget(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self._model = Model()
-        model = self._model
+        self._jsonParser = JsonParser()
+        jsonParser = self._jsonParser
 
-        jsonEditor = JsonEditorWidget(self, model)
+        jsonEditor = JsonEditorWidget(self, jsonParser)
         nodeList = NodeListWidget(self)
         nodeList.update([])
 
@@ -93,5 +82,4 @@ class TopologyEditorWidget(QWidget):
         grid.addWidget(jsonEditor, 0, 1)
         self.setLayout(grid)
 
-        model.modelDefinitionUpdated.connect(nodeList.update)
-        nodeList._nodeList.itemClicked.connect(model.updateExecutor)
+        jsonParser.nodesUpdated.connect(nodeList.update)

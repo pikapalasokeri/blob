@@ -7,6 +7,11 @@ from PyQt5 import QtCore
 COLUMN_COUNT = 2
 
 
+class Executor:
+    def execute(self, image):
+        return image
+
+
 class ImageTableModel(QAbstractTableModel):
     def __init__(self, parent, imageSize):
         super().__init__(parent)
