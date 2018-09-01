@@ -13,8 +13,10 @@ install(FILES Classifier.py
               FileImageReader.py
               GpioPinHandler.py
               ImageGrid.py
+              ImageProcessingPipeline.py
               ImageTableModel.py
               ImageUtilities.py
+              PipelineStage.py
               PointCloud.py
               PointCloudHandler.py
               ReferenceImage.py
