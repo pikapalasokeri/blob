@@ -20,7 +20,7 @@ class ClassifierPipelineCreator(QMainWindow):
         self._jsonParser.processingModelUpdated.connect(model.setPipeline)
 
         imageGrid = ImageGridWidget(self, model)
-        topologyEditor = TopologyEditorWidget(self, self._jsonParser)
+        topologyEditor = TopologyEditorWidget(self, self._jsonParser, model)
 
         mainGrid = QGridLayout()
         mainGrid.addWidget(imageGrid, 0, 0)

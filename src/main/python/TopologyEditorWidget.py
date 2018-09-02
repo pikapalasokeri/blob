@@ -33,7 +33,9 @@ class JsonParser(QObject):
         for element in jsonDict:
             name = element["name"]
             stageType = element["type"]
-            if stageType == "EdgeDetector":
+            if stageType == "GrayscaleConversion":
+                pipeline.appendStage(PipelineStage.GrayscaleConversionStage(), name)
+            elif stageType == "EdgeDetector":
                 pipeline.appendStage(PipelineStage.EdgeDetectorStage(element["sigma"],
                                                                      element["threshold"]),
                                      name)
@@ -61,6 +63,10 @@ class JsonEditorWidget(QWidget):
         super().__init__(parent)
         editor = JsonTextEdit('[\n'
                               '{\n'
+                              '"name": "gray",\n'
+                              '"type": "GrayscaleConversion"\n'
+                              '},\n'
+                              '{\n'
                               '"name": "edges",\n'
                               '"type": "EdgeDetector",\n'
                               '"sigma": 1.0,\n'
@@ -78,10 +84,11 @@ class JsonEditorWidget(QWidget):
 
 
 class NodeListWidget(QWidget):
-    def __init__(self, parent):
+    def __init__(self, parent, imageTableModel):
         super().__init__(parent)
         self._nodeList = QListWidget(self)
         self._nodeList.resize(200, 400)
+        self._nodeList.itemClicked.connect(imageTableModel.setLastPipelineStage)
 
     def update(self, pipeline):
         nodeNames = pipeline.getStageNames()
@@ -90,11 +97,11 @@ class NodeListWidget(QWidget):
 
 
 class TopologyEditorWidget(QWidget):
-    def __init__(self, parent, jsonParser):
+    def __init__(self, parent, jsonParser, imageTableModel):
         super().__init__(parent)
 
         jsonEditor = JsonEditorWidget(self, jsonParser)
-        nodeList = NodeListWidget(self)
+        nodeList = NodeListWidget(self, imageTableModel)
 
         grid = QGridLayout()
         grid.addWidget(nodeList, 0, 0)

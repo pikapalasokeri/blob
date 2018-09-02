@@ -1,15 +1,43 @@
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtCore import QVariant, QAbstractTableModel
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QColor, QImage, qRed, qGreen, qBlue
 from PyQt5 import QtCore
+from PyQt5 import QtGui
+import numpy as np
 
 
 COLUMN_COUNT = 2
 
 
-class Executor:
-    def execute(self, image):
-        return image
+def qImageToMatrix(inData):
+    print("+QImage to matrix")
+    height = inData.height()
+    width = inData.width()
+    outData = np.zeros((height, width, 3))
+    for row in range(0, height):
+        for col in range(0, width):
+            argb = inData.pixel(col, row)
+            outData[row, col, :] = [qRed(argb),
+                                    qGreen(argb),
+                                    qBlue(argb)]
+    print("-QImage to matrix")
+    return outData
+
+
+def matrixToQImage(inData):
+    print("+matrix to QImage")
+    shape = inData.shape
+    height = shape[0]
+    width = shape[1]
+    outImage = QImage(width, height, QtGui.QImage.Format_RGB888)
+    for row in range(0, height):
+        for col in range(0, width):
+            color = QColor(inData[row, col, 0],
+                           inData[row, col, 1],
+                           inData[row, col, 2])
+            outImage.setPixel(col, row, color.rgb())
+    print("-matrix to QImage")
+    return outImage
 
 
 class ImageTableModel(QAbstractTableModel):
@@ -45,8 +73,9 @@ class ImageTableModel(QAbstractTableModel):
             self._pipeline = pipeline
             self._executePipelineUntil(self._currentLastStage)
 
-    def setLastPipelineState(self, lastStage):
-        self._currentLastStage = lastStage
+    def setLastPipelineStage(self, lastStageItem):
+        print("Setting last pipeline stage " + lastStageItem.text())
+        self._currentLastStage = lastStageItem.text()
         self._executePipelineUntil(self._currentLastStage)
 
     def loadNewImages(self, arg):
@@ -73,7 +102,8 @@ class ImageTableModel(QAbstractTableModel):
         else:
             self._currentPixmaps = []
             for image in self._originalImages:
-                processedImage = self._pipeline.executeUntil(stageName, image)
+                matrixImage = qImageToMatrix(image)
+                processedImage = matrixToQImage(self._pipeline.executeUntil(stageName, matrixImage))
                 self._currentPixmaps.append(QPixmap(processedImage.scaledToWidth(self._imageSize)))
 
         self.endResetModel()
