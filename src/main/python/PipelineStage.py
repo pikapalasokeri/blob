@@ -1,4 +1,5 @@
 import ImageUtilities
+from EdgeDetector import EdgeDetector
 import numpy as np
 
 
@@ -40,18 +41,27 @@ class GrayscaleConversionStage:
 
 
 class EdgeDetectorStage:
-    def __init__(self, sigma, threshold):
+    def __init__(self, sigma, threshold, radius):
         self._sigma = sigma
         self._threshold = threshold
-        self._resultData = None
+        self._radius = radius
+        self._executionResult = None
 
     def execute(self, inData):
         print("Executing edge detector stage")
-        return inData
+        edgeDetector = EdgeDetector(inData)
+        self._executionResult = edgeDetector.getEdges(self._sigma,
+                                                      self._threshold,
+                                                      self._radius)
+        return self._executionResult
 
     def getImageRepresentation(self):
-        print("Getting edge detection image representation")
-        return None
+        cols = int(self._executionResult.max()[1] + self._executionResult.min()[1]) + 1
+        rows = int(self._executionResult.max()[0] + self._executionResult.min()[0]) + 1
+        print(cols, rows)
+        ret = np.zeros((rows, cols, 3))
+        ImageUtilities.addPointsToImage(ret, self._executionResult, 0)
+        return ret
 
     def __ne__(self, other):
         if type(self) != type(other):

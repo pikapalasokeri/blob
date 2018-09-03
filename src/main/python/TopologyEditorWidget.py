@@ -37,7 +37,8 @@ class JsonParser(QObject):
                 pipeline.appendStage(PipelineStage.GrayscaleConversionStage(), name)
             elif stageType == "EdgeDetector":
                 pipeline.appendStage(PipelineStage.EdgeDetectorStage(element["sigma"],
-                                                                     element["threshold"]),
+                                                                     element["threshold"],
+                                                                     element["radius"]),
                                      name)
             elif stageType == "Nop":
                 pipeline.appendStage(PipelineStage.NopStage(), name)
@@ -70,7 +71,8 @@ class JsonEditorWidget(QWidget):
                               '"name": "edges",\n'
                               '"type": "EdgeDetector",\n'
                               '"sigma": 1.0,\n'
-                              '"threshold": 1.0\n'
+                              '"threshold": 1.0,\n'
+                              '"radius": 50.0\n'
                               '},\n'
                               '{\n'
                               '"name": "stage2",\n'

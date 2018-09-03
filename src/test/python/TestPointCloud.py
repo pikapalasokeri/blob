@@ -6,6 +6,8 @@ class TestPointCloud(unittest.TestCase):
     def test_Empty(self):
         c = PointCloud()
         self.assertEquals(c.size(), 0)
+        self.assertEquals(c.min(), (None, None))
+        self.assertEquals(c.max(), (None, None))
 
     def test_AddPoints(self):
         c = PointCloud()
@@ -17,6 +19,8 @@ class TestPointCloud(unittest.TestCase):
         self.assertEquals(points[0][1], 2.0)
         self.assertEquals(points[1][0], 3.0)
         self.assertEquals(points[1][1], 4.0)
+        self.assertEquals(c.max(), (3.0, 4.0))
+        self.assertEquals(c.min(), (1.0, 2.0))
 
     def test_AddNonFloatXY(self):
         c = PointCloud()
