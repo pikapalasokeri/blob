@@ -1,6 +1,7 @@
 import ImageUtilities
 from EdgeDetector import EdgeDetector
 import numpy as np
+import PointCloud
 
 
 class NopStage:
@@ -56,14 +57,7 @@ class EdgeDetectorStage:
         return self._executionResult
 
     def getImageRepresentation(self):
-        if 0 == self._executionResult.size():
-            return np.zeros((10, 10, 3))
-        cols = int(self._executionResult.max()[1] + self._executionResult.min()[1]) + 1
-        rows = int(self._executionResult.max()[0] + self._executionResult.min()[0]) + 1
-        print(cols, rows)
-        ret = np.zeros((rows, cols, 3))
-        ImageUtilities.addPointsToImage(ret, self._executionResult, 0)
-        return ret
+        return PointCloud.PointCloudToRgbImage(self._executionResult, 0)
 
     def __ne__(self, other):
         if type(self) != type(other):

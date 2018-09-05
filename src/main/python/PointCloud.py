@@ -1,4 +1,15 @@
 import numpy as np
+import ImageUtilities
+
+
+def PointCloudToRgbImage(cloud, color):
+    if 0 == cloud.size():
+        return np.zeros((10, 10, 3))
+    cols = int(cloud.max()[1] + cloud.min()[1]) + 1
+    rows = int(cloud.max()[0] + cloud.min()[0]) + 1
+    ret = np.zeros((rows, cols, 3))
+    ImageUtilities.addPointsToImage(ret, cloud, color)
+    return ret
 
 
 class PointCloud:

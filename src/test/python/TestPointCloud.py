@@ -1,5 +1,6 @@
 import unittest
-from PointCloud import PointCloud
+from PointCloud import PointCloud, PointCloudToRgbImage
+import numpy as np
 
 
 class TestPointCloud(unittest.TestCase):
@@ -31,5 +32,26 @@ class TestPointCloud(unittest.TestCase):
         c = PointCloud()
         with self.assertRaises(ValueError):
             c.addPoint(["not float", 1.0])
-
         # No coverage yet for ndarray float64 stuff
+
+    def test_ToRgb(self):
+        c = PointCloud()
+        image = PointCloudToRgbImage(c, 0)
+        rows, cols, channels = image.shape
+        self.assertEquals(channels, 3)
+        for element in np.nditer(image):
+            self.assertEquals(element, 0.0)
+
+        c.addXY(0.0, 0.0)
+        c.addXY(10.0, 10.0)
+        image = PointCloudToRgbImage(c, 0)
+        rows, cols, channels = image.shape
+        self.assertEquals(rows, 11)
+        self.assertEquals(cols, 11)
+        self.assertEquals(image[0, 0, 0], 255)
+        self.assertEquals(image[0, 0, 1], 0)
+        self.assertEquals(image[0, 0, 2], 0)
+        self.assertEquals(image[10, 10, 0], 255)
+        self.assertEquals(image[10, 10, 1], 0)
+        self.assertEquals(image[10, 10, 2], 0)
+        self.assertEquals(np.sum(image), 510)
