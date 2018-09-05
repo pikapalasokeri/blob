@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtCore import QVariant, QAbstractTableModel
-from PyQt5.QtGui import QPixmap, QColor, QImage
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 import numpy as np
@@ -25,16 +25,10 @@ def qImageToMatrix(inData):
 
 def matrixToQImage(inData):
     print("+matrix to QImage")
-    shape = inData.shape
-    height = shape[0]
-    width = shape[1]
-    outImage = QImage(width, height, QtGui.QImage.Format_RGB888)
-    for row in range(0, height):
-        for col in range(0, width):
-            color = QColor(inData[row, col, 0],
-                           inData[row, col, 1],
-                           inData[row, col, 2])
-            outImage.setPixel(col, row, color.rgb())
+    height, width, channels = inData.shape
+    tmp = np.ones((height, width, channels), dtype=np.uint8)
+    tmp[:, :, :] = inData[:, :, :]
+    outImage = QImage(tmp.data, width, height, channels * width, QtGui.QImage.Format_RGB888)
     print("-matrix to QImage")
     return outImage
 
