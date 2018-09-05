@@ -56,6 +56,8 @@ class EdgeDetectorStage:
         return self._executionResult
 
     def getImageRepresentation(self):
+        if 0 == self._executionResult.size():
+            return np.zeros((10, 10, 3))
         cols = int(self._executionResult.max()[1] + self._executionResult.min()[1]) + 1
         rows = int(self._executionResult.max()[0] + self._executionResult.min()[0]) + 1
         print(cols, rows)
@@ -70,3 +72,41 @@ class EdgeDetectorStage:
             return True
         if self._threshold != other._threshold:
             return True
+
+
+class CropStage:
+    def __init__(self, x, y, width, height):
+        self._x = x
+        self._y = y
+        self._width = width
+        self._height = height
+        self._executionResult = None
+
+    def execute(self, rgbMatrix):
+        shape = rgbMatrix.shape
+        if (len(shape) != 3 or shape[2] != 3):
+            raise Exception("Input to CropStage must be rgb matrix.")
+
+        intX = int((self._x - self._width * 0.5) * shape[1])
+        intY = int((self._y - self._height * 0.5) * shape[0])
+        intWidth = int(self._width * shape[1])
+        intHeight = int(self._height * shape[0])
+
+        print(intX, intY, intWidth, intHeight)
+
+        self._executionResult = rgbMatrix[intY:intY + intHeight,
+                                          intX:intX + intWidth,
+                                          :]
+        return self._executionResult
+
+    def getImageRepresentation(self):
+        return self._executionResult
+
+    def __ne__(self, other):
+        if type(self) != type(other):
+            return True
+
+        return (self._x != other._x or
+                self._y != other._y or
+                self._width != other._width or
+                self._height != other._height)

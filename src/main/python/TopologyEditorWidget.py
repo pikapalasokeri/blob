@@ -33,7 +33,13 @@ class JsonParser(QObject):
         for element in jsonDict:
             name = element["name"]
             stageType = element["type"]
-            if stageType == "GrayscaleConversion":
+            if stageType == "Crop":
+                pipeline.appendStage(PipelineStage.CropStage(element["x"],
+                                                             element["y"],
+                                                             element["width"],
+                                                             element["height"]),
+                                     name)
+            elif stageType == "GrayscaleConversion":
                 pipeline.appendStage(PipelineStage.GrayscaleConversionStage(), name)
             elif stageType == "EdgeDetector":
                 pipeline.appendStage(PipelineStage.EdgeDetectorStage(element["sigma"],
@@ -63,6 +69,14 @@ class JsonEditorWidget(QWidget):
     def __init__(self, parent, jsonParser):
         super().__init__(parent)
         editor = JsonTextEdit('[\n'
+                              '{\n'
+                              '"name": "crop",\n'
+                              '"type": "Crop",\n'
+                              '"x": 0.5,\n'
+                              '"y": 0.5,\n'
+                              '"width": 0.5,\n'
+                              '"height": 0.5\n'
+                              '},\n'
                               '{\n'
                               '"name": "gray",\n'
                               '"type": "GrayscaleConversion"\n'
