@@ -11,10 +11,13 @@ class EdgeDetector:
 
         self._image = monochromeImage
 
-    def getEdges(self, scale, thresholdFactor, radius):
+    def getEdges(self, scale, thresholdFactor):
         laplacianOfGaussian = ndimage.gaussian_laplace(self._image, scale)  # ish 0.57 seconds
         zeroCrossings = _findZeroCrossings(laplacianOfGaussian, thresholdFactor)  # ish 0.25 sec
-        return _keepInsideRadius(zeroCrossings, radius)  # ish 0.05 secs
+        result = PointCloud()
+        for x, y in zip(zeroCrossings[0], zeroCrossings[1]):
+            result.addXY(float(x), float(y))
+        return result
 
 
 def _findZeroCrossings(image, thresholdFactor):
@@ -34,17 +37,3 @@ def _findZeroCrossings(image, thresholdFactor):
     downCrossings = np.nonzero((downSignDiff != 0.0) & (downDiff > threshold))
 
     return (np.concatenate((rightCrossings[0] + 0.5, downCrossings[0])), np.concatenate((rightCrossings[1], downCrossings[1] + 0.5)))
-
-
-def _keepInsideRadius(points, radius):
-    xMean = np.mean(points[0])
-    yMean = np.mean(points[1])
-
-    result = PointCloud()
-    radiusSquare = radius**2
-    for x, y in zip(points[0], points[1]):
-        squareDistanceFromMean = float((x - xMean)**2 + (y - yMean)**2)
-        if squareDistanceFromMean <= radiusSquare:
-            result.addXY(float(x), float(y))
-
-    return result

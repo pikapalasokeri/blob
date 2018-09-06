@@ -1,7 +1,7 @@
 import ImageUtilities
 from EdgeDetector import EdgeDetector
 import numpy as np
-import PointCloud
+from PointCloud import PointCloud, PointCloudToRgbImage
 
 
 class NopStage:
@@ -42,22 +42,20 @@ class GrayscaleConversionStage:
 
 
 class EdgeDetectorStage:
-    def __init__(self, sigma, threshold, radius):
+    def __init__(self, sigma, threshold):
         self._sigma = sigma
         self._threshold = threshold
-        self._radius = radius
         self._executionResult = None
 
     def execute(self, inData):
         print("Executing edge detector stage")
         edgeDetector = EdgeDetector(inData)
         self._executionResult = edgeDetector.getEdges(self._sigma,
-                                                      self._threshold,
-                                                      self._radius)
+                                                      self._threshold)
         return self._executionResult
 
     def getImageRepresentation(self):
-        return PointCloud.PointCloudToRgbImage(self._executionResult, 0)
+        return PointCloudToRgbImage(self._executionResult, 0)
 
     def __ne__(self, other):
         if type(self) != type(other):
@@ -66,6 +64,31 @@ class EdgeDetectorStage:
             return True
         if self._threshold != other._threshold:
             return True
+        return False
+
+
+class KeepInsideRadiusStage:
+    def __init__(self, radius):
+        self._radius = radius
+        self._executionResult = None
+
+    def execute(self, pointCloud):
+        mean = pointCloud.mean()
+        self._executionResult = PointCloud()
+        radiusSquare = self._radius**2
+        for x, y in pointCloud:
+            squareDistanceFromMean = float((x - mean[0])**2 + (y - mean[1])**2)
+            if squareDistanceFromMean <= radiusSquare:
+                self._executionResult.addXY(float(x), float(y))
+        return self._executionResult
+
+    def getImageRepresentation(self):
+        return PointCloudToRgbImage(self._executionResult, 0)
+
+    def __ne__(self, other):
+        if type(self) != type(other):
+            return True
+        return self._radius != other._radius
 
 
 class CropStage:

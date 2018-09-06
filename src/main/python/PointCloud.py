@@ -45,6 +45,16 @@ class PointCloud:
     def max(self):
         return self._max
 
+    def mean(self):
+        if 0 == self.size():
+            return (None, None)
+        mx = 0.0
+        my = 0.0
+        for p in self:
+            mx += p[0]
+            my += p[1]
+        return (mx / self.size(), my / self.size())
+
     def __iter__(self):
         for point in self._points:
             yield point

@@ -5,6 +5,7 @@ from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessCompu
 from CoherentPointDriftMatcher import transform
 from PointCloud import PointCloud
 from ImageUtilities import rgb2grayNaive
+import PipelineStage
 
 
 class Classifier:
@@ -33,9 +34,9 @@ class Classifier:
     def _detectEdges(self, image):
         edgeDetector = EdgeDetector(rgb2grayNaive(image.image))
         edges = edgeDetector.getEdges(self._edgeDetectionConfig.sigma,
-                                      self._edgeDetectionConfig.thresholdFactor,
-                                      self._edgeDetectionConfig.radius)
-
+                                      self._edgeDetectionConfig.thresholdFactor)
+        keepInsideStage = PipelineStage.KeepInsideRadiusStage(self._edgeDetectionConfig.radius)
+        edges = keepInsideStage.execute(edges)
         trimmedEdges = self._trimEdges(edges)
         return _convertToMatrix(trimmedEdges)
 
