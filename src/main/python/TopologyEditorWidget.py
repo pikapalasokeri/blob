@@ -1,59 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QGridLayout, QPlainTextEdit, QListWidget
-from PyQt5.QtCore import QObject, pyqtSignal
-from ImageProcessingPipeline import ImageProcessingPipeline
-import PipelineStage
-import json
-
-
-RAW_IMAGE_STAGE = "Raw image"
-
-
-class JsonParser(QObject):
-    processingModelUpdated = pyqtSignal(ImageProcessingPipeline)
-
-    def __init__(self):
-        super().__init__()
-
-    def tryUpdate(self, maybeJsonText):
-        try:
-            validJson = json.loads(maybeJsonText)
-            if type(validJson) == list:
-                nodeNames = []
-                for element in validJson:
-                    if "name" in element:
-                        nodeNames.append(element["name"])
-                self.processingModelUpdated.emit(self._jsonToPipeline(validJson))
-        except json.JSONDecodeError as e:
-            print(str(e))
-
-    def _jsonToPipeline(self, jsonDict):
-        pipeline = ImageProcessingPipeline()
-        pipeline.appendStage(PipelineStage.NopStage(), RAW_IMAGE_STAGE)
-
-        for element in jsonDict:
-            name = element["name"]
-            stageType = element["type"]
-            if stageType == "Crop":
-                pipeline.appendStage(PipelineStage.CropStage(element["x"],
-                                                             element["y"],
-                                                             element["width"],
-                                                             element["height"]),
-                                     name)
-            elif stageType == "GrayscaleConversion":
-                pipeline.appendStage(PipelineStage.GrayscaleConversionStage(), name)
-            elif stageType == "EdgeDetector":
-                pipeline.appendStage(PipelineStage.EdgeDetectorStage(element["sigma"],
-                                                                     element["threshold"]),
-                                     name)
-            elif stageType == "KeepInsideRadius":
-                pipeline.appendStage(PipelineStage.KeepInsideRadiusStage(element["radius"]),
-                                     element["name"])
-            elif stageType == "Nop":
-                pipeline.appendStage(PipelineStage.NopStage(), name)
-            else:
-                raise Exception("Unknown pipeline stage type '{}'".format(stageType))
-
-        return pipeline
+from PyQt5.QtCore import pyqtSignal
 
 
 class JsonTextEdit(QPlainTextEdit):
@@ -68,7 +14,7 @@ class JsonTextEdit(QPlainTextEdit):
 
 
 class JsonEditorWidget(QWidget):
-    def __init__(self, parent, jsonParser):
+    def __init__(self, parent, jsonKeeper):
         super().__init__(parent)
         editor = JsonTextEdit('[\n'
                               '{\n'
@@ -102,7 +48,7 @@ class JsonEditorWidget(QWidget):
         editor.setStyleSheet("QPlainTextEdit{font-family: Courier New;}")
         editor.resize(400, 700)
 
-        editor.newTextChanged.connect(jsonParser.tryUpdate)
+        editor.newTextChanged.connect(jsonKeeper.tryUpdate)
 
 
 class NodeListWidget(QWidget):
@@ -119,10 +65,10 @@ class NodeListWidget(QWidget):
 
 
 class TopologyEditorWidget(QWidget):
-    def __init__(self, parent, jsonParser, imageTableModel):
+    def __init__(self, parent, jsonKeeper, imageTableModel):
         super().__init__(parent)
 
-        jsonEditor = JsonEditorWidget(self, jsonParser)
+        jsonEditor = JsonEditorWidget(self, jsonKeeper)
         nodeList = NodeListWidget(self, imageTableModel)
 
         grid = QGridLayout()
@@ -130,4 +76,4 @@ class TopologyEditorWidget(QWidget):
         grid.addWidget(jsonEditor, 0, 1)
         self.setLayout(grid)
 
-        jsonParser.processingModelUpdated.connect(nodeList.update)
+        jsonKeeper.processingModelUpdated.connect(nodeList.update)

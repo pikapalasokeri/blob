@@ -16,6 +16,7 @@ install(FILES Classifier.py
               ImageProcessingPipeline.py
               ImageTableModel.py
               ImageUtilities.py
+              JsonPipelineParser.py
               PipelineStage.py
               PointCloud.py
               PointCloudHandler.py
