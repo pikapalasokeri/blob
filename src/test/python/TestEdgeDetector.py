@@ -39,7 +39,7 @@ class TestEdgeDetector(unittest.TestCase):
         expectedPointCloud.addXY(2.0, 1.5)
 
         e = EdgeDetector(simpleImage)
-        pointCloud = e.getEdges(1.0, 17.0, 10.0)
+        pointCloud = e.getEdges(1.0, 17.0)
 
         for point, expectedPoint in zip(pointCloud, expectedPointCloud):
             self.assertEqual(point[0], expectedPoint[0])
@@ -48,17 +48,17 @@ class TestEdgeDetector(unittest.TestCase):
     def test_RealImage(self):
         image = rgb2grayNaive(readImage("images_unittest/1.jpg"))
         e = EdgeDetector(image)
-        cloud = e.getEdges(2.2, 6.5, 30)
-        self.assertEqual(cloud.size(), 140)
+        cloud = e.getEdges(2.2, 6.5)
+        self.assertEqual(cloud.size(), 300)
 
-        fewPointsCloud = e.getEdges(2.2, 26.0, 30)
+        fewPointsCloud = e.getEdges(2.2, 26.0)
         self.assertEqual(fewPointsCloud.size(), 2)
 
-        noPointsCloud = e.getEdges(2.2, 27.0, 30)
+        noPointsCloud = e.getEdges(2.2, 27.0)
         self.assertEqual(noPointsCloud.size(), 0)
 
     def test_EmptyImage(self):
         emptyImage = np.zeros((0, 0))
         e = EdgeDetector(emptyImage)
-        noPointsCloud = e.getEdges(2.0, 6.0, 30.0)
+        noPointsCloud = e.getEdges(2.0, 6.0)
         self.assertEqual(noPointsCloud.size(), 0)

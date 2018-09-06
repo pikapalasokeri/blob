@@ -9,6 +9,7 @@ install(FILES createConfig.py
               DemoMatch.py
               DemoSimpleThrow.py
               main.py
+              QtConfigCreator.py
               wrapper.sh
   DESTINATION ${INSTALL_DIR}
   PERMISSIONS OWNER_READ OWNER_EXECUTE

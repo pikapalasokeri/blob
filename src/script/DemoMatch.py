@@ -12,6 +12,7 @@ from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
 from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
 from CoherentPointDriftMatcher import transform
 from ImageUtilities import rgb2grayNaive
+import PipelineStage
 
 
 def addEdgesToImage(image, edges, colorIx):
@@ -67,8 +68,13 @@ if __name__ == "__main__":
 
     edgeDetector1 = EdgeDetector(rgb2grayNaive(img1))
     edgeDetector2 = EdgeDetector(rgb2grayNaive(img2))
-    edges1 = edgeDetector1.getEdges(sigma, thresholdFactor, radius)
-    edges2 = edgeDetector2.getEdges(sigma, thresholdFactor, radius)
+    edges1 = edgeDetector1.getEdges(sigma, thresholdFactor)
+    keepInsideStage = PipelineStage.KeepInsideRadiusStage(radius)
+    edges1 = keepInsideStage.execute(edges1)
+
+    edges2 = edgeDetector2.getEdges(sigma, thresholdFactor)
+    keepInsideStage = PipelineStage.KeepInsideRadiusStage(radius)
+    edges2 = keepInsideStage.execute(edges2)
 
     end = timer()
     print("edgedetector:", end - start)

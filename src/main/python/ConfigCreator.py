@@ -5,6 +5,7 @@ from ImageUtilities import addPointsToImage, rgb2grayNaive
 from EdgeDetector import EdgeDetector
 from DirectoryImageReader import DirectoryImageReader
 import PointCloudHandler
+import PipelineStage
 
 sigmaNumber = 1
 thresholdFactorNumber = 2
@@ -93,7 +94,10 @@ class ConfigCreator:
             ax = self._referenceImagesFigure.add_subplot(numPlotsPerSide, numPlotsPerSide, ix + 1)
 
             edgeDetector = EdgeDetector(rgb2grayNaive(reference.image))
-            edges = edgeDetector.getEdges(self._sigma, self._thresholdFactor, self._radius)
+            edges = edgeDetector.getEdges(self._sigma, self._thresholdFactor)
+            keepInsideStage = PipelineStage.KeepInsideRadiusStage(self._radius)
+            edges = keepInsideStage.execute(edges)
+
             imageToShow = reference.image.copy()
             addPointsToImage(imageToShow, edges, 1)
 
@@ -110,7 +114,9 @@ class ConfigCreator:
         for image in imageReader.generate():
             print(image.comment)
             edgeDetector = EdgeDetector(rgb2grayNaive(image.image))
-            cloud = edgeDetector.getEdges(self._sigma, self._thresholdFactor, self._radius)
+            cloud = edgeDetector.getEdges(self._sigma, self._thresholdFactor)
+            keepInsideStage = PipelineStage.KeepInsideRadiusStage(self._radius)
+            cloud = keepInsideStage.execute(cloud)
 
             outFilePath = os.path.join(outputDirStr, image.comment + outputPostfixStr)
             outFile = open(outFilePath, "w")

@@ -1,15 +1,11 @@
 #!/usr/bin/python3
 
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication
 import sys
+from ClassifierPipelineCreator import ClassifierPipelineCreator
+
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-
-    mainWindow = QWidget()
-    mainWindow.resize(300, 300)
-    mainWindow.move(300, 300)
-    mainWindow.setWindowTitle("Blob config creator")
-    mainWindow.show()
-
+    app = QApplication([])
+    creator = ClassifierPipelineCreator()
     sys.exit(app.exec_())
