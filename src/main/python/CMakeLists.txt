@@ -19,6 +19,7 @@ install(FILES Classifier.py
               JsonPipelineParser.py
               PipelineStage.py
               PointCloud.py
+              PointCloudCreator.py
               PointCloudHandler.py
               ReferenceImage.py
               TopologyEditorWidget.py
