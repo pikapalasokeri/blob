@@ -21,9 +21,10 @@ class ClassifierPipelineCreator(QMainWindow):
         self._jsonKeeper = JsonPipelineKeeper()
         self._jsonKeeper.processingModelUpdated.connect(model.setPipeline)
 
-        self.pointCloudCreator = PointCloudCreator(model)
-        imageGrid = ImageGridWidget(self, model, self.pointCloudCreator)
-        topologyEditor = TopologyEditorWidget(self, self._jsonKeeper, model)
+        self._pointCloudCreator = PointCloudCreator()
+        self._jsonKeeper.processingModelUpdated.connect(self._pointCloudCreator.setPipeline)
+        imageGrid = ImageGridWidget(self, model, self._pointCloudCreator)
+        topologyEditor = TopologyEditorWidget(self, self._jsonKeeper, model, self._pointCloudCreator)
 
         mainGrid = QGridLayout()
         mainGrid.addWidget(imageGrid, 0, 0)

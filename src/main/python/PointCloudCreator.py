@@ -118,9 +118,10 @@ class CloudCreatorStateTracker:
 
 
 class PointCloudCreator:
-    def __init__(self, tableModel):
-        self._tableModel = tableModel
+    def __init__(self):
         self._currentlySelected = []
+        self._lastPipelineStage = None
+        self._pipeline = None
 
     def launchCloudCreator(self, args):
         print("Launching cloud creator")
@@ -128,6 +129,14 @@ class PointCloudCreator:
         self._cloudCreatorStateTracker = CloudCreatorStateTracker()
         self._gui = CloudCreatorWindow(self._cloudCreatorStateTracker)
         self._gui.show()
+
+    def setPipeline(self, pipeline):
+        print("PointCloudCreator.setPipeline")
+        self._pipeline = pipeline
+
+    def setLastPipelineStage(self, lastStageItem):
+        print("PointCloudCreator.setLastPipelineStage:", lastStageItem.text())
+        self._lastPipelineStage = lastStageItem.text()
 
     def updateSelection(self, selected, deselected):
         print("Updating selection")

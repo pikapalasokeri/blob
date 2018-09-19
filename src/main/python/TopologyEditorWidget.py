@@ -52,11 +52,12 @@ class JsonEditorWidget(QWidget):
 
 
 class NodeListWidget(QWidget):
-    def __init__(self, parent, imageTableModel):
+    def __init__(self, parent, imageTableModel, pointCloudCreator):
         super().__init__(parent)
         self._nodeList = QListWidget(self)
         self._nodeList.resize(200, 400)
         self._nodeList.itemClicked.connect(imageTableModel.setLastPipelineStage)
+        self._nodeList.itemClicked.connect(pointCloudCreator.setLastPipelineStage)
 
     def update(self, pipeline):
         nodeNames = pipeline.getStageNames()
@@ -65,11 +66,11 @@ class NodeListWidget(QWidget):
 
 
 class TopologyEditorWidget(QWidget):
-    def __init__(self, parent, jsonKeeper, imageTableModel):
+    def __init__(self, parent, jsonKeeper, imageTableModel, pointCloudCreator):
         super().__init__(parent)
 
         jsonEditor = JsonEditorWidget(self, jsonKeeper)
-        nodeList = NodeListWidget(self, imageTableModel)
+        nodeList = NodeListWidget(self, imageTableModel, pointCloudCreator)
 
         grid = QGridLayout()
         grid.addWidget(nodeList, 0, 0)
