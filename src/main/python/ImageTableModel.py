@@ -34,6 +34,8 @@ def matrixToQImage(inData):
 
 
 class ImageTableModel(QAbstractTableModel):
+    selectedImagesChanged = QtCore.pyqtSignal(list)
+
     def __init__(self, parent, imageSize):
         super().__init__(parent)
         self._rowCount = 0
@@ -42,6 +44,8 @@ class ImageTableModel(QAbstractTableModel):
         self._currentLastStage = None
         self._originalImages = []
         self._currentPixmaps = []
+        self._currentlySelected = []
+        self._currentlySelectedImages = []
 
     def rowCount(self, parent):
         return self._rowCount
@@ -77,8 +81,13 @@ class ImageTableModel(QAbstractTableModel):
         if len(filePaths) > 0:
             self.beginResetModel()
 
-            self._originalFiles = filePaths
-            self._originalImages = [QImage(path) for path in filePaths]
+            self._currentlySelected = []
+            self._currentlySelectedImages = []
+            self.selectedImagesChanged.emit(self._currentlySelectedImages)
+            for path in filePaths:
+                image = QImage(path)
+                image.setText("path", path)
+                self._originalImages.append(image)
             self._executePipelineUntil(self._currentLastStage)
 
             self._rowCount = int(len(self._currentPixmaps) / COLUMN_COUNT)
@@ -100,3 +109,19 @@ class ImageTableModel(QAbstractTableModel):
                 self._currentPixmaps.append(QPixmap(processedImage.scaledToWidth(self._imageSize)))
 
         self.endResetModel()
+
+    def updateSelection(self, selected, deselected):
+        print("Updating selection")
+        for modelIndex in selected.indexes():
+            self._currentlySelected.append((modelIndex.row(), modelIndex.column()))
+        for modelIndex in deselected.indexes():
+            self._currentlySelected.remove((modelIndex.row(), modelIndex.column()))
+        self._currentlySelected.sort()
+        print(self._currentlySelected)
+
+        self._currentlySelectedImages = [self._originalImages[COLUMN_COUNT * i + j] for i, j in self._currentlySelected]
+
+        self.selectedImagesChanged.emit(self._currentlySelectedImages)
+        # TODO: selection must be clear whenever focus changes from imagetable,
+        # or selection must be remembered and picked up again when focus changes back to imagetable
+        # TODO: will out of bounds when selecting (1, 1) if only loaded 3 images for example.

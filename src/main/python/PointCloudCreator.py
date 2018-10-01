@@ -138,10 +138,8 @@ class PointCloudCreator:
         print("PointCloudCreator.setLastPipelineStage:", lastStageItem.text())
         self._lastPipelineStage = lastStageItem.text()
 
-    def updateSelection(self, selected, deselected):
-        print("Updating selection")
-        for modelIndex in selected.indexes():
-            self._currentlySelected.append((modelIndex.row(), modelIndex.column()))
-        for modelIndex in deselected.indexes():
-            self._currentlySelected.remove((modelIndex.row(), modelIndex.column()))
-        self._currentlySelected.sort()
+    def updateSelectedImages(self, newSelection):
+        self._currentlySelected = newSelection
+        print("PointCloudCreator updateSelectedImages")
+        for img in self._currentlySelected:
+            print(img.text("path"))
