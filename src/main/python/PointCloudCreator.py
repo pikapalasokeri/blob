@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QPushButton, QListWidget, QLabel, QWidget
 from PyQt5.QtGui import QPixmap, QColor, QPainter
 from PyQt5.QtCore import pyqtSignal
+import os
 
 
 PIXMAP_SIZE = 400
@@ -94,16 +95,21 @@ class CloudCreatorWindow(QMainWindow):
         noLabel.resize(200, 200)
         yesLabel.resize(200, 200)
 
-        filenameList = QListWidget()
+        self._filenameList = QListWidget()
         saveButton = QPushButton("Save")
         mainLayout.addWidget(noLabel)
         mainLayout.addWidget(yesLabel)
-        listLayout.addWidget(filenameList)
+        listLayout.addWidget(self._filenameList)
         listLayout.addWidget(saveButton)
         mainLayout.addLayout(listLayout)
         mainWidget.setLayout(mainLayout)
 
         self.setCentralWidget(mainWidget)
+
+    def setListItems(self, items):
+        self._filenameList.clear()
+        self._filenameList.addItems(items)
+        print("setlistitems:", items)
 
 
 class CloudCreatorStateTracker:
@@ -122,12 +128,14 @@ class PointCloudCreator:
         self._currentlySelected = []
         self._lastPipelineStage = None
         self._pipeline = None
+        self._gui = None
 
     def launchCloudCreator(self, args):
         print("Launching cloud creator")
         print(self._currentlySelected)
         self._cloudCreatorStateTracker = CloudCreatorStateTracker()
         self._gui = CloudCreatorWindow(self._cloudCreatorStateTracker)
+        self._gui.setListItems([os.path.basename(img.text("path")) for img in self._currentlySelected])
         self._gui.show()
 
     def setPipeline(self, pipeline):
@@ -143,3 +151,5 @@ class PointCloudCreator:
         print("PointCloudCreator updateSelectedImages")
         for img in self._currentlySelected:
             print(img.text("path"))
+        if self._gui is not None:
+            self._gui.setListItems([os.path.basename(img.text("path")) for img in self._currentlySelected])
