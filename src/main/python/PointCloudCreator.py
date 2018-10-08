@@ -96,6 +96,8 @@ class CloudCreatorWindow(QMainWindow):
         yesLabel.resize(200, 200)
 
         self._filenameList = QListWidget()
+        self._filenameList.itemClicked.connect(tracker.filenameClicked)
+        self.setListItems(tracker.getFilenames())
         saveButton = QPushButton("Save")
         mainLayout.addWidget(noLabel)
         mainLayout.addWidget(yesLabel)
@@ -114,7 +116,10 @@ class CloudCreatorWindow(QMainWindow):
 
 class CloudCreatorStateTracker:
     def __init__(self):
-        pass
+        self._images = []
+
+    def filenameClicked(self, filenameItem):
+        print("filenameClicked:", filenameItem.text())
 
     def yesRectangle(self, coordinates):
         print("Yes area selected", coordinates)
@@ -122,20 +127,25 @@ class CloudCreatorStateTracker:
     def noRectangle(self, coordinates):
         print("No area selected", coordinates)
 
+    def setImages(self, images):
+        self._images = images
+        for img in self._images:
+            print(img.text("path"))
+
+    def getFilenames(self):
+        return [os.path.basename(img.text("path")) for img in self._images]
+
 
 class PointCloudCreator:
     def __init__(self):
-        self._currentlySelected = []
+        self._cloudCreatorStateTracker = CloudCreatorStateTracker()
         self._lastPipelineStage = None
         self._pipeline = None
         self._gui = None
 
     def launchCloudCreator(self, args):
         print("Launching cloud creator")
-        print(self._currentlySelected)
-        self._cloudCreatorStateTracker = CloudCreatorStateTracker()
         self._gui = CloudCreatorWindow(self._cloudCreatorStateTracker)
-        self._gui.setListItems([os.path.basename(img.text("path")) for img in self._currentlySelected])
         self._gui.show()
 
     def setPipeline(self, pipeline):
@@ -147,9 +157,7 @@ class PointCloudCreator:
         self._lastPipelineStage = lastStageItem.text()
 
     def updateSelectedImages(self, newSelection):
-        self._currentlySelected = newSelection
         print("PointCloudCreator updateSelectedImages")
-        for img in self._currentlySelected:
-            print(img.text("path"))
+        self._cloudCreatorStateTracker.setImages(newSelection)
         if self._gui is not None:
-            self._gui.setListItems([os.path.basename(img.text("path")) for img in self._currentlySelected])
+            self._gui.setListItems(self._cloudCreatorStateTracker.getFilenames())
