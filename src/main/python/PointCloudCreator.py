@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QPushButton, 
 from PyQt5.QtGui import QPixmap, QColor, QPainter
 from PyQt5.QtCore import pyqtSignal
 import os
+from PointCloud import PointCloud
+from QImageUtilities import qImageToMatrix
 
 
 PIXMAP_SIZE = 400
@@ -117,6 +119,11 @@ class CloudCreatorWindow(QMainWindow):
 class CloudCreatorStateTracker:
     def __init__(self):
         self._images = []
+        self._noPointClouds = []
+        self._yesPointClouds = []
+        self._filePaths = []
+        self._pipeline = None
+        self._lastPipelineStage = None
 
     def filenameClicked(self, filenameItem):
         print("filenameClicked:", filenameItem.text())
@@ -128,19 +135,38 @@ class CloudCreatorStateTracker:
         print("No area selected", coordinates)
 
     def setImages(self, images):
+        print("setImages", len(images))
         self._images = images
-        for img in self._images:
-            print(img.text("path"))
+        self._filePaths = [os.path.basename(img.text("path")) for img in self._images]
+        self._resetPointClouds()
 
     def getFilenames(self):
-        return [os.path.basename(img.text("path")) for img in self._images]
+        return [os.path.basename(path) for path in self._filePaths]
+
+    def setLastPipelineStage(self, stage):
+        self._lastPipelineStage = stage
+        self._resetPointClouds()
+
+    def setPipeline(self, pipeline):
+        self._pipeline = pipeline
+        self._resetPointClouds()
+
+    def _resetPointClouds(self):
+        print("reset point clouds")
+        if (self._pipeline is not None and self._lastPipelineStage is not None):
+            self._yesPointCloud = []
+            self._noPointCloud = []
+            for img in self._images:
+                pointCloud = self._pipeline.executeUntilRaw(self._lastPipelineStage, qImageToMatrix(img))
+                if type(pointCloud) is PointCloud:
+                    print("Added point cloud with size:", pointCloud.size())
+                    self._noPointCloud.append(pointCloud)
+                    self._yesPointCloud.append(PointCloud())
 
 
 class PointCloudCreator:
     def __init__(self):
         self._cloudCreatorStateTracker = CloudCreatorStateTracker()
-        self._lastPipelineStage = None
-        self._pipeline = None
         self._gui = None
 
     def launchCloudCreator(self, args):
@@ -150,11 +176,11 @@ class PointCloudCreator:
 
     def setPipeline(self, pipeline):
         print("PointCloudCreator.setPipeline")
-        self._pipeline = pipeline
+        self._cloudCreatorStateTracker.setPipeline(pipeline)
 
     def setLastPipelineStage(self, lastStageItem):
         print("PointCloudCreator.setLastPipelineStage:", lastStageItem.text())
-        self._lastPipelineStage = lastStageItem.text()
+        self._cloudCreatorStateTracker.setLastPipelineStage(lastStageItem.text())
 
     def updateSelectedImages(self, newSelection):
         print("PointCloudCreator updateSelectedImages")

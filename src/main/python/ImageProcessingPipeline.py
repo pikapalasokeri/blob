@@ -26,6 +26,14 @@ class ImageProcessingPipeline:
             lastStage = stage
             if name == lastStageName:
                 break
+        return result, lastStage
+
+    def executeUntilRaw(self, lastStageName, image):
+        result, _ = self.executeUntil(lastStageName, image)
+        return result
+
+    def executeUntilImage(self, lastStageName, image):
+        _, lastStage = self.executeUntil(lastStageName, image)
         return lastStage.getImageRepresentation()
 
     def appendStage(self, stage, name):
