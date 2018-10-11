@@ -112,7 +112,7 @@ class SelectableQLabel(QLabel):
 
 
 class CloudCreatorWindow(QMainWindow):
-    def __init__(self, tracker, parent=None):
+    def __init__(self, cloudState, parent=None):
         super().__init__(parent)
         '''
         list of images, click one and it shows
@@ -138,8 +138,8 @@ class CloudCreatorWindow(QMainWindow):
         listLayout = QVBoxLayout()
         self._noLabel = SelectableQLabel()
         self._yesLabel = SelectableQLabel()
-        self._noLabel.rectangleSelected.connect(tracker.noRectangle)
-        self._yesLabel.rectangleSelected.connect(tracker.yesRectangle)
+        self._noLabel.rectangleSelected.connect(cloudState.noRectangle)
+        self._yesLabel.rectangleSelected.connect(cloudState.yesRectangle)
 
         noPixmap = cloudToPixmap(PointCloud())
         yesPixmap = cloudToPixmap(PointCloud())
@@ -151,8 +151,8 @@ class CloudCreatorWindow(QMainWindow):
         self._yesLabel.resize(PIXMAP_SIZE, PIXMAP_SIZE)
 
         self._filenameList = QListWidget()
-        self._filenameList.itemClicked.connect(tracker.filenameClicked)
-        self.setListItems(tracker.getFilenames())
+        self._filenameList.itemClicked.connect(cloudState.filenameClicked)
+        self.setListItems(cloudState.getFilenames())
         saveButton = QPushButton("Save")
         mainLayout.addWidget(self._noLabel)
         mainLayout.addWidget(self._yesLabel)
@@ -177,7 +177,7 @@ class CloudCreatorWindow(QMainWindow):
         self._yesLabel.setBackgroundPixmap(yesPixmap)
 
 
-class CloudCreatorStateTracker(QObject):
+class CloudCreatorState(QObject):
     activePointCloudsChanged = pyqtSignal(tuple)
 
     def __init__(self):
@@ -254,25 +254,25 @@ class CloudCreatorStateTracker(QObject):
 
 class PointCloudCreator:
     def __init__(self):
-        self._cloudCreatorStateTracker = CloudCreatorStateTracker()
+        self._cloudCreatorState = CloudCreatorState()
         self._gui = None
 
     def launchCloudCreator(self, args):
         print("Launching cloud creator")
-        self._gui = CloudCreatorWindow(self._cloudCreatorStateTracker)
-        self._cloudCreatorStateTracker.activePointCloudsChanged.connect(self._gui.showPointClouds)
+        self._gui = CloudCreatorWindow(self._cloudCreatorState)
+        self._cloudCreatorState.activePointCloudsChanged.connect(self._gui.showPointClouds)
         self._gui.show()
 
     def setPipeline(self, pipeline):
         print("PointCloudCreator.setPipeline")
-        self._cloudCreatorStateTracker.setPipeline(pipeline)
+        self._cloudCreatorState.setPipeline(pipeline)
 
     def setLastPipelineStage(self, lastStageItem):
         print("PointCloudCreator.setLastPipelineStage:", lastStageItem.text())
-        self._cloudCreatorStateTracker.setLastPipelineStage(lastStageItem.text())
+        self._cloudCreatorState.setLastPipelineStage(lastStageItem.text())
 
     def updateSelectedImages(self, newSelection):
         print("PointCloudCreator updateSelectedImages")
-        self._cloudCreatorStateTracker.setImages(newSelection)
+        self._cloudCreatorState.setImages(newSelection)
         if self._gui is not None:
-            self._gui.setListItems(self._cloudCreatorStateTracker.getFilenames())
+            self._gui.setListItems(self._cloudCreatorState.getFilenames())
