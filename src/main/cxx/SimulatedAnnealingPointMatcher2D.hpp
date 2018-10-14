@@ -38,12 +38,12 @@ public:
 
   void setNumThreads(int);
 
-  void match(double scale[1][1], double rotation[2][2], double translation[1][2]);
+  void match(double scale[1][1], double rotation[2][2], double translation[1][2], double fitness[1][1]);
 
   void output() const;
 
 private:
-  void doMatch(double& scaleOut, RotationMatrix& rotationOut, TranslationVector& translationOut);
+  double doMatch(double& scaleOut, RotationMatrix& rotationOut, TranslationVector& translationOut);
 
   void setUpPointMatrices();
 

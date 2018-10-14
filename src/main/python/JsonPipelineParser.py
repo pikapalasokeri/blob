@@ -46,7 +46,11 @@ def jsonToPipeline(jsonDict):
                                  name)
         elif stageType == "KeepInsideRadius":
             pipeline.appendStage(PipelineStage.KeepInsideRadiusStage(element["radius"]),
-                                 element["name"])
+                                 name)
+        elif stageType == "SimulatedAnnealing":
+            pipeline.appendStage(PipelineStage.SimulatedAnnealingPointMatcherStage(element["reference_pointclouds"],
+                                                                                   element["annealer_settings"]),
+                                 name)
         elif stageType == "Nop":
             pipeline.appendStage(PipelineStage.NopStage(), name)
         else:

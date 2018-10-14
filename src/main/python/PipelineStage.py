@@ -2,6 +2,11 @@ import ImageUtilities
 from EdgeDetector import EdgeDetector
 import numpy as np
 from PointCloud import PointCloud, PointCloudToRgbImage
+from PointCloudHandler import getPointCloudFromIterable
+from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
+from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
+import sys
+from PIL import Image, ImageDraw
 
 
 class NopStage:
@@ -127,3 +132,72 @@ class CropStage:
                 self._y != other._y or
                 self._width != other._width or
                 self._height != other._height)
+
+
+class SimulatedAnnealingPointMatcherStage:
+    def __init__(self, pointClouds, annealerSettings):
+        self._annealers = {}
+        self._fitnessComputers = {}
+        for pointCloud in pointClouds:
+            jsonPath = pointCloud["filepath"]
+            referenceName = pointCloud["name"]
+            print(referenceName, jsonPath)
+
+            with open(jsonPath) as f:
+                referenceCloud = getPointCloudFromIterable(f)
+
+            center = referenceCloud.mean()
+            centeredReference = np.array(referenceCloud.asNumpyArray(), copy=True)
+            centeredReference[:, 0] -= center[0]
+            centeredReference[:, 1] -= center[1]
+
+            print(center)
+            print(referenceCloud.asNumpyArray())
+            print(centeredReference)
+            fitnessComputer = MeanShortestDistanceFitnessComputer(centeredReference)
+            annealer = SimulatedAnnealingPointMatcher2D(fitnessComputer)
+            # TODO: add parsing of annealerSettings.
+            # TODO: fix lifetime issues here so that we dont need to explicitly keep
+            # fitnessComputer around.
+            self._annealers[referenceName] = annealer
+            self._fitnessComputers[referenceName] = fitnessComputer
+
+    def execute(self, pointCloud):
+        center = pointCloud.mean()
+        centeredSample = np.array(pointCloud.asNumpyArray(), copy=True)
+        centeredSample[:, 0] -= center[0]
+        centeredSample[:, 1] -= center[1]
+
+        print("sample with center:", center)
+        self._bestReferenceName = "none"
+        bestFitness = sys.float_info.max
+        for referenceName, annealer in self._annealers.items():
+            print("matching")
+            scale, rotation, translation, fitness = annealer.match()
+            print("matched")
+            if (scale < 1.2 and scale > 0.8):
+                if fitness < bestFitness:
+                    bestFitness = fitness
+                    self._bestReferenceName = referenceName
+
+        return self._bestReferenceName
+
+    def getImageRepresentation(self):
+        print("getImageRepresentation:", self._bestReferenceName)
+        text = self._bestReferenceName
+        size = 100
+        canvas = Image.new("RGB", [size, size], (255, 255, 255))
+        draw = ImageDraw.Draw(canvas)
+        textWidth, textHeight = draw.textsize(text)
+        offset = ((size - textWidth) // 2, (size - textHeight) // 2)
+        white = "#808080"
+        draw.text(offset, text, fill=white)
+        ret = 255.0 - np.asarray(canvas)
+        return ret
+
+    def __ne__(self, other):
+        if type(self) != type(other):
+            return True
+
+        # TODO: dont do pointer comparison here.
+        return self._annealers != self._annealers

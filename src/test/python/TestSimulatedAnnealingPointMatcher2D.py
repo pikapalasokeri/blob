@@ -38,9 +38,10 @@ class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
         m.setStartTemperature(0.05)
         m.setNumIterations(200)
 
-        scale, rotation, translation = m.match()
+        scale, rotation, translation, fitness = m.match()
 
-        self.assertAlmostEqual(scale, 1.0)
+        self.assertAlmostEqual(fitness[0, 0], 0.0, places=4)
+        self.assertAlmostEqual(scale[0, 0], 1.0)
         numDigits = 2
         self.assertMatrixAlmostEquals(rotation, R, numDigits)
         self.assertMatrixAlmostEquals(translation, translation, numDigits)
@@ -64,9 +65,10 @@ class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
         m.setStartTemperature(0.0)
         m.setNumIterations(200)
 
-        scale, rotation, translation = m.match()
+        scale, rotation, translation, fitness = m.match()
 
-        self.assertAlmostEqual(scale, 1.0)
+        self.assertAlmostEqual(fitness[0, 0], 0.0)
+        self.assertAlmostEqual(scale[0, 0], 1.0)
         numDigits = 1
         self.assertMatrixAlmostEquals(rotation, R, numDigits)
         self.assertMatrixAlmostEquals(translation, translation, numDigits)

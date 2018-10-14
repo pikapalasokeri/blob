@@ -36,6 +36,9 @@ class PointCloud:
         self._points = np.append(self._points, [point], axis=0)
         self._updateMaxMin(point)
 
+    def asNumpyArray(self):
+        return self._points
+
     def size(self):
         return self._points.shape[0]
 

@@ -17,6 +17,7 @@
 %apply (double ARGOUT_ARRAY2[ANY][ANY]) {(double scale[1][1])};
 %apply (double ARGOUT_ARRAY2[ANY][ANY]) {(double rotation[2][2])};
 %apply (double ARGOUT_ARRAY2[ANY][ANY]) {(double translation[1][2])};
+%apply (double ARGOUT_ARRAY2[ANY][ANY]) {(double fitness[1][1])};
 
 class SimulatedAnnealingPointMatcher2D
 {
@@ -45,7 +46,7 @@ public:
 
   void setNumThreads(int);
 
-  void match(double scale[1][1], double rotation[2][2], double translation[1][2]);
+  void match(double scale[1][1], double rotation[2][2], double translation[1][2], double fitness[1][1]);
 
   void output() const;
 };

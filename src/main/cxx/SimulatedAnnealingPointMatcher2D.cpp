@@ -87,12 +87,12 @@ SimulatedAnnealingPointMatcher2D::setNumThreads(int numThreads)
 }
 
 void
-SimulatedAnnealingPointMatcher2D::match(double scaleOut[1][1], double rotationOut[2][2], double translationOut[1][2])
+SimulatedAnnealingPointMatcher2D::match(double scaleOut[1][1], double rotationOut[2][2], double translationOut[1][2], double fitnessOut[1][1])
 {
   double scale;
   RotationMatrix rotation;
   TranslationVector translation;
-  doMatch(scale, rotation, translation);
+  const double fitness = doMatch(scale, rotation, translation);
 
   scaleOut[0][0] = scale;
   rotationOut[0][0] = rotation(0, 0);
@@ -101,9 +101,10 @@ SimulatedAnnealingPointMatcher2D::match(double scaleOut[1][1], double rotationOu
   rotationOut[1][1] = rotation(1, 1);
   translationOut[0][0] = translation(0, 0);
   translationOut[0][1] = translation(0, 1);
+  fitnessOut[0][0] = fitness;
 }
 
-void
+double
 SimulatedAnnealingPointMatcher2D::doMatch(double& scaleOut, RotationMatrix& rotationOut, TranslationVector& translationOut)
 {
   setUpPointMatrices();
@@ -176,6 +177,7 @@ SimulatedAnnealingPointMatcher2D::doMatch(double& scaleOut, RotationMatrix& rota
   }
 
   variablesHandler_.getBest(scaleOut, rotationOut, translationOut);
+  return bestFitness;
 }
 
 void
