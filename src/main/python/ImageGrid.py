@@ -1,11 +1,11 @@
-from PyQt5.QtWidgets import QWidget, QTableView, QHeaderView, QPushButton, QGridLayout
+from PyQt5.QtWidgets import QWidget, QTableView, QHeaderView, QPushButton, QGridLayout, QHBoxLayout
 
 
 IMAGE_SIZE = 280
 
 
 class ImageGridWidget(QWidget):
-    def __init__(self, parent, model):
+    def __init__(self, parent, model, cloudCreator):
         super().__init__(parent)
         self._imageTable = QTableView()
         self._imageTable.setModel(model)
@@ -20,8 +20,16 @@ class ImageGridWidget(QWidget):
         loadButton = QPushButton("Open")
         loadButton.clicked.connect(model.loadNewImages)
 
+        pointCloudButton = QPushButton("Point cloud creator")
+        pointCloudButton.clicked.connect(cloudCreator.launchCloudCreator)
+        self._imageTable.selectionModel().selectionChanged.connect(model.updateSelection)
+
         layout = QGridLayout()
         layout.addWidget(self._imageTable, 0, 0)
-        layout.addWidget(loadButton, 1, 0)
+
+        buttonLayout = QHBoxLayout()
+        buttonLayout.addWidget(loadButton)
+        buttonLayout.addWidget(pointCloudButton)
+        layout.addLayout(buttonLayout, 1, 0)
         self.setLayout(layout)
         self.setMaximumWidth(600)

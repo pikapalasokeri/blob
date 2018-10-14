@@ -19,7 +19,9 @@ install(FILES Classifier.py
               JsonPipelineParser.py
               PipelineStage.py
               PointCloud.py
+              PointCloudCreator.py
               PointCloudHandler.py
+              QImageUtilities.py
               ReferenceImage.py
               TopologyEditorWidget.py
   DESTINATION ${INSTALL_DIR}/python)

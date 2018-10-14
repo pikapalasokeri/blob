@@ -3,6 +3,7 @@ from ImageGrid import ImageGridWidget
 from TopologyEditorWidget import TopologyEditorWidget
 from ImageTableModel import ImageTableModel
 from JsonPipelineParser import JsonPipelineKeeper
+from PointCloudCreator import PointCloudCreator
 import ImageGrid
 
 
@@ -16,12 +17,15 @@ class ClassifierPipelineCreator(QMainWindow):
         self.setCentralWidget(mainWidget)
         self.setWindowTitle("Classifier pipeline creator")
 
-        model = ImageTableModel(self, ImageGrid.IMAGE_SIZE)
+        self._model = ImageTableModel(self, ImageGrid.IMAGE_SIZE)
         self._jsonKeeper = JsonPipelineKeeper()
-        self._jsonKeeper.processingModelUpdated.connect(model.setPipeline)
+        self._jsonKeeper.processingModelUpdated.connect(self._model.setPipeline)
 
-        imageGrid = ImageGridWidget(self, model)
-        topologyEditor = TopologyEditorWidget(self, self._jsonKeeper, model)
+        self._pointCloudCreator = PointCloudCreator()
+        self._jsonKeeper.processingModelUpdated.connect(self._pointCloudCreator.setPipeline)
+        self._model.selectedImagesChanged.connect(self._pointCloudCreator.updateSelectedImages)
+        imageGrid = ImageGridWidget(self, self._model, self._pointCloudCreator)
+        topologyEditor = TopologyEditorWidget(self, self._jsonKeeper, self._model, self._pointCloudCreator)
 
         mainGrid = QGridLayout()
         mainGrid.addWidget(imageGrid, 0, 0)
