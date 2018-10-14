@@ -1,9 +1,10 @@
-from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QPushButton, QListWidget, QLabel, QWidget
+from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QPushButton, QListWidget, QLabel, QWidget, QFileDialog
 from PyQt5.QtGui import QPixmap, QColor, QPainter
 from PyQt5.QtCore import QObject, pyqtSignal
 import os
 from PointCloud import PointCloud
 from QImageUtilities import qImageToMatrix
+from PointCloudHandler import savePointCloudToWriteable
 
 
 PIXMAP_SIZE = 400
@@ -153,11 +154,12 @@ class CloudCreatorWindow(QMainWindow):
         self._filenameList = QListWidget()
         self._filenameList.itemClicked.connect(cloudState.filenameClicked)
         self.setListItems(cloudState.getFilenames())
-        saveButton = QPushButton("Save")
+        self._saveButton = QPushButton("Save")
+        self._saveButton.clicked.connect(cloudState.saveActiveCloud)
         mainLayout.addWidget(self._noLabel)
         mainLayout.addWidget(self._yesLabel)
         listLayout.addWidget(self._filenameList)
-        listLayout.addWidget(saveButton)
+        listLayout.addWidget(self._saveButton)
         mainLayout.addLayout(listLayout)
         mainWidget.setLayout(mainLayout)
 
@@ -191,6 +193,13 @@ class CloudCreatorState(QObject):
         self._activeNoPointCloud = PointCloud()
         self._pipeline = None
         self._lastPipelineStage = None
+
+    def saveActiveCloud(self, arg):
+        filePath = QFileDialog.getSaveFileName(caption="Save cloud", filter="Json (*.json)")[0]
+        print("Saving current cloud:", filePath)
+        with open(filePath, "w") as f:
+            savePointCloudToWriteable(self._activeYesPointCloud, f)
+        print("Saved")
 
     def filenameClicked(self, filenameItem):
         filename = filenameItem.text()
