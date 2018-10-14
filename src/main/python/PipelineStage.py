@@ -190,7 +190,7 @@ class SimulatedAnnealingPointMatcherStage:
         draw = ImageDraw.Draw(canvas)
         textWidth, textHeight = draw.textsize(text)
         offset = ((size - textWidth) // 2, (size - textHeight) // 2)
-        white = "#808080"
+        white = "#000000"
         draw.text(offset, text, fill=white)
         ret = 255.0 - np.asarray(canvas)
         return ret
