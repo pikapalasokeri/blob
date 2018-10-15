@@ -47,6 +47,9 @@ def jsonToPipeline(jsonDict):
         elif stageType == "KeepInsideRadius":
             pipeline.appendStage(PipelineStage.KeepInsideRadiusStage(element["radius"]),
                                  name)
+        elif stageType == "MostPopulatedCircle":
+            pipeline.appendStage(PipelineStage.MostPopulatedCircleStage(element["radius"]),
+                                 name)
         elif stageType == "SimulatedAnnealing":
             pipeline.appendStage(PipelineStage.SimulatedAnnealingPointMatcherStage(element["reference_pointclouds"],
                                                                                    element["annealer_settings"]),

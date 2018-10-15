@@ -5,6 +5,7 @@ from PointCloud import PointCloud, PointCloudToRgbImage
 from PointCloudHandler import getPointCloudFromIterable
 from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
 from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
+from MostPopulatedCircleFinder import MostPopulatedCircleFinder
 import sys
 from PIL import Image, ImageDraw
 
@@ -85,6 +86,32 @@ class KeepInsideRadiusStage:
             squareDistanceFromMean = float((x - mean[0])**2 + (y - mean[1])**2)
             if squareDistanceFromMean <= radiusSquare:
                 self._executionResult.addXY(float(x), float(y))
+        return self._executionResult
+
+    def getImageRepresentation(self):
+        return PointCloudToRgbImage(self._executionResult, 0)
+
+    def __ne__(self, other):
+        if type(self) != type(other):
+            return True
+        return self._radius != other._radius
+
+
+class MostPopulatedCircleStage:
+    def __init__(self, radius):
+        self._radius = radius
+        self._executionResult = None
+
+    def execute(self, pointCloud):
+        mostPopulatedCircleFinder = MostPopulatedCircleFinder(pointCloud.asNumpyArray())
+        center = mostPopulatedCircleFinder.get(self._radius)
+        squareRadius = self._radius ** 2
+        self._executionResult = PointCloud()
+        for point in pointCloud:
+            diff = point - center
+            normSquare = diff[0]**2 + diff[1]**2
+            if normSquare <= squareRadius:
+                self._executionResult.addPoint(point)
         return self._executionResult
 
     def getImageRepresentation(self):
