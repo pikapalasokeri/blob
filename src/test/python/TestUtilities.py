@@ -32,12 +32,17 @@ def getSimplePatterns():
     return pattern1, pattern2
 
 
-def addPointsToMatcher(points, matcher, pointType):
+def addPointsToDrifter(points, matcher, pointType):
     for point in points:
         if pointType == 1:
             matcher.addPoint1(point[0], point[1])
         else:
             matcher.addPoint2(point[0], point[1])
+
+
+def addPointsToAnnealer(points, matcher):
+    for point in points:
+        matcher.addPoint(point[0], point[1])
 
 
 def transform(scale, rotation, translation, points):

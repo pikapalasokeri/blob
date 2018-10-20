@@ -16,8 +16,8 @@ class TestCoherentPointDriftMatcher2D(unittest.TestCase):
         m = CoherentPointDriftMatcher2D()
 
         pattern1, _ = Utils.getSimplePatterns()
-        Utils.addPointsToMatcher(pattern1, m, 1)
-        Utils.addPointsToMatcher(pattern1, m, 2)
+        Utils.addPointsToDrifter(pattern1, m, 1)
+        Utils.addPointsToDrifter(pattern1, m, 2)
 
         scale, rotation, translation = m.match()
         self.assertAlmostEqual(scale[0][0], 1.0)
@@ -34,8 +34,8 @@ class TestCoherentPointDriftMatcher2D(unittest.TestCase):
         m = CoherentPointDriftMatcher2D()
 
         p2, p1 = Utils.getSimplePatterns()
-        Utils.addPointsToMatcher(p1, m, 1)
-        Utils.addPointsToMatcher(p2, m, 2)
+        Utils.addPointsToDrifter(p1, m, 1)
+        Utils.addPointsToDrifter(p2, m, 2)
 
         scale, rotation, translation = m.match()
         self.assertAlmostEqual(scale, 2.0)

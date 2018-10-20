@@ -27,9 +27,16 @@ SimulatedAnnealingPointMatcher2D::~SimulatedAnnealingPointMatcher2D()
 }
 
 void
-SimulatedAnnealingPointMatcher2D::addPoint1(double x, double y)
+SimulatedAnnealingPointMatcher2D::addPoint(double x, double y)
 {
-  pointSet1_.emplace_back(x, y);
+  pointSet_.emplace_back(x, y);
+}
+
+
+void
+SimulatedAnnealingPointMatcher2D::clearPoints()
+{
+  pointSet_.clear();
 }
 
 void
@@ -115,7 +122,7 @@ SimulatedAnnealingPointMatcher2D::doMatch(double& scaleOut, RotationMatrix& rota
   int numBadMoves = 0;
   int numNoMoves = 0;
 
-  double oldFitness = fitnessComputer_.compute(pointMatrix1_);
+  double oldFitness = fitnessComputer_.compute(pointMatrix_);
   double bestFitness = oldFitness;
   for (int i = 0; i < numIterations_; ++i)
   {
@@ -183,21 +190,19 @@ SimulatedAnnealingPointMatcher2D::doMatch(double& scaleOut, RotationMatrix& rota
 void
 SimulatedAnnealingPointMatcher2D::setUpPointMatrices()
 {
-  const int num1Points = pointSet1_.size();
-  const int num2Points = pointSet2_.size();
+  const int numPoints = pointSet_.size();
 
   if (verbose_)
   {
-    std::cout << "Num points in set 1: " << num1Points << std::endl
-              << "Num points in set 2: " << num2Points << std::endl
+    std::cout << "Num points in set: " << numPoints << std::endl
               << "Num threads: " << numThreads_ << std::endl;
   }
 
-  pointMatrix1_ = PointMatrix(num1Points, 2);
-  for (int i = 0; i < num1Points; ++i)
+  pointMatrix_ = PointMatrix(numPoints, 2);
+  for (int i = 0; i < numPoints; ++i)
   {
-    pointMatrix1_(i, 0) = pointSet1_[i].first;
-    pointMatrix1_(i, 1) = pointSet1_[i].second;
+    pointMatrix_(i, 0) = pointSet_[i].first;
+    pointMatrix_(i, 1) = pointSet_[i].second;
   }
 }
 
@@ -205,10 +210,10 @@ SimulatedAnnealingPointMatcher2D::setUpPointMatrices()
 double
 SimulatedAnnealingPointMatcher2D::computeFitness(double scale, const RotationMatrix& rotation, const TranslationVector& translation) const
 {
-  PointMatrix transformedPointMatrix1;
-  Utilities::transform(pointMatrix1_, scale, rotation, translation, transformedPointMatrix1);
+  PointMatrix transformedPointMatrix;
+  Utilities::transform(pointMatrix_, scale, rotation, translation, transformedPointMatrix);
 
-  return fitnessComputer_.compute(transformedPointMatrix1);
+  return fitnessComputer_.compute(transformedPointMatrix);
 }
 
 void
@@ -216,14 +221,8 @@ SimulatedAnnealingPointMatcher2D::output() const
 {
   std::cout << "SimulatedAnnealingPointMatcher2D:" << std::endl;
 
-  std::cout << "  pointSet1_:" << std::endl;
-  for (auto point : pointSet1_)
-  {
-    std::cout << "    " << point.first << " " << point.second << std::endl;
-  }
-
-  std::cout << "  pointSet2_:" << std::endl;
-  for (auto point : pointSet2_)
+  std::cout << "  pointSet_:" << std::endl;
+  for (auto point : pointSet_)
   {
     std::cout << "    " << point.first << " " << point.second << std::endl;
   }

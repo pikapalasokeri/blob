@@ -31,7 +31,7 @@ class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
         c = MeanShortestDistanceFitnessComputer(points2)
         m = SimulatedAnnealingPointMatcher2D(c)
 
-        Utils.addPointsToMatcher(points, m, 1)
+        Utils.addPointsToAnnealer(points, m)
         m.setSlowMovementBreakpoint(0.75)
         m.setInitialTranslationSigma(0.2)
         m.setSlowTranslationSigma(0.01)
@@ -57,7 +57,7 @@ class TestSimulatedAnnealingPointMatcher(unittest.TestCase):
         c = AbsoluteNeighborFitnessComputer(points2, 0.1)
         m = SimulatedAnnealingPointMatcher2D(c)
 
-        Utils.addPointsToMatcher(points, m, 1)
+        Utils.addPointsToAnnealer(points, m)
         m.setSlowMovementBreakpoint(0.75)
         m.setInitialRotationSigma(360)
         m.setInitialTranslationSigma(0.2)

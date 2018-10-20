@@ -178,9 +178,6 @@ class SimulatedAnnealingPointMatcherStage:
             centeredReference[:, 0] -= center[0]
             centeredReference[:, 1] -= center[1]
 
-            print(center)
-            print(referenceCloud.asNumpyArray())
-            print(centeredReference)
             fitnessComputer = MeanShortestDistanceFitnessComputer(centeredReference)
             annealer = SimulatedAnnealingPointMatcher2D(fitnessComputer)
             # TODO: add parsing of annealerSettings.
@@ -196,17 +193,23 @@ class SimulatedAnnealingPointMatcherStage:
         centeredSample[:, 1] -= center[1]
 
         print("sample with center:", center)
+        print("centeredSample.shape", centeredSample.shape)
         self._bestReferenceName = "none"
         bestFitness = sys.float_info.max
         for referenceName, annealer in self._annealers.items():
+            annealer.clearPoints()
+            for point in pointCloud:
+                annealer.addPoint(point[0], point[1])
             print("matching")
+            print(referenceName, annealer)
             scale, rotation, translation, fitness = annealer.match()
-            print("matched")
+            print("fitness", fitness)
             if (scale < 1.2 and scale > 0.8):
                 if fitness < bestFitness:
                     bestFitness = fitness
                     self._bestReferenceName = referenceName
-
+                    print(bestFitness)
+            print("matched")
         return self._bestReferenceName
 
     def getImageRepresentation(self):

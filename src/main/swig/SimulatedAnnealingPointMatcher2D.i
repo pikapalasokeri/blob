@@ -26,7 +26,9 @@ public:
 
   ~SimulatedAnnealingPointMatcher2D();
 
-  void addPoint1(double x, double y);
+  void addPoint(double x, double y);
+
+  void clearPoints();
 
   void setNumIterations(int);
 

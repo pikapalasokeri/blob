@@ -18,7 +18,9 @@ public:
 
   ~SimulatedAnnealingPointMatcher2D();
 
-  void addPoint1(double x, double y);
+  void addPoint(double x, double y);
+
+  void clearPoints();
 
   void setNumIterations(int);
 
@@ -57,9 +59,8 @@ private:
 
   using DoublePair = std::pair<double, double>;
   using PointVector = std::vector<DoublePair>;
-  PointVector pointSet1_;
-  PointVector pointSet2_;
-  PointMatrix pointMatrix1_;
+  PointVector pointSet_;
+  PointMatrix pointMatrix_;
   int numIterations_;
   double startTemperature_;
   double initialRotationSigma_;
