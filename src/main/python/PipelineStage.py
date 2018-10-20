@@ -180,7 +180,26 @@ class SimulatedAnnealingPointMatcherStage:
 
             fitnessComputer = MeanShortestDistanceFitnessComputer(centeredReference)
             annealer = SimulatedAnnealingPointMatcher2D(fitnessComputer)
-            # TODO: add parsing of annealerSettings.
+            for name, setting in annealerSettings.items():
+                if name == "NumIterations":
+                    annealer.setNumIterations(int(setting))
+                elif name == "StartTemperature":
+                    annealer.setStartTemperature(float(setting))
+                elif name == "InitialRotationSigma":
+                    annealer.setInitialRotationSigma(float(setting))
+                elif name == "SlowRotationSigma":
+                    annealer.setSlowRotationSigma(float(setting))
+                elif name == "InitialTranslationSigma":
+                    annealer.setInitialTranslationSigma(float(setting))
+                elif name == "SlowTranslationSigma":
+                    annealer.setSlowTranslationSigma(float(setting))
+                elif name == "SlowMovementBreakpoint":
+                    annealer.setSlowMovementBreakpoint(float(setting))
+                elif name == "Verbose":
+                    annealer.setVerbose(bool(setting))
+                else:
+                    print("Unknown setting {}: {}".format(name, setting))
+
             # TODO: fix lifetime issues here so that we dont need to explicitly keep
             # fitnessComputer around.
             self._annealers[referenceName] = annealer
