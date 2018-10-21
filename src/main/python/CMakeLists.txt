@@ -12,6 +12,7 @@ install(FILES Classifier.py
               EdgeDetector.py
               FileImageReader.py
               GpioPinHandler.py
+              ImageGrabber.py
               ImageGrid.py
               ImageProcessingPipeline.py
               ImageTableModel.py
@@ -23,5 +24,6 @@ install(FILES Classifier.py
               PointCloudHandler.py
               QImageUtilities.py
               ReferenceImage.py
+              ResultHandler.py
               TopologyEditorWidget.py
   DESTINATION ${INSTALL_DIR}/python)

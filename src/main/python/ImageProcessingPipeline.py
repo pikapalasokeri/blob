@@ -18,6 +18,9 @@ class ImageProcessingPipeline:
 
         return True
 
+    def execute(self, image):
+        return self.executeUntilRaw(self.getStageNames()[-1], image)
+
     def executeUntil(self, lastStageName, image):
         result = image
         lastStage = None

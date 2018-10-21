@@ -1,0 +1,5 @@
+{
+    "type": "DirectoryImageGrabber",
+    "directory": "/home/pikapalasokeri/blob/images/early_tests_white",
+    "extensions": "jpg"
+}
