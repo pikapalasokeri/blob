@@ -165,6 +165,7 @@ class SimulatedAnnealingPointMatcherStage:
     def __init__(self, pointClouds, annealerSettings):
         self._annealers = {}
         self._fitnessComputers = {}
+        self._referenceClouds = {}
         for pointCloud in pointClouds:
             jsonPath = pointCloud["filepath"]
             referenceName = pointCloud["name"]
@@ -204,6 +205,7 @@ class SimulatedAnnealingPointMatcherStage:
             # fitnessComputer around.
             self._annealers[referenceName] = annealer
             self._fitnessComputers[referenceName] = fitnessComputer
+            self._referenceClouds[referenceName] = centeredReference
 
     def execute(self, pointCloud):
         center = pointCloud.mean()
@@ -211,24 +213,24 @@ class SimulatedAnnealingPointMatcherStage:
         centeredSample[:, 0] -= center[0]
         centeredSample[:, 1] -= center[1]
 
-        print("sample with center:", center)
-        print("centeredSample.shape", centeredSample.shape)
         self._bestReferenceName = "none"
         bestFitness = sys.float_info.max
         for referenceName, annealer in self._annealers.items():
             annealer.clearPoints()
-            for point in pointCloud:
+            for point in centeredSample:
                 annealer.addPoint(point[0], point[1])
-            print("matching")
-            print(referenceName, annealer)
             scale, rotation, translation, fitness = annealer.match()
-            print("fitness", fitness)
             if (scale < 1.2 and scale > 0.8):
                 if fitness < bestFitness:
                     bestFitness = fitness
                     self._bestReferenceName = referenceName
-                    print(bestFitness)
-            print("matched")
+            print("referenceName: {}".format(referenceName))
+            print("matched. bestFitness: {}".format(fitness))
+            print("               scale: {}".format(scale))
+            print("         translation: {}".format(translation))
+            print("            rotation: {}".format(rotation))
+            self._transformation = (scale, rotation, translation)
+            self._lastCloud = centeredSample
         return self._bestReferenceName
 
     def getImageRepresentation(self):
@@ -238,10 +240,20 @@ class SimulatedAnnealingPointMatcherStage:
         canvas = Image.new("RGB", [size, size], (255, 255, 255))
         draw = ImageDraw.Draw(canvas)
         textWidth, textHeight = draw.textsize(text)
-        offset = ((size - textWidth) // 2, (size - textHeight) // 2)
+        offset = (5, 5)
         white = "#000000"
         draw.text(offset, text, fill=white)
         ret = 255.0 - np.asarray(canvas)
+
+        middleOfImage = np.array([[50.0, 50.0]])
+
+        cloudPoints = np.dot(self._lastCloud, self._transformation[1]) + self._transformation[2] + middleOfImage
+
+        referencePoints = self._referenceClouds[self._bestReferenceName] + middleOfImage
+
+        ImageUtilities.addPointsToImage(ret, cloudPoints, 0)
+        ImageUtilities.addPointsToImage(ret, referencePoints, 1)
+
         return ret
 
     def __ne__(self, other):

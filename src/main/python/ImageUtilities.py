@@ -6,8 +6,9 @@ def rgb2grayNaive(img):
 
 
 def addPointsToImage(image, points, colorIx):
+    shape = image.shape
     for point in points:
         row = int(point[0])
         col = int(point[1])
-        image[row, col, :] = 0
-        image[row, col, colorIx] = 255
+        if (row < shape[0] and col < shape[1]):
+            image[row, col, colorIx] = 255
