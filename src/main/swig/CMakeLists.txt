@@ -30,6 +30,10 @@ set_property(SOURCE "${PROJECT_SOURCE_DIR}/SimulatedAnnealingPointMatcher2D.i" P
 swig_add_module(SimulatedAnnealingPointMatcher2D python "${PROJECT_SOURCE_DIR}/SimulatedAnnealingPointMatcher2D.i")
 swig_link_libraries(SimulatedAnnealingPointMatcher2D blob)
 
+set_property(SOURCE "${PROJECT_SOURCE_DIR}/BruteForceMatcher.i" PROPERTY CPLUSPLUS ON)
+swig_add_module(BruteForceMatcher python "${PROJECT_SOURCE_DIR}/BruteForceMatcher.i")
+swig_link_libraries(BruteForceMatcher blob)
+
 set_property(SOURCE "${PROJECT_SOURCE_DIR}/MeanShortestDistanceFitnessComputer.i" PROPERTY CPLUSPLUS ON)
 swig_add_module(MeanShortestDistanceFitnessComputer python "${PROJECT_SOURCE_DIR}/MeanShortestDistanceFitnessComputer.i")
 swig_link_libraries(MeanShortestDistanceFitnessComputer blob)
@@ -42,6 +46,7 @@ set(SWIG_TARGETS
   ${SWIG_MODULE_MostPopulatedCircleFinder_REAL_NAME}
   ${SWIG_MODULE_CoherentPointDriftMatcher2D_REAL_NAME}
   ${SWIG_MODULE_SimulatedAnnealingPointMatcher2D_REAL_NAME}
+  ${SWIG_MODULE_BruteForceMatcher_REAL_NAME}
   ${SWIG_MODULE_MeanShortestDistanceFitnessComputer_REAL_NAME}
   ${SWIG_MODULE_AbsoluteNeighborFitnessComputer_REAL_NAME})
 
@@ -57,6 +62,7 @@ install(FILES
   ${SWIG_OUTDIR}/MostPopulatedCircleFinder.py
   ${SWIG_OUTDIR}/CoherentPointDriftMatcher2D.py
   ${SWIG_OUTDIR}/SimulatedAnnealingPointMatcher2D.py
+  ${SWIG_OUTDIR}/BruteForceMatcher.py
   ${SWIG_OUTDIR}/MeanShortestDistanceFitnessComputer.py
   ${SWIG_OUTDIR}/AbsoluteNeighborFitnessComputer.py
   DESTINATION ${INSTALL_DIR}/python)

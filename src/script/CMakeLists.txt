@@ -4,6 +4,7 @@ project (blob_src_script)
 set(PROJECT_SOURCE_DIR .)
 
 install(FILES createConfig.py
+              DemoBruteForceMatcher.py
               DemoClassifier.py
               DemoEdgeDetector.py
               DemoMatch.py

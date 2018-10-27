@@ -4,6 +4,9 @@
 
 namespace Utilities
 {
+  using DoublePair = std::pair<double, double>;
+  using PointVector = std::vector<DoublePair>;
+
   void
   transform(const PointMatrix& pointMatrix,
             double scale,

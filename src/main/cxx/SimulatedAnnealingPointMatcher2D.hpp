@@ -3,6 +3,7 @@
 
 #include "VariablesHandler.hpp"
 #include "Random.hpp"
+#include "Utilities.hpp"
 #include "EigenDefs.hpp"
 
 #include <vector>
@@ -57,9 +58,7 @@ private:
 
   double computeFitness(double scale, const RotationMatrix& rotation, const TranslationVector& translation) const;
 
-  using DoublePair = std::pair<double, double>;
-  using PointVector = std::vector<DoublePair>;
-  PointVector pointSet_;
+  Utilities::PointVector pointSet_;
   PointMatrix pointMatrix_;
   int numIterations_;
   double startTemperature_;
