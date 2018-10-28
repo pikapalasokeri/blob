@@ -4,6 +4,8 @@ import numpy as np
 from PointCloud import PointCloud, PointCloudToRgbImage
 from PointCloudHandler import getPointCloudFromIterable
 from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
+from BruteForceMatcher import BruteForceMatcher
+from AbsoluteNeighborFitnessComputer import AbsoluteNeighborFitnessComputer
 from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
 from MostPopulatedCircleFinder import MostPopulatedCircleFinder
 import sys
@@ -262,3 +264,98 @@ class SimulatedAnnealingPointMatcherStage:
 
         # TODO: dont do pointer comparison here.
         return self._annealers != self._annealers
+
+
+class BruteForceMatcherStage:
+    def __init__(self, pointClouds, settings):
+        self._matchers = {}
+        self._fitnessComputers = {}
+        self._referenceClouds = {}
+        for pointCloud in pointClouds:
+            jsonPath = pointCloud["filepath"]
+            referenceName = pointCloud["name"]
+            print(referenceName, jsonPath)
+
+            with open(jsonPath) as f:
+                referenceCloud = getPointCloudFromIterable(f)
+
+            center = referenceCloud.mean()
+            centeredReference = np.array(referenceCloud.asNumpyArray(), copy=True)
+            centeredReference[:, 0] -= center[0]
+            centeredReference[:, 1] -= center[1]
+
+            tolerance = 3.0
+            fitnessComputer = AbsoluteNeighborFitnessComputer(centeredReference, tolerance)
+            matcher = BruteForceMatcher(fitnessComputer, centeredReference)
+            for name, setting in settings.items():
+                if name == "CandidateKeepRatio":
+                    matcher.setCandidateKeepRatio(int(setting))
+                elif name == "CandidateDistanceTolerance":
+                    matcher.setCandidateDistanceTolerance(float(setting))
+                else:
+                    print("Unknown setting {}: {}".format(name, setting))
+
+            # TODO: fix lifetime issues here so that we dont need to explicitly keep
+            # fitnessComputer around.
+            self._matchers[referenceName] = matcher
+            self._fitnessComputers[referenceName] = fitnessComputer
+            self._referenceClouds[referenceName] = centeredReference
+
+    def execute(self, pointCloud):
+        center = pointCloud.mean()
+        centeredSample = np.array(pointCloud.asNumpyArray(), copy=True)
+        centeredSample[:, 0] -= center[0]
+        centeredSample[:, 1] -= center[1]
+
+        self._bestReferenceName = "none"
+        bestFitness = sys.float_info.max
+        for referenceName, matcher in self._matchers.items():
+            scale, rotation, translation, fitness = matcher.match(centeredSample)
+            if fitness < bestFitness:
+                bestFitness = fitness
+                self._bestReferenceName = referenceName
+                self._bestTransformation = (scale, rotation, translation)
+            elif fitness == 0.0:  # If fitness == bestfitness == 0.0 prefer the cloud with more points.
+                sizeBest = self._referenceClouds[self._bestReferenceName].shape[0]
+                sizeThis = self._referenceClouds[referenceName].shape[0]
+                if sizeThis > sizeBest:
+                    self._bestReferenceName = referenceName
+                    self._bestTransformation = (scale, rotation, translation)
+
+            print("referenceName: {}".format(referenceName))
+            print("matched. bestFitness: {}".format(fitness))
+            print("               scale: {}".format(scale))
+            print("         translation: {}".format(translation))
+            print("            rotation: {}".format(rotation))
+            self._lastCloud = centeredSample
+        return self._bestReferenceName
+
+    def getImageRepresentation(self):
+        print("getImageRepresentation:", self._bestReferenceName)
+        text = self._bestReferenceName
+        size = 100
+        canvas = Image.new("RGB", [size, size], (255, 255, 255))
+        draw = ImageDraw.Draw(canvas)
+        textWidth, textHeight = draw.textsize(text)
+        offset = (5, 5)
+        white = "#000000"
+        draw.text(offset, text, fill=white)
+        ret = 255.0 - np.asarray(canvas)
+
+        middleOfImage = np.array([[50.0, 50.0]])
+
+        cloudPoints = np.dot(self._lastCloud, self._bestTransformation[1].transpose()) + self._bestTransformation[2] + middleOfImage
+
+        referencePoints = self._referenceClouds[self._bestReferenceName] + middleOfImage
+
+        ImageUtilities.addPointsToImage(ret, cloudPoints, 0)
+        ImageUtilities.addPointsToImage(ret, referencePoints, 1)
+
+        return ret
+
+    def __ne__(self, other):
+        if type(self) != type(other):
+            return True
+
+        # TODO: dont do pointer comparison here.
+        return self._matchers != self._matchers

@@ -54,6 +54,10 @@ def jsonToPipeline(jsonDict):
             pipeline.appendStage(PipelineStage.SimulatedAnnealingPointMatcherStage(element["reference_pointclouds"],
                                                                                    element["annealer_settings"]),
                                  name)
+        elif stageType == "BruteForceMatcher":
+            pipeline.appendStage(PipelineStage.BruteForceMatcherStage(element["reference_pointclouds"],
+                                                                      element["matcher_settings"]),
+                                 name)
         elif stageType == "Nop":
             pipeline.appendStage(PipelineStage.NopStage(), name)
         else:

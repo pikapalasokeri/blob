@@ -20,11 +20,11 @@
     {
         "name": "keepinside",
         "type": "KeepInsideRadius",
-        "radius": 50.0
+        "radius": 60.0
     },
     {
-        "name": "annealing",
-        "type": "SimulatedAnnealing",
+        "name": "matcher",
+        "type": "BruteForceMatcher",
         "reference_pointclouds": [{"filepath": "/home/pikapalasokeri/blob/resource/cloud_white_d6_basic_1.json",
                                    "name": "1"},
                                   {"filepath": "/home/pikapalasokeri/blob/resource/cloud_white_d6_basic_2.json",
@@ -37,7 +37,8 @@
                                    "name": "5"},
                                   {"filepath": "/home/pikapalasokeri/blob/resource/cloud_white_d6_basic_6.json",
                                    "name": "6"}],
-        "annealer_settings": {
-            "NumIterations": 1000}
+        "matcher_settings": {
+            "CandidateKeepRatio": 1,
+            "CandidateDistanceTolerance": 0.05}
     }
 ]

@@ -1,6 +1,7 @@
 import unittest
 from BruteForceMatcher import BruteForceMatcher
 from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
+from AbsoluteNeighborFitnessComputer import AbsoluteNeighborFitnessComputer
 import TestUtilities as Utils
 import numpy as np
 
@@ -8,7 +9,7 @@ import numpy as np
 class TestBruteForceMatcher(unittest.TestCase):
     def test_SetFunctionsSmoke(self):
         refCloud = np.zeros((0, 2))
-        c = MeanShortestDistanceFitnessComputer(refCloud)
+        c = AbsoluteNeighborFitnessComputer(refCloud, 1.0)
         m = BruteForceMatcher(c, refCloud)
         m.setCandidateKeepRatio(1)
 
