@@ -14,7 +14,7 @@
     {
         "name": "edges",
         "type": "EdgeDetector",
-        "sigma": 4.0,
+        "sigma": 3.0,
         "threshold": 2.0
     },
     {
@@ -38,7 +38,7 @@
                                   {"filepath": "/home/pikapalasokeri/blob/resource/cloud_white_d6_basic_6.json",
                                    "name": "6"}],
         "matcher_settings": {
-            "CandidateKeepRatio": 1,
+            "CandidateKeepRatio": 4,
             "CandidateDistanceTolerance": 0.05}
     }
 ]
