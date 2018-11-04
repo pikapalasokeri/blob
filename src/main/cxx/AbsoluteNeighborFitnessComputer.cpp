@@ -22,6 +22,14 @@ AbsoluteNeighborFitnessComputer::AbsoluteNeighborFitnessComputer(
 {}
 
 double
+AbsoluteNeighborFitnessComputer::compute(const double* points,
+                                         int dim1,
+                                         int dim2) const
+{
+  return compute(Utilities::toPointMatrix(points, dim1, dim2));
+}
+
+double
 AbsoluteNeighborFitnessComputer::compute(const PointMatrix& points) const
 {
   const int numRefRows = referencePoints_.rows();

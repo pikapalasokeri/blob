@@ -12,7 +12,7 @@ public:
   AbsoluteNeighborFitnessComputer(const double* referencePoints, int dim1, int dim2, double tolerance);
 
   virtual ~AbsoluteNeighborFitnessComputer() {}
-
+  double compute(const double* points, int dim1, int dim2) const;
   virtual double compute(const PointMatrix& points) const;
 
 private:

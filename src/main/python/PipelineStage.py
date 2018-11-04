@@ -266,8 +266,32 @@ class SimulatedAnnealingPointMatcherStage:
         return self._annealers != self._annealers
 
 
+def computeSquareDistances(points1, points2):
+    numPoints1 = points1.shape[0]
+    numPoints2 = points2.shape[0]
+
+    squareDistances = np.zeros((numPoints1, numPoints2))
+    for i, point1 in enumerate(points1):
+        for j, point2 in enumerate(points2):
+            squareDistances[i, j] = computeSquareDistance(point1, point2)
+    return squareDistances
+
+
+def computeSquareDistance(point1, point2):
+    diff = point1 - point2
+    return float(diff[0]**2 + diff[1]**2)
+
+
+def getMatchMask(sample, reference, tolerance):
+    squareDistances = computeSquareDistances(sample, reference)
+    fromSampleClosestNeighbor = np.min(squareDistances, axis=1)
+    return fromSampleClosestNeighbor < tolerance
+
+
 class BruteForceMatcherStage:
     def __init__(self, pointClouds, settings):
+        self._tolerance = 3.0
+        self._reasonableFitnessThreshold = 0.2
         self._matchers = {}
         self._fitnessComputers = {}
         self._referenceClouds = {}
@@ -284,8 +308,7 @@ class BruteForceMatcherStage:
             centeredReference[:, 0] -= center[0]
             centeredReference[:, 1] -= center[1]
 
-            tolerance = 3.0
-            fitnessComputer = AbsoluteNeighborFitnessComputer(centeredReference, tolerance)
+            fitnessComputer = AbsoluteNeighborFitnessComputer(centeredReference, self._tolerance)
             matcher = BruteForceMatcher(fitnessComputer, centeredReference)
             for name, setting in settings.items():
                 if name == "CandidateKeepRatio":
@@ -306,28 +329,41 @@ class BruteForceMatcherStage:
         centeredSample = np.array(pointCloud.asNumpyArray(), copy=True)
         centeredSample[:, 0] -= center[0]
         centeredSample[:, 1] -= center[1]
+        self._lastCloud = centeredSample
 
         self._bestReferenceName = "none"
-        bestFitness = sys.float_info.max
+        matchMask = np.zeros(centeredSample.shape[0])
+        reasonableReferences = []
         for referenceName, matcher in self._matchers.items():
+            print("Computing for: {}".format(referenceName))
             scale, rotation, translation, fitness = matcher.match(centeredSample)
+            print("Fitness: {}".format(fitness))
+            if fitness < self._reasonableFitnessThreshold:
+                print("Fitness is reasonable.")
+                transformedSample = np.dot(centeredSample, rotation.transpose()) + translation
+                matchMask = np.logical_or(matchMask, getMatchMask(transformedSample,
+                                                                  self._referenceClouds[referenceName],
+                                                                  self._tolerance))
+                reasonableReferences.append((referenceName, scale, rotation, translation))
+
+        bestFitness = sys.float_info.max
+        for referenceName, scale, rotation, translation in reasonableReferences:
+            print("Reasonable reference: {}".format(referenceName))
+            transformedSample = np.dot(centeredSample, rotation.transpose()) + translation
+            maskedSample = transformedSample[matchMask]
+            fitnessComputer = AbsoluteNeighborFitnessComputer(maskedSample, self._tolerance)
+            fitness = fitnessComputer.compute(self._referenceClouds[referenceName])
+            print("Fitess: {}".format(fitness))
             if fitness < bestFitness:
                 bestFitness = fitness
                 self._bestReferenceName = referenceName
                 self._bestTransformation = (scale, rotation, translation)
-            elif fitness == 0.0:  # If fitness == bestfitness == 0.0 prefer the cloud with more points.
-                sizeBest = self._referenceClouds[self._bestReferenceName].shape[0]
-                sizeThis = self._referenceClouds[referenceName].shape[0]
-                if sizeThis > sizeBest:
-                    self._bestReferenceName = referenceName
-                    self._bestTransformation = (scale, rotation, translation)
+                print("referenceName: {}".format(referenceName))
+                print("matched. bestFitness: {}".format(fitness))
+                print("               scale: {}".format(scale))
+                print("         translation: {}".format(translation))
+                print("            rotation: {}".format(rotation))
 
-            print("referenceName: {}".format(referenceName))
-            print("matched. bestFitness: {}".format(fitness))
-            print("               scale: {}".format(scale))
-            print("         translation: {}".format(translation))
-            print("            rotation: {}".format(rotation))
-            self._lastCloud = centeredSample
         return self._bestReferenceName
 
     def getImageRepresentation(self):
