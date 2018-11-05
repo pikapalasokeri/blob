@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 from ImageProcessingPipeline import ImageProcessingPipeline
+from BruteForceMatcherStage import BruteForceMatcherStage
 import PipelineStage
 import json
 
@@ -55,8 +56,8 @@ def jsonToPipeline(jsonDict):
                                                                                    element["annealer_settings"]),
                                  name)
         elif stageType == "BruteForceMatcher":
-            pipeline.appendStage(PipelineStage.BruteForceMatcherStage(element["reference_pointclouds"],
-                                                                      element["matcher_settings"]),
+            pipeline.appendStage(BruteForceMatcherStage(element["reference_pointclouds"],
+                                                        element["matcher_settings"]),
                                  name)
         elif stageType == "Nop":
             pipeline.appendStage(PipelineStage.NopStage(), name)

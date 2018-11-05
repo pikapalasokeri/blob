@@ -3,7 +3,8 @@ project (blob_src_main_python)
 
 set(PROJECT_SOURCE_DIR .)
 
-install(FILES Classifier.py
+install(FILES BruteForceMatcherStage.py
+              Classifier.py
               ClassifierPipelineCreator.py
               CoherentPointDriftMatcher.py
               ConfigCreator.py
