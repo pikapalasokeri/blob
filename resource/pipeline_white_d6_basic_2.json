@@ -1,0 +1,44 @@
+[
+    {
+        "name": "crop",
+        "type": "Crop",
+        "x": 0.5,
+        "y": 0.5,
+        "width": 0.5,
+        "height": 0.5
+    },
+    {
+        "name": "gray",
+        "type": "GrayscaleConversion"
+    },
+    {
+        "name": "edges",
+        "type": "EdgeDetector",
+        "sigma": 3.5,
+        "threshold": 1.5
+    },
+    {
+        "name": "keepinside",
+        "type": "KeepInsideRadius",
+        "radius": 60.0
+    },
+    {
+        "name": "matcher",
+        "type": "BruteForceMatcher",
+        "reference_pointclouds": [{"filepath": "/home/pikapalasokeri/blob/resource/cloud_white_d6_basic2_1.json",
+                                   "name": "1"},
+                                  {"filepath": "/home/pikapalasokeri/blob/resource/cloud_white_d6_basic2_2.json",
+                                   "name": "2"},
+                                  {"filepath": "/home/pikapalasokeri/blob/resource/cloud_white_d6_basic2_3.json",
+                                   "name": "3"},
+                                  {"filepath": "/home/pikapalasokeri/blob/resource/cloud_white_d6_basic2_4.json",
+                                   "name": "4"},
+                                  {"filepath": "/home/pikapalasokeri/blob/resource/cloud_white_d6_basic2_5.json",
+                                   "name": "5"},
+                                  {"filepath": "/home/pikapalasokeri/blob/resource/cloud_white_d6_basic2_6.json",
+                                   "name": "6"}],
+        "matcher_settings": {
+            "CandidateKeepRatio": 4,
+            "CandidateDistanceTolerance": 0.05}
+    }
+]
