@@ -22,6 +22,7 @@ install(FILES Classifier.py
               PointCloud.py
               PointCloudCreator.py
               PointCloudHandler.py
+              PointUtilities.py
               QImageUtilities.py
               ReferenceImage.py
               ResultHandler.py

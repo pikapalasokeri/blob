@@ -2,7 +2,6 @@ import numpy as np
 from EdgeDetector import EdgeDetector
 from SimulatedAnnealingPointMatcher2D import SimulatedAnnealingPointMatcher2D
 from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
-from CoherentPointDriftMatcher import transform
 from PointCloud import PointCloud
 from ImageUtilities import rgb2grayNaive
 import PipelineStage
@@ -81,34 +80,10 @@ def _getLikenessScore(reference, edgesToClassify):
     matcher.setNumIterations(2000)
 
     for p in centeredEdgesToClassify:
-        matcher.addPoint1(p[0], p[1])
+        matcher.addPoint(p[0], p[1])
 
-    scale, rotation, translation = matcher.match()
+    scale, rotation, translation, fitness = matcher.match()
     if scale < 0.8 or scale > 1.2:
         return None
 
-    transformed = transform(scale, rotation, translation, centeredEdgesToClassify)
-    return _computeClosestNeighborLikeness(centeredReference, transformed)
-
-
-def _computeClosestNeighborLikeness(points1, points2):
-    squareDistances = _computeSquareDistances(points1, points2)
-    from1ClosestNeighbor = np.min(squareDistances, axis=1)
-    from2ClosestNeighbor = np.min(squareDistances, axis=0)
-    return np.mean(from1ClosestNeighbor) + np.mean(from2ClosestNeighbor)
-
-
-def _computeSquareDistances(points1, points2):
-    numPoints1 = points1.shape[0]
-    numPoints2 = points2.shape[0]
-
-    squareDistances = np.zeros((numPoints1, numPoints2))
-    for i, point1 in enumerate(points1):
-        for j, point2 in enumerate(points2):
-            squareDistances[i, j] = _computeSquareDistance(point1, point2)
-    return squareDistances
-
-
-def _computeSquareDistance(point1, point2):
-    diff = point1 - point2
-    return float(diff[0]**2 + diff[1]**2)
+    return fitness

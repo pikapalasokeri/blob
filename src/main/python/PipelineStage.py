@@ -8,6 +8,7 @@ from BruteForceMatcher import BruteForceMatcher
 from AbsoluteNeighborFitnessComputer import AbsoluteNeighborFitnessComputer
 from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessComputer
 from MostPopulatedCircleFinder import MostPopulatedCircleFinder
+import PointUtilities
 import sys
 from PIL import Image, ImageDraw
 
@@ -266,24 +267,8 @@ class SimulatedAnnealingPointMatcherStage:
         return self._annealers != self._annealers
 
 
-def computeSquareDistances(points1, points2):
-    numPoints1 = points1.shape[0]
-    numPoints2 = points2.shape[0]
-
-    squareDistances = np.zeros((numPoints1, numPoints2))
-    for i, point1 in enumerate(points1):
-        for j, point2 in enumerate(points2):
-            squareDistances[i, j] = computeSquareDistance(point1, point2)
-    return squareDistances
-
-
-def computeSquareDistance(point1, point2):
-    diff = point1 - point2
-    return float(diff[0]**2 + diff[1]**2)
-
-
 def getMatchMask(sample, reference, tolerance):
-    squareDistances = computeSquareDistances(sample, reference)
+    squareDistances = PointUtilities.computeSquareDistances(sample, reference)
     fromSampleClosestNeighbor = np.min(squareDistances, axis=1)
     return fromSampleClosestNeighbor < tolerance
 

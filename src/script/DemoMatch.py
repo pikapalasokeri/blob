@@ -13,6 +13,7 @@ from MeanShortestDistanceFitnessComputer import MeanShortestDistanceFitnessCompu
 from CoherentPointDriftMatcher import transform
 from ImageUtilities import rgb2grayNaive
 import PipelineStage
+import PointUtilities
 
 
 def addEdgesToImage(image, edges, colorIx):
@@ -25,29 +26,6 @@ def addNdArrayPointsToImage(image, points, colorIx):
         row = int(point[0])
         col = int(point[1])
         image[row, col, colorIx] = 255
-
-
-def computeSquareDistance(point1, point2):
-    diff = point1 - point2
-    return float(diff[0]**2 + diff[1]**2)
-
-
-def computeSquareDistances(points1, points2):
-    numPoints1 = points1.shape[0]
-    numPoints2 = points2.shape[0]
-
-    squareDistances = np.zeros((numPoints1, numPoints2))
-    for i, point1 in enumerate(points1):
-        for j, point2 in enumerate(points2):
-            squareDistances[i, j] = computeSquareDistance(point1, point2)
-    return squareDistances
-
-
-def comuteClosestNeighborLikeness(points1, points2):
-    squareDistances = computeSquareDistances(points1, points2)
-    from1ClosestNeighbor = np.min(squareDistances, axis=1)
-    from2ClosestNeighbor = np.min(squareDistances, axis=0)
-    return np.mean(from1ClosestNeighbor) + np.mean(from2ClosestNeighbor)
 
 
 if __name__ == "__main__":
@@ -135,7 +113,7 @@ if __name__ == "__main__":
     matcher = SimulatedAnnealingPointMatcher2D(fitnessComputer)
 
     for p in points1:
-        matcher.addPoint1(p[0], p[1])
+        matcher.addPoint(p[0], p[1])
 
     # matcher.setStartTemperature(10.0)
     # matcher.setInitialTranslationSigma(1.0)
@@ -143,7 +121,7 @@ if __name__ == "__main__":
     matcher.setNumIterations(1000)
     matcher.setVerbose(True)
     start = timer()
-    scale, rotation, translation = matcher.match()
+    scale, rotation, translation, fitness = matcher.match()
 
     end = timer()
     print("cxxmatcher.match:", end - start)
@@ -157,7 +135,7 @@ if __name__ == "__main__":
     points1 = points1 + center1
     points2 = points2 + center2
 
-    print("Closest neighbor likeness:", comuteClosestNeighborLikeness(points2, transformed))
+    print("Closest neighbor likeness:", PointUtilities.computeClosestNeighborLikeness(points2, transformed))
 
     # addEdgesToImage(img1, edges1, 0)
     # addEdgesToImage(img2, edges2, 0)
