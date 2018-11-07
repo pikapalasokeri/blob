@@ -58,6 +58,7 @@ class ImageTableModel(QAbstractTableModel):
 
             self._currentlySelected = []
             self._currentlySelectedImages = []
+            self._originalImages = []
             self.selectedImagesChanged.emit(self._currentlySelectedImages)
             for path in filePaths:
                 image = QImage(path)
