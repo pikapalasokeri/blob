@@ -23,6 +23,7 @@ class ImageGridWidget(QWidget):
         pointCloudButton = QPushButton("Point cloud creator")
         pointCloudButton.clicked.connect(cloudCreator.launchCloudCreator)
         self._imageTable.selectionModel().selectionChanged.connect(model.updateSelection)
+        # model.dataChanged.connect(self._imageTable.update) doesn't do anything?
 
         layout = QGridLayout()
         layout.addWidget(self._imageTable, 0, 0)

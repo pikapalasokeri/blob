@@ -48,43 +48,50 @@ class ImageTableModel(QAbstractTableModel):
     def setLastPipelineStage(self, lastStageItem):
         print("Setting last pipeline stage " + lastStageItem.text())
         self._currentLastStage = lastStageItem.text()
+        print("execute")
         self._executePipelineUntil(self._currentLastStage)
+        print("done. returning")
 
     def loadNewImages(self, arg):
         filePaths = QFileDialog.getOpenFileNames(caption="Select one or more images to open",
                                                  filter="Images (*.jpg *.png)")[0]
         if len(filePaths) > 0:
-            self.beginResetModel()
-
             self._currentlySelected = []
             self._currentlySelectedImages = []
             self._originalImages = []
+            self._currentPixmaps = []
             self.selectedImagesChanged.emit(self._currentlySelectedImages)
             for path in filePaths:
                 image = QImage(path)
                 image.setText("path", path)
                 self._originalImages.append(image)
+
             self._executePipelineUntil(self._currentLastStage)
 
-            self._rowCount = int(len(self._currentPixmaps) / COLUMN_COUNT)
-            if len(self._currentPixmaps) % COLUMN_COUNT > 0:
-                self._rowCount += 1
-
-            self.endResetModel()
-
-    def _executePipelineUntil(self, stageName):
+    def _resetPixmaps(self):
         self.beginResetModel()
 
-        if stageName is None:
-            self._currentPixmaps = [QPixmap(image.scaledToWidth(self._imageSize)) for image in self._originalImages]
-        else:
-            self._currentPixmaps = []
-            for image in self._originalImages:
-                matrixImage = qImageToMatrix(image)
-                processedImage = matrixToQImage(self._pipeline.executeUntilImage(stageName, matrixImage))
-                self._currentPixmaps.append(QPixmap(processedImage.scaledToWidth(self._imageSize)))
+        self._currentPixmaps = [QPixmap(image.scaledToWidth(self._imageSize)) for image in self._originalImages]
+        self._rowCount = int(len(self._currentPixmaps) / COLUMN_COUNT)
+        if len(self._currentPixmaps) % COLUMN_COUNT > 0:
+            self._rowCount += 1
 
         self.endResetModel()
+
+    def _executePipelineUntil(self, stageName):
+        if (stageName is None or not self._currentPixmaps):
+            self._resetPixmaps()
+
+        for ix, image in enumerate(self._originalImages):
+            matrixImage = qImageToMatrix(image)
+            processedImage = matrixToQImage(self._pipeline.executeUntilImage(stageName, matrixImage))
+#            self.beginResetModel()
+            self._currentPixmaps[ix] = QPixmap(processedImage.scaledToWidth(self._imageSize))
+            row = ix / 2
+            col = ix % 2
+            index = self.createIndex(row, col)
+            self.dataChanged.emit(index, index)
+#            self.endResetModel()
 
     def updateSelection(self, selected, deselected):
         print("Updating selection")
