@@ -16,8 +16,16 @@ public:
   virtual double compute(const PointMatrix& points) const;
 
 private:
+  bool lookForMatchInRange(const PointMatrix& points,
+                           const double xRef,
+                           const double yRef,
+                           const int fromIx,
+                           const int toIx,
+                           int& matchIxOut) const;
+
   const PointMatrix referencePoints_;
   const double tolerance_;
+  const double toleranceSquare_;
 };
 
 #endif
