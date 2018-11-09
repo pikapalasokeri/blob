@@ -12,6 +12,7 @@ install(FILES BruteForceMatcherStage.py
               EdgeDetectionConfig.py
               EdgeDetector.py
               FileImageReader.py
+              FractionPointRemoverStage.py
               GpioPinHandler.py
               ImageGrabber.py
               ImageGrid.py

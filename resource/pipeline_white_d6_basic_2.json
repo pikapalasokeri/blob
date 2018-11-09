@@ -23,6 +23,11 @@
         "radius": 60.0
     },
     {
+        "name": "remove some",
+        "type": "FractionPointRemover",
+        "keep_fraction": 0.5
+    },
+    {
         "name": "matcher",
         "type": "BruteForceMatcher",
         "reference_pointclouds": [{"filepath": "/home/pikapalasokeri/blob/resource/cloud_white_d6_basic2_1.json",

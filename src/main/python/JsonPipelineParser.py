@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 from ImageProcessingPipeline import ImageProcessingPipeline
 from BruteForceMatcherStage import BruteForceMatcherStage
+from FractionPointRemoverStage import FractionPointRemoverStage
 import PipelineStage
 import json
 
@@ -58,6 +59,9 @@ def jsonToPipeline(jsonDict):
         elif stageType == "BruteForceMatcher":
             pipeline.appendStage(BruteForceMatcherStage(element["reference_pointclouds"],
                                                         element["matcher_settings"]),
+                                 name)
+        elif stageType == "FractionPointRemover":
+            pipeline.appendStage(FractionPointRemoverStage(element["keep_fraction"]),
                                  name)
         elif stageType == "Nop":
             pipeline.appendStage(PipelineStage.NopStage(), name)
