@@ -1,5 +1,4 @@
 #!/bin/bash
-echo "Running swig unit tests..."
 export PYTHONPATH=`pwd`"/../../main/swig:$1:$2"
 echo $PYTHONPATH
 python3 -m unittest -v \
