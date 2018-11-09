@@ -261,4 +261,4 @@ class SimulatedAnnealingPointMatcherStage:
             return True
 
         # TODO: dont do pointer comparison here.
-        return self._annealers != self._annealers
+        return self._annealers != other._annealers

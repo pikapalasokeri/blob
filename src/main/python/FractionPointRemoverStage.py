@@ -35,5 +35,4 @@ class FractionPointRemoverStage:
         if type(self) != type(other):
             return True
 
-        # TODO: dont do pointer comparison here.
-        return self._matchers != self._matchers
+        return self._keepFraction != other._keepFraction

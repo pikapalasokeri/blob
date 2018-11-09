@@ -114,7 +114,7 @@ class BruteForceMatcherStage:
             return True
 
         # TODO: dont do pointer comparison here.
-        return self._matchers != self._matchers
+        return self._matchers != other._matchers
 
 
 def getMatchMask(sample, reference, tolerance):
