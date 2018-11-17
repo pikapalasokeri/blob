@@ -9,4 +9,5 @@ python3 -m unittest -v \
        TestAbsoluteNeighborFitnessComputer\
        TestPointCloudHandler\
        TestPointCloud\
-       TestBruteForceMatcher
+       TestBruteForceMatcher\
+       TestImageUtilities
