@@ -6,6 +6,7 @@ set(PROJECT_SOURCE_DIR .)
 install(FILES createConfig.py
               DemoBruteForceMatcher.py
               DemoClassifier.py
+              DemoColorFilter.py
               DemoEdgeDetector.py
               DemoMatch.py
               DemoSimpleThrow.py
