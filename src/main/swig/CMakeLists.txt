@@ -8,7 +8,7 @@ find_package(PythonLibs 3 REQUIRED)
 include(${SWIG_USE_FILE})
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-deprecated -std=c++11 -fopenmp -O3")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-ignored-attributes -Wno-deprecated -std=c++11 -fopenmp -O3")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 include_directories(

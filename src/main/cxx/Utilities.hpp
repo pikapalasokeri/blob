@@ -1,6 +1,7 @@
 #include <Eigen/Dense>
 
 #include "EigenDefs.hpp"
+#include <vector>
 
 namespace Utilities
 {

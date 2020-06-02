@@ -59,7 +59,7 @@ class ConfigCreator:
 
         try:
             parameterAsInt = int(inputStr)
-        except:
+        except Exception:
             print("Exception raised while parsing string.")
             return False
 
@@ -72,7 +72,7 @@ class ConfigCreator:
         valueStr = input("New value: ")
         try:
             valueAsFloat = float(valueStr)
-        except:
+        except Exception:
             print("Exception raised while parsing string.")
             return False
 

@@ -1,5 +1,5 @@
 from ReferenceImage import ReferenceImage
-from scipy import misc
+import imageio
 import os
 
 
@@ -19,4 +19,4 @@ class DirectoryImageReader:
     def generate(self):
         for filePath in self._filePaths:
             comment = os.path.basename(filePath)
-            yield ReferenceImage(misc.imread(filePath), comment)
+            yield ReferenceImage(imageio.imread(filePath), comment)

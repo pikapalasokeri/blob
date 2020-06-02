@@ -1,6 +1,6 @@
 import json
 import os
-from scipy import misc
+import imageio
 
 
 class Image:
@@ -28,7 +28,7 @@ class DirectoryImageGrabber(ImageGrabber):
                     filePath = os.path.join(dirpath, filename)
                     comment = filename
                     print("yielding... {}, {}".format(comment, filePath))
-                    yield Image(misc.imread(filePath), comment)
+                    yield Image(imageio.imread(filePath), comment)
 
 
 def createImageGrabber(jsonPath):

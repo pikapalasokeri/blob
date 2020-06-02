@@ -1,5 +1,5 @@
 import unittest
-from scipy import misc
+import imageio
 import numpy as np
 import os
 from EdgeDetector import EdgeDetector
@@ -12,7 +12,7 @@ def readImage(relativePath):
     # Copy test files somewhere before running test instead.
     dirName = os.path.dirname(__file__)
     path = os.path.join(dirName, relativePath)
-    return misc.imread(path)
+    return imageio.imread(path)
 
 
 class TestEdgeDetector(unittest.TestCase):

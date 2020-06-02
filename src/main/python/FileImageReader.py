@@ -1,5 +1,5 @@
 from ReferenceImage import ReferenceImage
-from scipy import misc
+import imageio
 
 
 class FileImageReader:
@@ -10,7 +10,7 @@ class FileImageReader:
             with open(configFile) as config:
                 for line in config:
                     filePath = line.strip()
-                    self._imagesFromConfigFile.append(ReferenceImage(misc.imread(filePath), filePath))
+                    self._imagesFromConfigFile.append(ReferenceImage(imageio.imread(filePath), filePath))
 
     def generate(self):
         if len(self._imagesFromConfigFile) == 0:
@@ -19,7 +19,7 @@ class FileImageReader:
                 filePath = inputStr
                 comment = input("Comment: ")
                 inputStr = input("Path to image (leave empty when done): ")
-                yield ReferenceImage(misc.imread(filePath), comment)
+                yield ReferenceImage(imageio.imread(filePath), comment)
         else:
             for referenceImage in self._imagesFromConfigFile:
                 yield referenceImage

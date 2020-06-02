@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from scipy import misc
+import imageio
 # from scipy import ndimage
 import numpy as np
 # from CoherentPointDriftMatcher2D import CoherentPointDriftMatcher2D
@@ -33,8 +33,8 @@ if __name__ == "__main__":
     filePath2 = "../../images/early_tests_white/4_03.jpg"
 
     start = timer()
-    img1 = misc.imread(filePath1)
-    img2 = misc.imread(filePath2)
+    img1 = imageio.imread(filePath1)
+    img2 = imageio.imread(filePath2)
     end = timer()
     print("imread:", end - start)
 

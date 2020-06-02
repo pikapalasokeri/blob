@@ -4,7 +4,7 @@ project (blob_src_main_cxx)
 set(PROJECT_SOURCE_DIR .)
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-deprecated -std=c++11 -fopenmp -O3")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-ignored-attributes -Wno-deprecated -std=c++11 -fopenmp -O3")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 include_directories(

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from scipy import misc
+import imageio
 from ImageUtilities import cieXyzToSrgb, cieLabToCieXyz, sRgbToCieXyz, cieXyzToCieLab, rgb2grayNaive
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +8,7 @@ import numpy as np
 
 if __name__ == "__main__":
     filePath1 = "../../images/early_tests_color/3_01.jpg"
-    img1 = misc.imread(filePath1)
+    img1 = imageio.imread(filePath1)
 
     goldRgb = np.array([[[0.506, 0.365, 0.31]]])
 

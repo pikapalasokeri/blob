@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from scipy import misc
+import imageio
 import matplotlib.pyplot as plt
 from EdgeDetector import EdgeDetector
 from ImageUtilities import rgb2grayNaive
@@ -16,7 +16,7 @@ def addEdgesToImage(image, edges, colorIx):
 
 if __name__ == "__main__":
     filePath = "../../images/TryEdgeDetector.jpg"
-    img = misc.imread(filePath)
+    img = imageio.imread(filePath)
     edgeDetector = EdgeDetector(rgb2grayNaive(img))
     radius = 1000
 
